@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Course — Sir Mehboob Khan</title>
+<meta name="robots" content="noindex">
+<meta name="view-transition" content="same-origin">
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   SIR MEHBOOB KHAN — "Observatory" design system
+   Palette derived from the SMK mark: navy body, gold orbit, cut-facet edges.
+   ========================================================================== */
+
+:root{
+  --navy-950:#050B18;
+  --navy-900:#081226;
+  --navy-800:#0E1B36;
+  --navy-700:#16294B;
+  --navy-600:#1F3A66;
+  --gold-600:#A8752A;
+  --gold-500:#C08A34;
+  --gold-400:#D49C42;
+  --gold-300:#E0A94C;
+  --gold-100:#F2DDB4;
+  --ice:#7FA8E8;
+  --paper:#FAF8F4;
+  --ink:#F3EEE3;
+  --dim:#8D97AC;
+  --ok:#42B07C;
+  --bad:#D0574B;
+
+  --bg:var(--navy-950);
+  --panel:rgba(255,255,255,.028);
+  --panel-2:rgba(255,255,255,.05);
+  --line:rgba(224,169,76,.15);
+  --line-soft:rgba(255,255,255,.08);
+  --text:var(--ink);
+  --muted:var(--dim);
+
+  --display:"Fraunces",Georgia,serif;
+  --sans:"Inter",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+
+  --r:14px; --r-lg:22px;
+  --max:1300px;
+  --ease:cubic-bezier(.22,.8,.32,1);
+  --spring:cubic-bezier(.34,1.4,.64,1);
+  --glow:0 0 60px rgba(192,138,52,.22);
+}
+
+[data-theme="light"]{
+  --bg:var(--paper);
+  --panel:rgba(8,18,38,.035);
+  --panel-2:rgba(8,18,38,.06);
+  --line:rgba(168,117,42,.28);
+  --line-soft:rgba(8,18,38,.1);
+  --text:#0B1730;
+  --muted:#5A6579;
+  --navy-800:#fff;
+  --navy-900:#F4F0E7;
+  --glow:0 0 50px rgba(192,138,52,.18);
+}
+[data-theme="focus"]{           /* exam / focus mode: max contrast, zero motion */
+  --bg:#fff; --panel:#fff; --panel-2:#F2F2F2;
+  --line:#000; --line-soft:#000; --text:#000; --muted:#2A2A2A;
+  --navy-800:#fff; --navy-900:#fff; --gold-500:#7A5312; --gold-300:#7A5312; --glow:none;
+}
+[data-theme="focus"] *{animation:none!important;transition:none!important}
+[data-theme="focus"] .orb,[data-theme="focus"] #stars,[data-theme="focus"] .cursor{display:none!important}
+
+/* ---------------- base ---------------- */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+body.locked{overflow:hidden}
+img{max-width:100%;display:block;height:auto}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input,select,textarea{font:inherit}
+h1,h2,h3,h4{font-family:var(--display);font-weight:600;line-height:1.08;
+  letter-spacing:-.022em;margin:0 0 .5em}
+h1{font-size:clamp(2.6rem,7vw,5.6rem)}
+h2{font-size:clamp(1.9rem,4.2vw,3.2rem)}
+h3{font-size:clamp(1.15rem,2vw,1.5rem)}
+p{margin:0 0 1rem;max-width:64ch}
+:focus-visible{outline:2px solid var(--gold-300);outline-offset:3px;border-radius:6px}
+::selection{background:var(--gold-500);color:#12203C}
+
+.wrap{width:100%;max-width:var(--max);margin-inline:auto;padding-inline:clamp(18px,4vw,40px)}
+.sec{padding-block:clamp(72px,9vw,150px);position:relative}
+.muted{color:var(--muted)}
+.center{text-align:center}
+.mono{font-family:var(--mono)}
+
+/* Eyebrow — carries the logo's diamond divider */
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);
+  font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-400);margin-bottom:22px}
+.eyebrow::before{content:"";width:6px;height:6px;background:var(--gold-500);transform:rotate(45deg)}
+
+/* ---------------- preloader ---------------- */
+#pre{position:fixed;inset:0;z-index:9999;background:var(--navy-950);
+  display:grid;place-items:center;transition:opacity .7s var(--ease),visibility .7s}
+#pre.gone{opacity:0;visibility:hidden;pointer-events:none}
+#pre .pmark{width:min(190px,42vw);animation:pfloat 2.6s ease-in-out infinite;
+  filter:drop-shadow(0 0 40px rgba(192,138,52,.4))}
+@keyframes pfloat{50%{transform:translateY(-12px) scale(1.02)}}
+#pre .ptrack{width:min(230px,52vw);height:2px;background:rgba(255,255,255,.1);
+  margin-top:34px;overflow:hidden;border-radius:9px}
+#pre .pbar{height:100%;width:0;background:linear-gradient(90deg,var(--gold-600),var(--gold-300));
+  transition:width .25s linear}
+#pre .ptxt{margin-top:16px;font-family:var(--mono);font-size:.65rem;letter-spacing:.3em;
+  color:var(--gold-400);text-transform:uppercase}
+#pre .pinner{display:grid;place-items:center}
+
+/* ---------------- custom cursor ---------------- */
+.cursor,.cursor-dot{position:fixed;top:0;left:0;pointer-events:none;z-index:9000;
+  border-radius:50%;translate:-50% -50%}
+.cursor{width:34px;height:34px;border:1px solid var(--gold-400);
+  transition:width .25s var(--ease),height .25s var(--ease),background-color .25s,opacity .3s}
+.cursor.big{width:70px;height:70px;background:rgba(192,138,52,.1)}
+.cursor-dot{width:5px;height:5px;background:var(--gold-300)}
+@media (hover:none),(pointer:coarse){.cursor,.cursor-dot{display:none}}
+
+/* ---------------- starfield ---------------- */
+#stars{position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.55}
+.aura{position:fixed;width:70vmax;height:70vmax;border-radius:50%;z-index:-1;pointer-events:none;
+  background:radial-gradient(circle,rgba(192,138,52,.11),transparent 62%);
+  top:-26vmax;right:-18vmax;filter:blur(20px)}
+
+/* ---------------- header ---------------- */
+.hdr{position:fixed;top:0;left:0;right:0;z-index:500;
+  transition:transform .45s var(--ease),background-color .35s,backdrop-filter .35s,border-color .35s;
+  border-bottom:1px solid transparent}
+.hdr.stuck{background:color-mix(in srgb,var(--bg) 78%,transparent);
+  backdrop-filter:blur(18px) saturate(1.4);border-bottom-color:var(--line-soft)}
+.hdr.hide{transform:translateY(-105%)}
+.hdr__in{display:flex;align-items:center;gap:28px;min-height:78px;
+  max-width:var(--max);margin-inline:auto;padding-inline:clamp(18px,4vw,40px)}
+.logo{display:flex;align-items:center;gap:11px;flex:none;view-transition-name:logo}
+.logo img{height:40px}
+.logo b{font-family:var(--display);font-size:.94rem;letter-spacing:.03em;line-height:1.1;white-space:nowrap}
+.logo b i{color:var(--gold-400);font-style:normal}
+.nav{display:flex;gap:26px;margin-left:auto;align-items:center}
+.nav a{font-size:.86rem;font-weight:500;position:relative;padding:5px 0;white-space:nowrap}
+.nav a::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:0;
+  background:var(--gold-400);transition:width .3s var(--ease)}
+.nav a:hover::after,.nav a.on::after{width:100%}
+.nav a.on{color:var(--gold-300)}
+.hdr__cta{display:flex;gap:10px;align-items:center;margin-left:18px}
+.burger{display:none;width:46px;height:46px;margin-left:auto;flex-direction:column;
+  align-items:center;justify-content:center;gap:5px}
+.burger i{width:22px;height:1.5px;background:var(--text);transition:.35s var(--ease);display:block}
+.burger.x i:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.burger.x i:nth-child(2){opacity:0}
+.burger.x i:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+.mob{position:fixed;inset:0;z-index:490;background:var(--bg);padding:110px 24px 40px;
+  transform:translateY(-100%);transition:transform .5s var(--ease);overflow-y:auto;display:none}
+.mob.open{transform:none}
+.mob a{display:block;font-family:var(--display);font-size:1.7rem;padding:15px 0;
+  border-bottom:1px solid var(--line-soft)}
+
+/* ---------------- buttons ---------------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.55em;
+  padding:.92em 1.7em;border-radius:10px;font-size:.85rem;font-weight:600;letter-spacing:.01em;
+  position:relative;overflow:hidden;transition:transform .18s var(--spring),
+    box-shadow .3s var(--ease),border-color .3s var(--ease),background-color .3s}
+.btn:active{transform:scale(.96)}
+.btn--gold{background:linear-gradient(135deg,var(--gold-600),var(--gold-300));color:#150F04;
+  box-shadow:0 6px 26px rgba(192,138,52,.3);
+  clip-path:polygon(0 0,calc(100% - 13px) 0,100% 13px,100% 100%,0 100%)}
+.btn--gold:hover{box-shadow:0 12px 42px rgba(192,138,52,.48)}
+.btn--gold::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(105deg,transparent 32%,rgba(255,248,232,.6) 50%,transparent 68%);
+  transform:translateX(-130%);transition:transform .55s var(--ease)}
+.btn--gold:hover::after{transform:translateX(130%)}
+.btn--line{border:1px solid var(--line);color:var(--text);background:var(--panel)}
+.btn--line:hover{border-color:var(--gold-400);background:var(--panel-2)}
+.btn--sm{padding:.62em 1.15em;font-size:.76rem}
+.btn--wide{width:100%}
+
+/* ---------------- hero ---------------- */
+.hero{min-height:100svh;display:flex;align-items:center;position:relative;
+  padding-top:100px;padding-bottom:60px;overflow:hidden}
+.hero__grid{display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(28px,4vw,60px);
+  align-items:center;width:100%}
+.hero h1{margin-bottom:26px}
+.w{display:inline-block;overflow:hidden;vertical-align:bottom}
+.wi{display:inline-block;transform:translateY(112%);
+  transition:transform .95s var(--ease)}
+.ready .wi{transform:none}
+.hero .grad{background:linear-gradient(105deg,var(--gold-300),var(--gold-100) 45%,var(--gold-500));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.hero__lede{font-size:clamp(1rem,1.5vw,1.2rem);color:var(--muted);max-width:47ch}
+.hero__cta{display:flex;gap:14px;flex-wrap:wrap;margin-top:36px}
+.hero__meta{display:flex;gap:clamp(24px,4vw,52px);margin-top:52px;flex-wrap:wrap}
+.hero__meta b{display:block;font-family:var(--display);font-size:1.9rem;color:var(--gold-300);line-height:1}
+.hero__meta span{font-family:var(--mono);font-size:.63rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted)}
+.scrollcue{position:absolute;bottom:26px;left:50%;translate:-50% 0;display:grid;
+  justify-items:center;gap:8px;font-family:var(--mono);font-size:.6rem;letter-spacing:.25em;
+  color:var(--muted);text-transform:uppercase}
+.scrollcue i{width:1px;height:42px;background:linear-gradient(var(--gold-400),transparent);
+  animation:cue 2s ease-in-out infinite}
+@keyframes cue{50%{opacity:.25;transform:scaleY(.6)}}
+
+/* stage: three.js canvas + CSS fallback */
+.stage{position:relative;aspect-ratio:1/1;width:100%;max-width:620px;margin-inline:auto}
+.stage canvas{position:absolute;inset:0;width:100%!important;height:100%!important;
+  opacity:0;transition:opacity 1.1s var(--ease)}
+.stage canvas.on{opacity:1}
+.stage__fb{position:absolute;inset:0;display:grid;place-items:center;transition:opacity .8s var(--ease)}
+.stage.up .stage__fb{opacity:0}
+.stage__fb img{width:64%;filter:drop-shadow(0 30px 70px rgba(192,138,52,.3))}
+.orb{position:absolute;border:1px solid var(--gold-500);border-radius:50%;opacity:.4}
+.orb:nth-child(1){inset:6%;animation:o1 20s linear infinite}
+.orb:nth-child(2){inset:-4%;animation:o2 30s linear infinite;opacity:.22}
+.orb:nth-child(3){inset:-14%;animation:o3 42s linear infinite;opacity:.12}
+@keyframes o1{to{transform:rotateX(73deg) rotateZ(360deg)}}
+@keyframes o2{to{transform:rotateX(64deg) rotateY(18deg) rotateZ(-360deg)}}
+@keyframes o3{to{transform:rotateX(79deg) rotateY(-12deg) rotateZ(360deg)}}
+
+/* ---------------- bento ---------------- */
+.bento{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+.tile{background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--r-lg);
+  padding:clamp(22px,2.6vw,36px);position:relative;overflow:hidden;
+  transition:transform .45s var(--ease),border-color .35s,box-shadow .45s var(--ease)}
+.tile:hover{border-color:var(--line);box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.tile--glare::before{content:"";position:absolute;inset:0;opacity:0;transition:opacity .4s;
+  background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(224,169,76,.13),transparent 42%)}
+.tile--glare:hover::before{opacity:1}
+.c3{grid-column:span 3}.c4{grid-column:span 4}.c5{grid-column:span 5}
+.c6{grid-column:span 6}.c7{grid-column:span 7}.c8{grid-column:span 8}.c12{grid-column:span 12}
+.tile__n{font-family:var(--display);font-size:clamp(2.6rem,5vw,4.4rem);line-height:.9;
+  color:var(--gold-300);letter-spacing:-.03em}
+.tile__k{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);margin-top:10px;display:block}
+
+/* ---------------- course cards ---------------- */
+.ccard{display:block;background:var(--panel);border:1px solid var(--line-soft);
+  border-radius:var(--r-lg);padding:clamp(24px,2.5vw,34px);position:relative;overflow:hidden;
+  transition:transform .5s var(--ease),border-color .35s,box-shadow .5s var(--ease)}
+.ccard:hover{border-color:var(--line);box-shadow:0 30px 70px rgba(0,0,0,.45)}
+.ccard__code{font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;color:var(--gold-400)}
+.ccard h3{margin:14px 0 10px;font-size:1.6rem}
+.ccard__ring{position:absolute;right:-70px;top:-70px;width:210px;height:210px;
+  border:1px solid var(--line);border-radius:50%;opacity:.5;transition:transform .8s var(--ease)}
+.ccard:hover .ccard__ring{transform:scale(1.16) rotate(28deg)}
+.ccard__go{display:inline-grid;place-items:center;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);margin-top:22px;transition:.4s var(--ease)}
+.ccard:hover .ccard__go{background:var(--gold-500);color:#0B1730;border-color:transparent;transform:rotate(45deg)}
+
+/* ---------------- reviews marquee ---------------- */
+.mq{display:flex;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.mq__t{display:flex;gap:18px;animation:mq 40s linear infinite;flex-shrink:0;padding-right:18px}
+.mq:hover .mq__t{animation-play-state:paused}
+@keyframes mq{to{transform:translateX(-100%)}}
+.rev{width:340px;flex:none;background:var(--panel);border:1px solid var(--line-soft);
+  border-radius:var(--r);padding:26px}
+.rev p{font-size:.92rem;color:var(--muted);margin-bottom:18px}
+.rev b{font-size:.88rem}
+.rev span{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--gold-400);display:block;margin-top:3px}
+.rev__stars{color:var(--gold-400);letter-spacing:3px;font-size:.8rem;margin-bottom:12px}
+
+/* ---------------- video ---------------- */
+.vframe{position:relative;aspect-ratio:16/9;border-radius:var(--r-lg);overflow:hidden;
+  border:1px solid var(--line);background:
+    radial-gradient(circle at 50% 40%,var(--navy-700),var(--navy-950));
+  display:grid;place-items:center;cursor:pointer;transition:.5s var(--ease)}
+.vframe:hover{border-color:var(--gold-400);box-shadow:var(--glow)}
+.vplay{width:88px;height:88px;border-radius:50%;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--gold-600),var(--gold-300));color:#0B1730;
+  font-size:26px;padding-left:5px;box-shadow:0 0 0 0 rgba(224,169,76,.55);animation:pulse 2.6s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 30px rgba(224,169,76,0)}100%{box-shadow:0 0 0 0 rgba(224,169,76,0)}}
+
+/* ---------------- forms ---------------- */
+.fld{margin-bottom:20px}
+.fld label{display:block;font-size:.8rem;font-weight:500;margin-bottom:7px}
+.fld .rq{color:var(--gold-400)}
+.fld input,.fld select,.fld textarea{width:100%;padding:13px 15px;background:var(--panel);
+  color:var(--text);border:1px solid var(--line-soft);border-radius:10px;font-size:.9rem;
+  transition:border-color .25s,box-shadow .25s}
+.fld input:focus,.fld select:focus,.fld textarea:focus{outline:0;border-color:var(--gold-400);
+  box-shadow:0 0 0 3px rgba(224,169,76,.13)}
+.fld textarea{min-height:110px;resize:vertical}
+.fld.bad input,.fld.bad select{border-color:var(--bad)}
+.fld .er{display:none;color:var(--bad);font-size:.72rem;margin-top:5px}
+.fld.bad .er{display:block}
+.hp{position:absolute;left:-9999px}
+.okpanel{display:none;text-align:center;padding:48px 26px;border:1px solid var(--ok);
+  border-radius:var(--r-lg);background:rgba(66,176,124,.07)}
+.okpanel.show{display:block;animation:pop .5s var(--spring)}
+@keyframes pop{from{opacity:0;transform:scale(.94)}}
+.okpanel .tick{width:62px;height:62px;border-radius:50%;background:var(--ok);color:#fff;
+  display:grid;place-items:center;margin:0 auto 18px;font-size:26px}
+
+/* ---------------- accordion ---------------- */
+.acc details{border-bottom:1px solid var(--line-soft)}
+.acc summary{padding:20px 0;cursor:pointer;font-weight:500;list-style:none;
+  display:flex;justify-content:space-between;gap:20px;align-items:center}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary::after{content:"";width:9px;height:9px;border:1px solid var(--gold-400);
+  transform:rotate(45deg);flex:none;transition:.35s var(--ease)}
+.acc details[open] summary::after{background:var(--gold-500);transform:rotate(225deg)}
+.acc .body{padding-bottom:22px;color:var(--muted);font-size:.9rem}
+
+/* ---------------- chatbot ---------------- */
+.dock{position:fixed;right:20px;bottom:20px;z-index:600;display:flex;flex-direction:column;
+  align-items:flex-end;gap:11px}
+.dock__b{width:40px;height:40px;border-radius:50%;background:var(--panel);
+  border:1px solid var(--line-soft);display:grid;place-items:center;font-size:14px;
+  backdrop-filter:blur(10px);transition:.3s var(--ease)}
+.dock__b:hover{border-color:var(--gold-400);color:var(--gold-300);transform:translateY(-2px)}
+.dock__ai{width:60px;height:60px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold-600),var(--gold-300));color:#0B1730;
+  display:grid;place-items:center;box-shadow:0 10px 34px rgba(192,138,52,.42);
+  transition:.35s var(--spring)}
+.dock__ai:hover{transform:scale(1.08) rotate(6deg)}
+.dock__ai span{position:absolute;top:-2px;right:-2px;width:13px;height:13px;border-radius:50%;
+  background:var(--ok);border:2px solid var(--bg)}
+
+.bot{position:fixed;right:20px;bottom:94px;z-index:601;width:min(390px,calc(100vw - 40px));
+  height:min(560px,72vh);border-radius:22px;overflow:hidden;display:none;flex-direction:column;
+  background:color-mix(in srgb,var(--navy-800) 90%,transparent);backdrop-filter:blur(26px);
+  border:1px solid var(--line);box-shadow:0 30px 90px rgba(0,0,0,.6)}
+.bot.open{display:flex;animation:pop .35s var(--ease)}
+.bot__h{display:flex;align-items:center;gap:11px;padding:15px 17px;
+  border-bottom:1px solid var(--line-soft);flex:none}
+.bot__h img{height:32px}
+.bot__h b{font-family:var(--display);font-size:.95rem;display:block}
+.bot__h small{color:var(--ok);font-size:.66rem;font-family:var(--mono)}
+.bot__b{flex:1;overflow-y:auto;padding:17px;display:flex;flex-direction:column;gap:11px}
+.bub{max-width:86%;padding:11px 15px;border-radius:16px;font-size:.87rem;line-height:1.5;
+  animation:bubin .35s var(--ease)}
+@keyframes bubin{from{opacity:0;transform:translateY(9px)}}
+.bub--b{background:var(--panel-2);border-bottom-left-radius:5px;align-self:flex-start}
+.bub--u{background:linear-gradient(135deg,var(--gold-600),var(--gold-300));color:#150F04;
+  border-bottom-right-radius:5px;align-self:flex-end}
+.bub a{color:var(--gold-300);text-decoration:underline}
+.bot__o{display:flex;flex-wrap:wrap;gap:7px;padding:0 17px 17px;flex:none}
+.bot__o button{border:1px solid var(--gold-500);color:var(--gold-300);border-radius:999px;
+  padding:8px 14px;font-size:.75rem;transition:.25s}
+.bot__o button:hover{background:var(--gold-500);color:#150F04}
+.dots{display:flex;gap:4px;padding:14px 15px}
+.dots i{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:bl 1.2s infinite}
+.dots i:nth-child(2){animation-delay:.18s}.dots i:nth-child(3){animation-delay:.36s}
+@keyframes bl{0%,60%,100%{opacity:.25}30%{opacity:1}}
+
+/* ---------------- modal ---------------- */
+.modal{position:fixed;inset:0;z-index:800;background:rgba(3,7,16,.9);backdrop-filter:blur(8px);
+  display:none;place-items:center;padding:20px}
+.modal.open{display:grid;animation:pop .3s var(--ease)}
+.modal__in{width:100%;max-width:860px;background:var(--navy-800);border:1px solid var(--line);
+  border-radius:var(--r-lg);padding:clamp(24px,3vw,40px);max-height:88vh;overflow-y:auto;position:relative}
+[data-theme="light"] .modal__in,[data-theme="focus"] .modal__in{background:var(--bg)}
+.modal__x{position:absolute;top:16px;right:20px;font-size:26px;line-height:1}
+
+/* ---------------- portal / login ---------------- */
+.login{min-height:100svh;display:grid;place-items:center;padding:110px 20px 60px}
+.login__card{width:100%;max-width:440px;background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--r-lg);padding:clamp(28px,4vw,44px);backdrop-filter:blur(14px)}
+.login__card img{height:74px;margin:0 auto 22px}
+.demo-keys{border:1px dashed var(--line);border-radius:12px;padding:15px;margin-top:24px;
+  font-family:var(--mono);font-size:.72rem;color:var(--muted);line-height:1.9}
+.demo-keys b{color:var(--gold-300)}
+.demo-keys button{color:var(--gold-300);text-decoration:underline;font-family:var(--mono);font-size:.72rem}
+
+/* ---------------- lectures ---------------- */
+.lechead{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:flex-end}
+.bar{height:7px;border-radius:99px;background:var(--panel-2);overflow:hidden;max-width:320px}
+.bar i{display:block;height:100%;border-radius:99px;
+  background:linear-gradient(90deg,var(--gold-600),var(--gold-300));transition:width 1.2s var(--ease)}
+.modtitle{display:flex;align-items:center;gap:16px;margin:56px 0 22px}
+.modtitle h3{margin:0;white-space:nowrap}
+.modtitle i{flex:1;height:1px;background:var(--line-soft)}
+.modtitle span{font-family:var(--mono);font-size:.66rem;color:var(--muted);letter-spacing:.14em}
+
+.lecgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px}
+.lec{text-align:left;background:var(--panel);border:1px solid var(--line-soft);
+  border-radius:var(--r);padding:20px;position:relative;overflow:hidden;width:100%;
+  transition:transform .4s var(--ease),border-color .3s,box-shadow .4s}
+.lec:hover{transform:translateY(-5px);border-color:var(--line);box-shadow:0 20px 46px rgba(0,0,0,.4)}
+.lec__top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px}
+.lec__ico{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+  background:var(--panel-2);font-size:17px;flex:none;transition:.35s var(--ease)}
+.lec:hover .lec__ico{background:linear-gradient(135deg,var(--gold-600),var(--gold-300));color:#150F04}
+.lec h4{font-family:var(--sans);font-size:.95rem;font-weight:600;margin:0 0 8px;line-height:1.35}
+.lec__meta{display:flex;gap:9px;align-items:center;font-family:var(--mono);
+  font-size:.66rem;color:var(--muted);letter-spacing:.06em}
+.chip{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:4px 9px;border-radius:99px;border:1px solid var(--line-soft);color:var(--muted)}
+.chip--live{border-color:var(--bad);color:var(--bad)}
+.chip--done{border-color:var(--ok);color:var(--ok)}
+.chip--gold{border-color:var(--gold-500);color:var(--gold-300)}
+.lec--live{border-color:rgba(208,87,75,.32)}
+.lec--wide{grid-column:span 2}
+@media (max-width:700px){.lec--wide{grid-column:span 1}}
+
+/* ---------------- footer ---------------- */
+.ftr{border-top:1px solid var(--line-soft);padding-block:clamp(56px,7vw,90px) 34px;margin-top:60px}
+.ftr__g{display:grid;grid-template-columns:1.7fr 1fr 1fr 1fr;gap:38px}
+.ftr h4{font-family:var(--mono);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--gold-400);margin-bottom:18px}
+.ftr a{display:block;font-size:.86rem;color:var(--muted);padding:6px 0;transition:color .25s,transform .25s}
+.ftr a:hover{color:var(--gold-300);transform:translateX(4px)}
+.ftr img{height:88px;margin-bottom:16px}
+.ftr__b{margin-top:52px;padding-top:26px;border-top:1px solid var(--line-soft);
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  font-size:.75rem;color:var(--muted)}
+
+/* ---------------- misc ---------------- */
+.note{background:var(--panel);border:1px solid var(--line-soft);border-left:3px solid var(--gold-500);
+  border-radius:12px;padding:18px 20px;font-size:.86rem;color:var(--muted)}
+.note b{color:var(--text)}
+.crumb{font-family:var(--mono);font-size:.7rem;color:var(--muted);letter-spacing:.08em;margin-bottom:16px}
+.crumb a:hover{color:var(--gold-300)}
+.sprog{position:fixed;top:0;left:0;height:2px;width:0;z-index:700;
+  background:linear-gradient(90deg,var(--gold-600),var(--gold-300))}
+.toast{position:fixed;left:50%;bottom:26px;translate:-50% 0;z-index:900;
+  background:var(--navy-800);border:1px solid var(--line);border-radius:99px;
+  padding:12px 22px;font-size:.83rem;opacity:0;pointer-events:none;transition:.4s var(--ease)}
+.toast.show{opacity:1;transform:translateY(-6px)}
+
+[data-rv]{opacity:0;transform:translateY(30px);
+  transition:opacity .85s var(--ease),transform .85s var(--ease);
+  transition-delay:calc(var(--d,0)*90ms)}
+[data-rv].in{opacity:1;transform:none}
+
+/* ---------------- responsive ---------------- */
+@media (max-width:1080px){
+  .hero__grid{grid-template-columns:1fr;gap:40px}
+  .stage{max-width:400px;order:-1}
+  .hero{min-height:auto;padding-top:120px}
+  .c3,.c4,.c5{grid-column:span 6}
+  .c7,.c8{grid-column:span 12}
+  .ftr__g{grid-template-columns:1fr 1fr}
+}
+@media (max-width:900px){
+  .nav,.hdr__cta{display:none}
+  .burger{display:flex}
+  .mob{display:block}
+  .scrollcue{display:none}
+}
+@media (max-width:680px){
+  .c3,.c4,.c5,.c6,.c7,.c8{grid-column:span 12}
+  .ftr__g{grid-template-columns:1fr}
+  .bot{right:12px;left:12px;width:auto;bottom:84px;height:min(480px,64vh)}
+  .dock{right:14px;bottom:14px}
+  .hero__meta{gap:22px}
+  .rev{width:270px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;
+    transition-duration:.001ms!important}
+  [data-rv]{opacity:1;transform:none}
+  .wi{transform:none}
+  .orb,.mq__t{animation:none}
+}
+@media print{.hdr,.ftr,.dock,.bot,.stage,#stars,.aura{display:none!important}}
+
+/* ==========================================================================
+   PART 2 — 3D CARD SYSTEM
+   Every card type gets one distinct behaviour. Real depth: children sit on
+   their own Z planes inside a preserve-3d parent, so tilt causes genuine
+   parallax between layers instead of a flat plane rotating.
+   ========================================================================== */
+
+.d3{transform-style:preserve-3d;transition:transform .55s var(--ease)}
+.d3 > *{transform-style:preserve-3d}
+.z1{transform:translateZ(26px)}
+.z2{transform:translateZ(48px)}
+.z3{transform:translateZ(72px)}
+@media (hover:none){.z1,.z2,.z3{transform:none}}
+
+/* Animated conic border — runs only on hover, so it costs nothing at rest */
+.edge{position:relative;isolation:isolate}
+.edge::before{
+  content:"";position:absolute;inset:-1px;border-radius:inherit;z-index:-1;opacity:0;
+  background:conic-gradient(from var(--a,0deg),transparent 0 55%,var(--gold-300) 75%,transparent 85%);
+  transition:opacity .45s var(--ease)}
+.edge:hover::before{opacity:1;animation:spin 3s linear infinite}
+@keyframes spin{to{--a:360deg}}
+@property --a{syntax:'<angle>';initial-value:0deg;inherits:false}
+
+/* ---- FLIP COURSE CARD (real 3D, both faces) ---- */
+.flip{perspective:1600px;height:430px}
+.flip__i{position:relative;width:100%;height:100%;transform-style:preserve-3d;
+  transition:transform .8s cubic-bezier(.5,.1,.2,1)}
+.flip:hover .flip__i,.flip:focus-within .flip__i,.flip.on .flip__i{transform:rotateY(180deg)}
+.flip__f{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--r-lg);
+  border:1px solid var(--line-soft);padding:clamp(22px,2.4vw,32px);overflow:hidden;
+  display:flex;flex-direction:column;background:var(--panel);backdrop-filter:blur(8px)}
+.flip__f--b{transform:rotateY(180deg);background:color-mix(in srgb,var(--navy-700) 60%,transparent);
+  border-color:rgba(224,169,76,.34)}
+.flip:hover .flip__f{box-shadow:0 34px 80px rgba(0,0,0,.5)}
+.flip__ring{position:absolute;right:-64px;top:-64px;width:200px;height:200px;border-radius:50%;
+  border:1px solid var(--line);opacity:.55;transition:transform .9s var(--ease)}
+.flip:hover .flip__ring{transform:scale(1.2) rotate(40deg)}
+.flip__list{list-style:none;padding:0;margin:14px 0 0;font-size:.83rem;color:var(--muted);
+  display:grid;gap:7px;overflow-y:auto;flex:1}
+.flip__list li{display:flex;gap:9px;align-items:flex-start}
+.flip__list li::before{content:"";width:5px;height:5px;background:var(--gold-500);
+  transform:rotate(45deg);margin-top:7px;flex:none}
+.flip__hint{margin-top:auto;font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;
+  color:var(--muted);text-transform:uppercase;display:flex;align-items:center;gap:7px}
+.flip__hint i{width:14px;height:14px;border:1px solid var(--gold-500);border-radius:3px;
+  display:inline-block;animation:nudge 2.4s ease-in-out infinite}
+@keyframes nudge{50%{transform:rotateY(180deg)}}
+
+/* ---- 3D CUBE (method section) ---- */
+.cube-wrap{perspective:1100px;display:grid;place-items:center;min-height:300px}
+.cube{width:190px;height:190px;position:relative;transform-style:preserve-3d;
+  animation:cuberot 22s linear infinite}
+.cube:hover{animation-play-state:paused}
+@keyframes cuberot{
+  0%{transform:rotateX(-16deg) rotateY(0)}
+  100%{transform:rotateX(-16deg) rotateY(360deg)}}
+.cube div{position:absolute;inset:0;border:1px solid var(--gold-500);
+  background:color-mix(in srgb,var(--navy-800) 72%,transparent);
+  display:grid;place-items:center;text-align:center;padding:16px;backdrop-filter:blur(4px)}
+.cube div b{font-family:var(--display);font-size:1.05rem;display:block;color:var(--gold-300)}
+.cube div span{font-family:var(--mono);font-size:.58rem;letter-spacing:.16em;color:var(--muted)}
+.cube .f{transform:translateZ(95px)}
+.cube .ba{transform:rotateY(180deg) translateZ(95px)}
+.cube .r{transform:rotateY(90deg) translateZ(95px)}
+.cube .l{transform:rotateY(-90deg) translateZ(95px)}
+.cube .t{transform:rotateX(90deg) translateZ(95px)}
+.cube .bo{transform:rotateX(-90deg) translateZ(95px)}
+
+/* ---- STEP CARDS (how it works) ---- */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;position:relative}
+.steps::before{content:"";position:absolute;top:52px;left:8%;right:8%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--line),var(--line),transparent);z-index:0}
+.step{position:relative;z-index:1;text-align:center;padding:22px 16px;border-radius:var(--r);
+  background:var(--panel);border:1px solid var(--line-soft);transition:.45s var(--ease)}
+.step:hover{transform:translateY(-8px);border-color:var(--gold-400)}
+.step__n{width:62px;height:62px;margin:0 auto 18px;border-radius:50%;display:grid;place-items:center;
+  font-family:var(--display);font-size:1.35rem;background:var(--bg);
+  border:1px solid var(--line);color:var(--gold-300);transition:.45s var(--spring);position:relative}
+.step:hover .step__n{background:linear-gradient(135deg,var(--gold-600),var(--gold-300));
+  color:#150F04;border-color:transparent;transform:scale(1.12) rotate(-8deg);
+  box-shadow:0 10px 30px rgba(192,138,52,.4)}
+.step h4{font-family:var(--sans);font-size:.95rem;margin:0 0 6px}
+.step p{font-size:.8rem;color:var(--muted);margin:0}
+@media (max-width:900px){.steps{grid-template-columns:1fr 1fr}.steps::before{display:none}}
+@media (max-width:520px){.steps{grid-template-columns:1fr}}
+
+/* ---- DEMO LECTURE CARDS ---- */
+.demo3{position:relative;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line-soft);
+  background:var(--panel);text-align:left;width:100%;transition:.5s var(--ease);
+  transform-style:preserve-3d}
+.demo3:hover{border-color:var(--gold-400);box-shadow:0 30px 66px rgba(0,0,0,.5)}
+.demo3__t{aspect-ratio:16/9;position:relative;overflow:hidden;
+  background:radial-gradient(circle at 50% 45%,var(--navy-700),var(--navy-950))}
+.demo3__t::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 55%,rgba(5,11,24,.9))}
+.demo3__p{position:absolute;left:50%;top:50%;translate:-50% -50%;z-index:2;
+  width:62px;height:62px;border-radius:50%;display:grid;place-items:center;font-size:19px;
+  background:linear-gradient(135deg,var(--gold-600),var(--gold-300));color:#150F04;
+  padding-left:4px;transition:.45s var(--spring)}
+.demo3:hover .demo3__p{transform:translate(-50%,-50%) scale(1.16)}
+.demo3__t img{position:absolute;left:50%;top:50%;translate:-50% -50%;width:44%;opacity:.16}
+.demo3__body{padding:20px}
+.demo3__body h4{font-family:var(--sans);font-size:1rem;margin:0 0 6px}
+.demo3__badge{position:absolute;top:12px;left:12px;z-index:3}
+
+/* ---- AFFILIATION CARDS ---- */
+.aff{display:flex;align-items:center;gap:14px;padding:16px;border-radius:var(--r);
+  background:var(--panel);border:1px solid var(--line-soft);transition:.4s var(--ease)}
+.aff:hover{border-color:var(--gold-400);transform:translateX(5px)}
+.aff__m{width:46px;height:46px;border-radius:11px;flex:none;display:grid;place-items:center;
+  background:var(--panel-2);font-family:var(--display);color:var(--gold-300);font-size:1.05rem}
+.aff b{font-size:.9rem;display:block}
+.aff span{font-family:var(--mono);font-size:.63rem;color:var(--muted);letter-spacing:.08em}
+
+/* ---- PRICING ---- */
+.price{position:relative;padding:clamp(24px,2.6vw,34px);border-radius:var(--r-lg);
+  background:var(--panel);border:1px solid var(--line-soft);transition:.5s var(--ease);
+  display:flex;flex-direction:column}
+.price:hover{transform:translateY(-8px);border-color:var(--gold-400);box-shadow:0 30px 70px rgba(0,0,0,.45)}
+.price--hot{border-color:var(--gold-500);background:
+  linear-gradient(180deg,rgba(192,138,52,.09),transparent 45%),var(--panel)}
+.price__tag{position:absolute;top:-11px;left:50%;translate:-50% 0;
+  background:linear-gradient(135deg,var(--gold-600),var(--gold-300));color:#150F04;
+  font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;padding:5px 13px;border-radius:99px}
+.price__v{font-family:var(--display);font-size:2.1rem;color:var(--gold-300);line-height:1;margin:14px 0 4px}
+.price ul{list-style:none;padding:0;margin:20px 0;display:grid;gap:9px;font-size:.85rem;
+  color:var(--muted);flex:1}
+.price ul li{display:flex;gap:9px;align-items:flex-start}
+.price ul li::before{content:"\2713";color:var(--gold-400);flex:none;font-size:.8rem;margin-top:2px}
+
+/* ---- PROGRESS RING (lecture cards) ---- */
+.ring{width:44px;height:44px;flex:none;position:relative;display:grid;place-items:center}
+.ring svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:3}
+.ring .bgc{stroke:var(--line-soft)}
+.ring .fgc{stroke:var(--gold-400);stroke-linecap:round;
+  transition:stroke-dashoffset 1s var(--ease)}
+.ring span{font-family:var(--mono);font-size:.58rem;color:var(--gold-300)}
+
+/* ---- FEATURE ICON TILE ---- */
+.feat{display:flex;gap:15px;align-items:flex-start;padding:19px;border-radius:var(--r);
+  background:var(--panel);border:1px solid var(--line-soft);transition:.42s var(--ease)}
+.feat:hover{border-color:var(--gold-400);transform:translateY(-4px)}
+.feat__i{width:44px;height:44px;border-radius:12px;flex:none;display:grid;place-items:center;
+  background:var(--panel-2);font-size:17px;transition:.42s var(--spring)}
+.feat:hover .feat__i{background:linear-gradient(135deg,var(--gold-600),var(--gold-300));
+  color:#150F04;transform:rotate(-9deg) scale(1.08)}
+.feat b{font-size:.92rem;display:block;margin-bottom:3px}
+.feat p{font-size:.8rem;color:var(--muted);margin:0}
+
+/* ---- ISOMETRIC SYLLABUS ORBIT ---- */
+.iso{position:relative;aspect-ratio:1/1;max-width:520px;margin-inline:auto;width:100%;
+  perspective:1200px}
+.iso__s{position:absolute;inset:0;transform-style:preserve-3d;
+  transform:rotateX(66deg) rotateZ(0deg);animation:isospin 46s linear infinite}
+@keyframes isospin{to{transform:rotateX(66deg) rotateZ(360deg)}}
+.iso__r{position:absolute;border:1px dashed var(--line);border-radius:50%}
+.iso__r:nth-child(1){inset:30%}.iso__r:nth-child(2){inset:15%}.iso__r:nth-child(3){inset:0}
+.iso__n{position:absolute;translate:-50% -50%;padding:6px 12px;border-radius:99px;
+  background:var(--navy-800);border:1px solid var(--line);font-family:var(--mono);
+  font-size:.63rem;white-space:nowrap;transform:rotateZ(0) rotateX(-66deg);
+  transition:.3s var(--ease);cursor:pointer}
+.iso__n:hover{border-color:var(--gold-400);color:var(--gold-300);
+  box-shadow:0 0 22px rgba(192,138,52,.35)}
+.iso__c{position:absolute;left:50%;top:50%;translate:-50% -50%;width:24%;z-index:5}
+.iso__c img{width:100%;filter:drop-shadow(0 0 28px rgba(192,138,52,.4))}
+
+/* ---- COUNTER STRIP ---- */
+.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line-soft);
+  border:1px solid var(--line-soft);border-radius:var(--r-lg);overflow:hidden}
+.strip > div{background:var(--bg);padding:clamp(22px,2.6vw,34px);text-align:center;
+  transition:background-color .4s}
+.strip > div:hover{background:var(--panel)}
+.strip b{display:block;font-family:var(--display);font-size:clamp(1.8rem,3.4vw,2.8rem);
+  color:var(--gold-300);line-height:1}
+.strip span{font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--muted);margin-top:8px;display:block}
+@media (max-width:780px){.strip{grid-template-columns:1fr 1fr}}
+
+/* ---- SECTION HEADER + LIGHT SWEEP ---- */
+.sweep{position:relative;overflow:hidden}
+.sweep::after{content:"";position:absolute;top:0;bottom:0;width:36%;pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(224,169,76,.055),transparent);
+  transform:translateX(-160%);animation:sw 8s ease-in-out infinite}
+@keyframes sw{40%,100%{transform:translateX(420%)}}
+
+@media (max-width:1080px){
+  .flip{height:410px}
+}
+@media (prefers-reduced-motion:reduce){
+  .cube,.iso__s,.sweep::after,.edge::before,.flip__hint i{animation:none!important}
+}
+[data-theme="focus"] .cube,[data-theme="focus"] .iso__s{animation:none}
+
+/* lecture card: hover-revealed open affordance + depth */
+.lec{transform-style:preserve-3d}
+.lec__go{margin-top:14px;font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--gold-400);opacity:0;transform:translateY(8px);
+  transition:.4s var(--ease)}
+.lec:hover .lec__go,.lec:focus-visible .lec__go{opacity:1;transform:none}
+.lec::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(280px circle at var(--mx,50%) var(--my,50%),
+    rgba(224,169,76,.11),transparent 45%);opacity:0;transition:opacity .4s}
+.lec:hover::after{opacity:1}
+
+/* Overflow fix: orbit nodes sit at ~49% radius and extend past their centre
+   point, which pushed the document wider than the viewport on small screens. */
+.iso{overflow:hidden}
+@media (max-width:680px){
+  .iso__s{scale:.74}
+  .iso__n{font-size:.55rem;padding:4px 8px}
+  .cube{width:150px;height:150px}
+  .cube .f,.cube .ba,.cube .r,.cube .l,.cube .t,.cube .bo{--z:75px}
+  .cube .f{transform:translateZ(75px)}
+  .cube .ba{transform:rotateY(180deg) translateZ(75px)}
+  .cube .r{transform:rotateY(90deg) translateZ(75px)}
+  .cube .l{transform:rotateY(-90deg) translateZ(75px)}
+  .cube .t{transform:rotateX(90deg) translateZ(75px)}
+  .cube .bo{transform:rotateX(-90deg) translateZ(75px)}
+}
+
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+<div class="aura"></div>
+<div class="sprog"></div>
+
+<header class="hdr stuck">
+  <div class="hdr__in">
+    <a class="logo" href="index.html">
+      <img src="assets/img/smk-mark-sm.png" alt="SMK">
+      <b>SIR <i>MEHBOOB</i> KHAN</b>
+    </a>
+    <nav class="nav">
+      <a href="course.html" class="on">My Course</a>
+      <a href="index.html#courses">All Courses</a>
+      <a href="index.html#faq">FAQ</a>
+      <a href="index.html#register">Contact</a>
+    </nav>
+    <div class="hdr__cta">
+      <span class="chip chip--gold" id="stuId">—</span>
+      <button class="btn btn--line btn--sm" id="logout">Log out</button>
+    </div>
+    <button class="burger" aria-label="Menu" aria-expanded="false"><i></i><i></i><i></i></button>
+  </div>
+</header>
+<nav class="mob">
+  <a href="course.html">My Course</a>
+  <a href="index.html">Home</a>
+  <a href="index.html#faq">FAQ</a>
+  <a href="index.html#register">Contact</a>
+  <a href="portal.html" style="color:var(--gold-300)">Log out</a>
+</nav>
+
+<main id="courseRoot">
+  <section class="sec" style="padding-bottom:0;padding-top:130px">
+    <div class="wrap">
+      <div class="crumb"><a href="index.html">Home</a> / <a href="portal.html">Portal</a> / My Course</div>
+
+      <div class="lechead">
+        <div>
+          <div class="eyebrow">Welcome back, <span id="stuName">—</span></div>
+          <h1 style="font-size:clamp(2rem,4.5vw,3.4rem);margin-bottom:12px" id="cTitle">—</h1>
+          <p class="muted" style="max-width:52ch" id="cBlurb"></p>
+          <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:16px">
+            <span class="chip chip--gold" id="cCode">—</span>
+            <span class="chip">Exam session: <b id="cSession">—</b></span>
+          </div>
+        </div>
+        <div style="min-width:260px">
+          <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:9px">
+            <span class="muted"><b id="cDone">0</b> of <b id="cTotal">0</b> complete</span>
+            <b style="color:var(--gold-300)" id="cPct">0%</b>
+          </div>
+          <div class="bar" style="max-width:none"><i id="cBar" style="width:0"></i></div>
+        </div>
+      </div>
+
+      <div class="note" style="margin-top:34px">
+        <b>Demo data.</b> Lectures, durations and progress are samples. Recorded lectures need a YouTube ID and live sessions need a Zoom link — both are set per lecture in <code>the DATA block at the bottom of this file</code>.
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" style="padding-top:20px">
+    <div class="wrap"><div id="modules"></div></div>
+  </section>
+</main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr__g">
+      <div>
+        <img src="assets/img/smk-lockup.png" alt="Sir Mehboob Khan">
+        <p class="muted" style="font-size:.85rem;max-width:32ch">Concepts &rarr; Clarity &rarr; Success</p>
+      </div>
+      <div>
+        <h4>Course</h4>
+        <a href="course.html">My lectures</a>
+        <a href="index.html#courses">All courses</a>
+        <a href="index.html#method">The method</a>
+      </div>
+      <div>
+        <h4>Account</h4>
+        <a href="portal.html">Switch student</a>
+        <a href="index.html#faq">Help &amp; FAQ</a>
+        <a href="index.html#register">Contact the team</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <div id="footContact"></div>
+      </div>
+    </div>
+    <div class="ftr__b">
+      <span>&copy; 2026 Sir Mehboob Khan.</span>
+      <span>Frontend demo build — no backend.</span>
+    </div>
+  </div>
+</footer>
+
+<div class="dock">
+  <button class="dock__b" data-theme-btn aria-label="Theme">&#9680;</button>
+  <button class="dock__b" data-sound aria-label="Sound off">&#128263;</button>
+  <button class="dock__ai" aria-label="Open SMK Assistant" aria-expanded="false" style="position:relative">
+    <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.1A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z"/></svg>
+    <span></span>
+  </button>
+</div>
+<div class="bot" role="dialog" aria-label="SMK Assistant">
+  <div class="bot__h">
+    <img src="assets/img/smk-mark-sm.png" alt="">
+    <div><b>SMK Assistant</b><small>&#9679; Online</small></div>
+    <button class="bot__x" style="margin-left:auto;font-size:22px" aria-label="Close">&times;</button>
+  </div>
+  <div class="bot__b"></div>
+  <div class="bot__o"></div>
+</div>
+<div class="modal"><div class="modal__in"><button class="modal__x" aria-label="Close">&times;</button><div class="modal__c"></div></div></div>
+
+<script>
+/* ---- DATA: edit here. This is the only part you need to change. ---- */
+/* ⚠ Credentials are visible in page source. Demo login only —
+   it proves the flow, it does not protect anything. */
+const STUDENTS = {
+  st01: { id: 'st01', pin: 'smk2026', name: 'Ayesha R.', course: 'olevel',  joined: 'Term 1', session: 'May/June 2027' },
+  st02: { id: 'st02', pin: 'smk2026', name: 'Bilal K.',  course: 'aslevel', joined: 'Term 1', session: 'May/June 2027' },
+  st03: { id: 'st03', pin: 'smk2026', name: 'Hina S.',   course: 'a2level', joined: 'Term 2', session: 'Oct/Nov 2027' }
+};
+
+const CHANNEL = 'https://youtube.com/@mehboobkhan7260';
+
+const COURSES = {
+  olevel: {
+    key: 'olevel', code: '5054 / 0625', title: 'O Level & IGCSE Physics',
+    tag: 'Foundation', accent: '#E0A94C',
+    blurb: 'Full Cambridge coverage, built from first principles and drilled against real past papers.',
+    modules: [
+      { name: 'Mechanics', lectures: [
+        { t: 'Kinematics — Motion Graphs',        kind: 'video', dur: '42:18', youtube: null, done: true },
+        { t: 'Equations of Motion',               kind: 'video', dur: '38:04', youtube: null, done: true },
+        { t: 'Live: Projectile Problem Clinic',   kind: 'live',  dur: '90 min', zoom: null,   done: true },
+        { t: "Newton's Laws & Momentum",          kind: 'video', dur: '51:22', youtube: null, done: true },
+        { t: 'Moments & Equilibrium',             kind: 'video', dur: '35:47', youtube: null, done: false },
+        { t: 'Mechanics — Topic Quiz',            kind: 'quiz',  dur: '20 Qs', youtube: null, done: false }
+      ]},
+      { name: 'Thermal & Waves', lectures: [
+        { t: 'Kinetic Model of Matter',           kind: 'video', dur: '44:10', youtube: null, done: false },
+        { t: 'Thermal Transfer',                  kind: 'video', dur: '39:55', youtube: null, done: false },
+        { t: 'Live: Waves Q&A Session',           kind: 'live',  dur: '90 min', zoom: null,   done: false },
+        { t: 'Light, Reflection & Refraction',    kind: 'video', dur: '47:30', youtube: null, done: false },
+        { t: 'Paper 2 — May/June Walkthrough',    kind: 'paper', dur: '75:00', youtube: null, done: false }
+      ]},
+      { name: 'Electricity & Atomic', lectures: [
+        { t: 'Current, Voltage & Resistance',     kind: 'video', dur: '49:12', youtube: null, done: false },
+        { t: 'Circuit Analysis Method',           kind: 'video', dur: '55:38', youtube: null, done: false },
+        { t: 'Magnetism & the Motor Effect',      kind: 'video', dur: '41:20', youtube: null, done: false },
+        { t: 'Radioactivity & Half-Life',         kind: 'video', dur: '36:44', youtube: null, done: false },
+        { t: 'Live: Full Paper 1 Under Timing',   kind: 'live',  dur: '60 min', zoom: null,   done: false }
+      ]}
+    ]
+  },
+
+  aslevel: {
+    key: 'aslevel', code: '9702 (AS)', title: 'AS Level Physics',
+    tag: 'Year One', accent: '#C08A34',
+    blurb: 'The step up from O Level — where working-out earns marks and technique starts in week one.',
+    modules: [
+      { name: 'Foundations', lectures: [
+        { t: 'Physical Quantities & Units',       kind: 'video', dur: '33:15', youtube: null, done: true },
+        { t: 'Errors & Uncertainties',            kind: 'video', dur: '40:02', youtube: null, done: true },
+        { t: 'Kinematics at AS',                  kind: 'video', dur: '46:50', youtube: null, done: true },
+        { t: 'Live: Vectors Problem Clinic',      kind: 'live',  dur: '90 min', zoom: null,   done: true }
+      ]},
+      { name: 'Dynamics & Matter', lectures: [
+        { t: 'Momentum & Collisions',             kind: 'video', dur: '52:11', youtube: null, done: true },
+        { t: 'Work, Energy & Power',              kind: 'video', dur: '43:28', youtube: null, done: true },
+        { t: 'Deformation of Solids',             kind: 'video', dur: '37:19', youtube: null, done: false },
+        { t: 'Dynamics — Topic Quiz',             kind: 'quiz',  dur: '25 Qs', youtube: null, done: false }
+      ]},
+      { name: 'Waves & Electricity', lectures: [
+        { t: 'Wave Properties & Intensity',       kind: 'video', dur: '48:07', youtube: null, done: false },
+        { t: 'Superposition & Interference',      kind: 'video', dur: '56:33', youtube: null, done: false },
+        { t: 'Stationary Waves & Diffraction',    kind: 'video', dur: '44:51', youtube: null, done: false },
+        { t: 'D.C. Circuits — Full Method',       kind: 'video', dur: '61:04', youtube: null, done: false },
+        { t: 'Live: Paper 2 Strategy',            kind: 'live',  dur: '90 min', zoom: null,   done: false },
+        { t: 'Paper 3 — Practical Skills',        kind: 'paper', dur: '80:00', youtube: null, done: false }
+      ]}
+    ]
+  },
+
+  a2level: {
+    key: 'a2level', code: '9702 (A2)', title: 'A2 Level Physics',
+    tag: 'Year Two', accent: '#7FA8E8',
+    blurb: 'Fields, quantum and nuclear — plus the Paper 5 method most students leave far too late.',
+    modules: [
+      { name: 'Fields & Motion', lectures: [
+        { t: 'Circular Motion',                   kind: 'video', dur: '45:22', youtube: null, done: true },
+        { t: 'Gravitational Fields',              kind: 'video', dur: '58:14', youtube: null, done: true },
+        { t: 'Oscillations & SHM',                kind: 'video', dur: '62:40', youtube: null, done: true },
+        { t: 'Live: Fields Comparison Clinic',    kind: 'live',  dur: '90 min', zoom: null,   done: true },
+        { t: 'Electric Fields',                   kind: 'video', dur: '54:09', youtube: null, done: true }
+      ]},
+      { name: 'Thermal & Electromagnetism', lectures: [
+        { t: 'Ideal Gases & Kinetic Theory',      kind: 'video', dur: '47:36', youtube: null, done: false },
+        { t: 'Capacitance',                       kind: 'video', dur: '41:18', youtube: null, done: false },
+        { t: 'Magnetic Fields & Induction',       kind: 'video', dur: '59:47', youtube: null, done: false },
+        { t: 'Alternating Currents',              kind: 'video', dur: '38:25', youtube: null, done: false },
+        { t: 'Fields — Topic Quiz',               kind: 'quiz',  dur: '30 Qs', youtube: null, done: false }
+      ]},
+      { name: 'Quantum, Nuclear & Paper 5', lectures: [
+        { t: 'The Photoelectric Effect',          kind: 'video', dur: '50:31', youtube: null, done: false },
+        { t: 'Energy Levels & Spectra',           kind: 'video', dur: '43:12', youtube: null, done: false },
+        { t: 'Nuclear Physics & Binding Energy',  kind: 'video', dur: '55:20', youtube: null, done: false },
+        { t: 'Medical Imaging',                   kind: 'video', dur: '39:08', youtube: null, done: false },
+        { t: 'Paper 5 — The Repeatable Method',   kind: 'paper', dur: '95:00', youtube: null, done: false },
+        { t: 'Live: Paper 5 Planning Workshop',   kind: 'live',  dur: '120 min', zoom: null,  done: false }
+      ]}
+    ]
+  }
+};
+
+const CONTACT = {
+  wa: '923028056789',
+  wa2: '923446267693',
+  phoneDisplay: '0302 8056789',
+  phone2Display: '0344 6267693',
+  email: 'isamm11979@gmail.com',
+  instagram: 'https://instagram.com/sir_mehboob_khan',
+  youtube: CHANNEL,
+  threads: 'https://threads.net/@sir_mehboob_khan'
+};
+</script>
+<script>
+  window.CONTACT = CONTACT;
+  document.getElementById('footContact').innerHTML =
+    '<a href="https://wa.me/' + CONTACT.wa + '">' + CONTACT.phoneDisplay + '</a>'
+    + '<a href="tel:+' + CONTACT.wa2 + '">' + CONTACT.phone2Display + '</a>'
+    + '<a href="mailto:' + CONTACT.email + '">' + CONTACT.email + '</a>'
+    + '<a href="' + CONTACT.youtube + '" target="_blank" rel="noopener">YouTube</a>';
+</script>
+<script>
+/* ==========================================================================
+   SMK — app.js  (shared across all pages)
+   ========================================================================== */
+(function () {
+  'use strict';
+  const $ = (s, c) => (c || document).querySelector(s);
+  const $$ = (s, c) => Array.from((c || document).querySelectorAll(s));
+  const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FINE = matchMedia('(hover:hover) and (pointer:fine)').matches;
+
+  /* ---------------- preloader ---------------- */
+  const pre = $('#pre');
+  if (pre) {
+    const bar = $('.pbar', pre);
+    let p = 0;
+    const tick = setInterval(() => {
+      p = Math.min(p + Math.random() * 18, 92);
+      if (bar) bar.style.width = p + '%';
+    }, 130);
+    const finish = () => {
+      clearInterval(tick);
+      if (bar) bar.style.width = '100%';
+      setTimeout(() => {
+        pre.classList.add('gone');
+        document.body.classList.remove('locked');
+        document.body.classList.add('ready');
+      }, 340);
+    };
+    document.body.classList.add('locked');
+    if (document.readyState === 'complete') setTimeout(finish, 420);
+    else addEventListener('load', () => setTimeout(finish, 420));
+    setTimeout(finish, 4500); // hard safety net — never trap the user behind a loader
+  } else {
+    document.body.classList.add('ready');
+  }
+
+  /* ---------------- sound (default OFF — see sound-design rules) ---------------- */
+  let AC = null, soundOn = false;
+  const ac = () => (AC = AC || new (window.AudioContext || window.webkitAudioContext)());
+  const tone = (f, d = .08, type = 'sine', v = .13) => {
+    if (!soundOn) return;
+    try {
+      const c = ac();
+      if (c.state === 'suspended') c.resume();
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = type; o.frequency.value = f;
+      g.gain.setValueAtTime(v, c.currentTime);
+      g.gain.exponentialRampToValueAtTime(.0001, c.currentTime + d);
+      o.connect(g).connect(c.destination); o.start(); o.stop(c.currentTime + d);
+    } catch (e) { }
+  };
+  const sfx = {
+    hover: () => tone(520, .05, 'sine', .06),
+    click: () => { tone(660, .06, 'triangle', .14); setTimeout(() => tone(880, .07, 'triangle', .09), 42); },
+    ok: () => [523, 659, 784].forEach((f, i) => setTimeout(() => tone(f, .13, 'sine', .11), i * 95)),
+    err: () => tone(180, .18, 'sawtooth', .1)
+  };
+  window.SMKsfx = sfx;
+
+  const sBtn = $('[data-sound]');
+  if (sBtn) sBtn.addEventListener('click', () => {
+    soundOn = !soundOn;
+    sBtn.textContent = soundOn ? '🔊' : '🔇';
+    sBtn.setAttribute('aria-label', soundOn ? 'Sound on' : 'Sound off');
+    if (soundOn) { ac().resume?.(); sfx.click(); }
+  });
+
+  let lastH = 0;
+  document.addEventListener('mouseenter', (e) => {
+    if (!FINE || !e.target.closest) return;
+    if (e.target.closest('a,button') && Date.now() - lastH > 90) { sfx.hover(); lastH = Date.now(); }
+  }, true);
+  document.addEventListener('click', (e) => { if (e.target.closest('a,button')) sfx.click(); });
+
+  /* ---------------- theme ---------------- */
+  const THEMES = ['dark', 'light', 'focus'];
+  const ICON = { dark: '◐', light: '☀', focus: '⊙' };
+  let ti = 0;
+  const tBtn = $('[data-theme-btn]');
+  if (tBtn) tBtn.addEventListener('click', () => {
+    ti = (ti + 1) % THEMES.length;
+    const t = THEMES[ti];
+    document.documentElement.setAttribute('data-theme', t);
+    tBtn.textContent = ICON[t];
+    tBtn.setAttribute('aria-label', 'Theme: ' + t);
+    toast(t === 'focus' ? 'Focus mode — high contrast, no motion' : 'Theme: ' + t);
+  });
+
+  /* ---------------- toast ---------------- */
+  let tTimer;
+  function toast(msg) {
+    let el = $('.toast');
+    if (!el) { el = document.createElement('div'); el.className = 'toast'; document.body.appendChild(el); }
+    el.textContent = msg; el.classList.add('show');
+    clearTimeout(tTimer); tTimer = setTimeout(() => el.classList.remove('show'), 2600);
+  }
+  window.SMKtoast = toast;
+
+  /* ---------------- custom cursor ---------------- */
+  if (FINE && !RM) {
+    const ring = document.createElement('div'); ring.className = 'cursor';
+    const dot = document.createElement('div'); dot.className = 'cursor-dot';
+    document.body.append(ring, dot);
+    let x = 0, y = 0, rx = 0, ry = 0;
+    addEventListener('pointermove', (e) => {
+      x = e.clientX; y = e.clientY;
+      dot.style.transform = `translate(${x}px,${y}px)`;
+    }, { passive: true });
+    (function loop() {
+      rx += (x - rx) * .16; ry += (y - ry) * .16;
+      ring.style.transform = `translate(${rx}px,${ry}px)`;
+      requestAnimationFrame(loop);
+    })();
+    document.addEventListener('mouseover', (e) => {
+      if (e.target.closest && e.target.closest('a,button,[data-cursor]')) ring.classList.add('big');
+    });
+    document.addEventListener('mouseout', (e) => {
+      if (e.target.closest && e.target.closest('a,button,[data-cursor]')) ring.classList.remove('big');
+    });
+  }
+
+  /* ---------------- header ---------------- */
+  const hdr = $('.hdr');
+  let lastY = 0;
+  addEventListener('scroll', () => {
+    const y = scrollY;
+    if (hdr) {
+      hdr.classList.toggle('stuck', y > 30);
+      hdr.classList.toggle('hide', y > 400 && y > lastY && !$('.mob.open'));
+    }
+    lastY = y;
+    const sp = $('.sprog');
+    if (sp) {
+      const h = document.documentElement.scrollHeight - innerHeight;
+      sp.style.width = (h > 0 ? (y / h) * 100 : 0) + '%';
+    }
+  }, { passive: true });
+
+  const bg = $('.burger'), mob = $('.mob');
+  if (bg && mob) {
+    bg.addEventListener('click', () => {
+      const o = mob.classList.toggle('open');
+      bg.classList.toggle('x', o);
+      bg.setAttribute('aria-expanded', o);
+      document.body.classList.toggle('locked', o);
+    });
+    $$('.mob a').forEach(a => a.addEventListener('click', () => {
+      mob.classList.remove('open'); bg.classList.remove('x');
+      document.body.classList.remove('locked');
+    }));
+  }
+
+  /* ---------------- reveals ---------------- */
+  const rio = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); rio.unobserve(e.target); }
+  }), { threshold: .1, rootMargin: '0px 0px -50px' });
+  $$('[data-rv]').forEach(el => rio.observe(el));
+
+  /* ---------------- counters ---------------- */
+  const cio = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    cio.unobserve(e.target);
+    const el = e.target, target = parseFloat(el.dataset.count), suf = el.dataset.suffix || '';
+    if (RM) { el.textContent = target + suf; return; }
+    const t0 = performance.now(), dur = 1500;
+    (function run(now) {
+      const p = Math.min((now - t0) / dur, 1);
+      el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))) + suf;
+      if (p < 1) requestAnimationFrame(run);
+    })(performance.now());
+  }), { threshold: .45 });
+  $$('[data-count]').forEach(el => cio.observe(el));
+
+  /* ---------------- glare + tilt + magnetic ---------------- */
+  if (FINE && !RM) {
+    $$('.tile--glare,[data-glare],.lec').forEach(el => {
+      el.addEventListener('pointermove', e => {
+        const r = el.getBoundingClientRect();
+        el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        el.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      });
+    });
+    $$('[data-tilt]').forEach(el => {
+      el.addEventListener('pointermove', e => {
+        const r = el.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
+        el.style.transform = `perspective(1000px) rotateY(${px * 7}deg) rotateX(${-py * 7}deg) translateY(-6px)`;
+      });
+      el.addEventListener('pointerleave', () => { el.style.transform = ''; });
+    });
+    $$('[data-mag]').forEach(el => {
+      el.addEventListener('pointermove', e => {
+        const r = el.getBoundingClientRect();
+        el.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .25}px,${(e.clientY - r.top - r.height / 2) * .35}px)`;
+      });
+      el.addEventListener('pointerleave', () => { el.style.transform = ''; });
+    });
+  }
+
+  /* ---------------- split-text hero ---------------- */
+  $$('[data-split]').forEach(h => {
+    h.innerHTML = h.innerHTML.split(' ').map(w =>
+      `<span class="w"><span class="wi">${w}</span></span>`).join(' ');
+    $$('.wi', h).forEach((s, i) => s.style.transitionDelay = (i * 70 + 200) + 'ms');
+  });
+
+  /* ---------------- starfield ---------------- */
+  const sky = $('#stars');
+  if (sky && !RM) {
+    const cv = sky.getContext('2d');
+    let stars = [];
+    const size = () => {
+      sky.width = innerWidth; sky.height = innerHeight;
+      stars = Array.from({ length: Math.min(150, (innerWidth * innerHeight) / 12000) }, () => ({
+        x: Math.random() * sky.width, y: Math.random() * sky.height,
+        r: Math.random() * 1.3 + .2, a: Math.random(), s: Math.random() * .012 + .003
+      }));
+    };
+    size(); addEventListener('resize', size);
+    (function draw() {
+      cv.clearRect(0, 0, sky.width, sky.height);
+      stars.forEach(s => {
+        s.a += s.s; const o = (Math.sin(s.a) + 1) / 2;
+        cv.beginPath(); cv.arc(s.x, s.y, s.r, 0, 7);
+        cv.fillStyle = `rgba(224,169,76,${o * .55})`; cv.fill();
+      });
+      requestAnimationFrame(draw);
+    })();
+  }
+
+  /* ---------------- modal ---------------- */
+  const modal = $('.modal');
+  window.SMKmodal = (html) => {
+    if (!modal) return;
+    $('.modal__c', modal).innerHTML = html;
+    modal.classList.add('open'); document.body.classList.add('locked');
+  };
+  if (modal) {
+    const close = () => { modal.classList.remove('open'); document.body.classList.remove('locked'); };
+    modal.addEventListener('click', e => {
+      if (e.target === modal || e.target.closest('.modal__x')) close();
+    });
+    addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  }
+  $$('[data-modal]').forEach(el => el.addEventListener('click', e => {
+    e.preventDefault();
+    window.SMKmodal(`<h3>${el.dataset.modal}</h3><p class="muted">${el.dataset.modalBody || ''}</p>`);
+  }));
+
+  /* ---------------- forms (validate + confirm, nothing saved) ---------------- */
+  $$('form[data-form]').forEach(f => {
+    f.addEventListener('submit', e => {
+      e.preventDefault();
+      let ok = true;
+      $$('.fld', f).forEach(fl => {
+        const i = $('input,select,textarea', fl);
+        if (!i || !i.required) return;
+        const bad = !i.value.trim() ||
+          (i.type === 'email' && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(i.value));
+        fl.classList.toggle('bad', bad);
+        if (bad) ok = false;
+      });
+      if ($('.hp input', f)?.value) return;   // honeypot
+      if (!ok) { sfx.err(); $('.fld.bad input,.fld.bad select', f)?.focus(); return; }
+      f.style.display = 'none';
+      const p = f.nextElementSibling;
+      if (p?.classList.contains('okpanel')) {
+        p.classList.add('show');
+        p.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' });
+      }
+      sfx.ok();
+    });
+    $$('input,select,textarea', f).forEach(i =>
+      i.addEventListener('input', () => i.closest('.fld')?.classList.remove('bad')));
+  });
+
+  /* ---------------- SMK ASSISTANT ---------------- */
+  const aiBtn = $('.dock__ai'), bot = $('.bot');
+  if (aiBtn && bot) {
+    const body = $('.bot__b'), opts = $('.bot__o');
+    let started = false;
+    const C = window.CONTACT || { wa: '923028056789', youtube: '#' };
+
+    const say = (t, who) => {
+      const d = document.createElement('div');
+      d.className = 'bub bub--' + (who || 'b'); d.innerHTML = t;
+      body.appendChild(d); body.scrollTop = body.scrollHeight;
+    };
+    const wait = () => {
+      const d = document.createElement('div');
+      d.className = 'bub bub--b dots'; d.innerHTML = '<i></i><i></i><i></i>';
+      body.appendChild(d); body.scrollTop = body.scrollHeight; return d;
+    };
+    const ask = list => {
+      opts.innerHTML = '';
+      list.forEach(o => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.textContent = o.l;
+        b.onclick = () => { say(o.l, 'u'); opts.innerHTML = ''; o.go(); };
+        opts.appendChild(b);
+      });
+    };
+    const bot_ = (t, next, ms) => {
+      const d = wait();
+      setTimeout(() => { d.remove(); say(t); next && next(); }, ms || 640);
+    };
+    const waLink = `<a href="https://wa.me/${C.wa}" target="_blank" rel="noopener">Open WhatsApp →</a>`;
+
+    const human = () => bot_(`Of course — here's the direct line to Sir Mehboob Khan's team. ${waLink}`,
+      () => ask([{ l: 'Start over', go: start }]), 520);
+
+    const rec = (lvl, fmt) => {
+      const M = {
+        'O Level / IGCSE': ['O Level & IGCSE Physics', '5054 / 0625'],
+        'AS Level': ['AS Level Physics', '9702 (AS)'],
+        'A2 Level': ['A2 Level Physics', '9702 (A2)']
+      };
+      const [n, code] = M[lvl] || M['O Level / IGCSE'];
+      bot_(`Then <b>${n}</b> is your course — syllabus ${code}, ${fmt === 'Recorded' ? 'recorded modules at your own pace' : fmt === 'Both' ? 'live core teaching plus recorded revision' : 'live-taught with weekly quizzes'}.`,
+        () => ask([
+          { l: 'See the syllabus', go: () => { location.href = 'index.html#courses'; } },
+          { l: 'How much is it?', go: () => bot_('Fees are listed openly on the site — no forms to see a price. Scroll to the pricing section, or ask on WhatsApp for retake and intensive rates.', () => ask([{ l: 'Talk to a human', go: human }, { l: 'Start over', go: start }]), 700) },
+          { l: 'Register now', go: () => { location.href = 'index.html#register'; } }
+        ]), 820);
+    };
+
+    const fmtQ = lvl => bot_('And how do you like to learn?', () => ask([
+      { l: 'Live classes', go: () => rec(lvl, 'Live') },
+      { l: 'Recorded', go: () => rec(lvl, 'Recorded') },
+      { l: 'Both', go: () => rec(lvl, 'Both') }
+    ]));
+
+    const start = () => {
+      body.innerHTML = '';
+      bot_("Assalam-o-Alaikum! I'm the SMK Assistant. I can point you to the right physics course in about 20 seconds. What level are you on?",
+        () => ask([
+          { l: 'O Level / IGCSE', go: () => fmtQ('O Level / IGCSE') },
+          { l: 'AS Level', go: () => fmtQ('AS Level') },
+          { l: 'A2 Level', go: () => fmtQ('A2 Level') },
+          { l: 'Something else', go: () => bot_('No problem — tell the team what you need and they will place you properly.', human, 700) }
+        ]), 420);
+    };
+
+    aiBtn.addEventListener('click', () => {
+      const o = bot.classList.toggle('open');
+      aiBtn.setAttribute('aria-expanded', o);
+      if (o && !started) { started = true; start(); }
+    });
+    $('.bot__x')?.addEventListener('click', () => bot.classList.remove('open'));
+  }
+
+  /* ---------------- needs-backend guards ---------------- */
+  $$('[data-nb]').forEach(el => el.addEventListener('click', e => {
+    e.preventDefault();
+    window.SMKmodal(`<h3>Needs a backend</h3><p class="muted">This action requires <b>${el.dataset.nb}</b>, which is server-side and not part of this frontend build.</p>`);
+  }));
+
+})();
+
+</script>
+<script>
+/* ==========================================================================
+   SMK — portal.js
+   Demo authentication + per-student course rendering.
+
+   ⚠️  SECURITY: this is a FRONTEND DEMO. Credentials live in data.js, which
+       any visitor can read via View Source. It proves the flow and the UI —
+       it does not protect anything. Real accounts need a server.
+   ========================================================================== */
+(function () {
+  'use strict';
+  const $ = (s, c) => (c || document).querySelector(s);
+  const $$ = (s, c) => Array.from((c || document).querySelectorAll(s));
+  const KEY = 'smk_demo_session';
+
+  const session = {
+    get() { try { return JSON.parse(sessionStorage.getItem(KEY)); } catch (e) { return null; } },
+    set(id) { sessionStorage.setItem(KEY, JSON.stringify({ id, at: Date.now() })); },
+    clear() { sessionStorage.removeItem(KEY); }
+  };
+
+  /* ------------------------- LOGIN PAGE ------------------------- */
+  const form = $('#loginForm');
+  if (form) {
+    const s = session.get();
+    if (s && STUDENTS[s.id]) location.replace('course.html');
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const id = $('#sid').value.trim().toLowerCase();
+      const pin = $('#spin').value.trim();
+      const err = $('#loginErr');
+      const stu = STUDENTS[id];
+
+      if (!stu || stu.pin !== pin) {
+        err.style.display = 'block';
+        err.textContent = !stu
+          ? `No student found with ID "${id || '—'}". Try st01, st02 or st03.`
+          : 'That ID exists, but the access code is wrong.';
+        form.classList.add('shake');
+        setTimeout(() => form.classList.remove('shake'), 500);
+        window.SMKsfx?.err();
+        return;
+      }
+      err.style.display = 'none';
+      window.SMKsfx?.ok();
+      session.set(id);
+      $('.login__card').style.transition = 'opacity .4s, transform .4s';
+      $('.login__card').style.opacity = '0';
+      $('.login__card').style.transform = 'translateY(-12px)';
+      setTimeout(() => location.href = 'course.html', 400);
+    });
+
+    $$('[data-fill]').forEach(b => b.addEventListener('click', () => {
+      $('#sid').value = b.dataset.fill;
+      $('#spin').value = STUDENTS[b.dataset.fill].pin;
+      $('#sid').focus();
+    }));
+  }
+
+  /* ------------------------- COURSE PAGE ------------------------- */
+  const root = $('#courseRoot');
+  if (!root) return;
+
+  const s = session.get();
+  const stu = s && STUDENTS[s.id];
+  if (!stu) { location.replace('portal.html'); return; }
+
+  const course = COURSES[stu.course];
+  const all = course.modules.flatMap(m => m.lectures);
+  const done = all.filter(l => l.done).length;
+  const pct = Math.round((done / all.length) * 100);
+
+  const ICON = { video: '▶', live: '◉', paper: '✎', quiz: '✓' };
+  const LABEL = { video: 'Recorded', live: 'Live · Zoom', paper: 'Past paper', quiz: 'Quiz' };
+
+  /* header */
+  $('#stuName').textContent = stu.name;
+  $('#stuId').textContent = stu.id.toUpperCase();
+  $('#cTitle').textContent = course.title;
+  $('#cCode').textContent = course.code;
+  $('#cBlurb').textContent = course.blurb;
+  $('#cSession').textContent = stu.session;
+  $('#cDone').textContent = done;
+  $('#cTotal').textContent = all.length;
+  $('#cPct').textContent = pct + '%';
+  setTimeout(() => { $('#cBar').style.width = pct + '%'; }, 300);
+  document.documentElement.style.setProperty('--gold-300', course.accent);
+
+  /* modules + lectures — layout deliberately varies per module */
+  const wrap = $('#modules');
+  course.modules.forEach((mod, mi) => {
+    const d = mod.lectures.filter(l => l.done).length;
+
+    const h = document.createElement('div');
+    h.className = 'modtitle';
+    h.innerHTML = `<h3>${mod.name}</h3><i></i><span>${d}/${mod.lectures.length} DONE</span>`;
+    wrap.appendChild(h);
+
+    const grid = document.createElement('div');
+    grid.className = 'lecgrid';
+    mod.lectures.forEach((lec, li) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'lec' + (lec.kind === 'live' ? ' lec--live' : '') +
+        // first card of every other module spans two columns — varied layout
+        ((mi % 2 === 1 && li === 0) ? ' lec--wide' : '');
+      b.setAttribute('data-rv', ''); b.style.setProperty('--d', li);
+      // progress ring: 100% when complete, a stub arc when not started
+      const C = 2 * Math.PI * 19;
+      const off = lec.done ? 0 : C * 0.88;
+      b.innerHTML = `
+        <div class="lec__top">
+          <div class="lec__ico">${ICON[lec.kind]}</div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="chip ${lec.done ? 'chip--done' : lec.kind === 'live' ? 'chip--live' : ''}">
+              ${lec.done ? 'Completed' : lec.kind === 'live' ? 'Live' : 'Not started'}
+            </span>
+            <div class="ring">
+              <svg viewBox="0 0 44 44">
+                <circle class="bgc" cx="22" cy="22" r="19"></circle>
+                <circle class="fgc" cx="22" cy="22" r="19"
+                  stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${C.toFixed(1)}"
+                  data-off="${off.toFixed(1)}"></circle>
+              </svg>
+              <span>${lec.done ? '100' : '0'}</span>
+            </div>
+          </div>
+        </div>
+        <h4>${lec.t}</h4>
+        <div class="lec__meta"><span>${LABEL[lec.kind]}</span>·<span>${lec.dur}</span></div>
+        <div class="lec__go">Open lecture <b>&rarr;</b></div>`;
+      b.addEventListener('click', () => open(lec));
+      grid.appendChild(b);
+    });
+    wrap.appendChild(grid);
+  });
+
+  /* animate progress rings when they enter the viewport */
+  const ringIO = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    ringIO.unobserve(e.target);
+    e.target.style.strokeDashoffset = e.target.dataset.off;
+  }), { threshold: .5 });
+  setTimeout(() => $$('.ring .fgc').forEach(c => ringIO.observe(c)), 100);
+  window.SMKbind && window.SMKbind();
+
+  /* re-observe newly injected reveal targets */
+  const rio = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); rio.unobserve(e.target); }
+  }), { threshold: .08 });
+  $$('#modules [data-rv]').forEach(el => rio.observe(el));
+
+  /* lecture player */
+  function open(lec) {
+    let inner, cta;
+
+    if (lec.kind === 'live') {
+      inner = `<div class="vframe" style="cursor:default"><div style="text-align:center;padding:24px">
+          <div class="vplay" style="margin:0 auto 18px">◉</div>
+          <b style="font-family:var(--display);font-size:1.2rem">Live Zoom session</b>
+          <p class="muted" style="margin:10px auto 0;max-width:38ch;font-size:.85rem">
+            ${lec.zoom ? 'Join link is ready.' : 'No Zoom link set yet. Add one to <code>zoom:</code> for this lecture in <code>the DATA block at the bottom of this file</code>.'}
+          </p></div></div>`;
+      cta = lec.zoom
+        ? `<a class="btn btn--gold" href="${lec.zoom}" target="_blank" rel="noopener">Join the session</a>`
+        : `<button class="btn btn--line" disabled style="opacity:.55">Zoom link not set</button>`;
+    } else if (lec.youtube) {
+      inner = `<div style="position:relative;aspect-ratio:16/9;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line)">
+          <iframe style="position:absolute;inset:0;width:100%;height:100%" src="https://www.youtube.com/embed/${lec.youtube}"
+            title="${lec.t}" frameborder="0" allowfullscreen
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"></iframe></div>`;
+      cta = `<a class="btn btn--line" href="https://youtu.be/${lec.youtube}" target="_blank" rel="noopener">Open on YouTube</a>`;
+    } else {
+      inner = `<div class="vframe" style="cursor:default"><div style="text-align:center;padding:24px">
+          <div class="vplay" style="margin:0 auto 18px">▶</div>
+          <b style="font-family:var(--display);font-size:1.2rem">Video not linked yet</b>
+          <p class="muted" style="margin:10px auto 0;max-width:40ch;font-size:.85rem">
+            Add the YouTube ID to <code>youtube:</code> for this lecture in
+            <code>the DATA block at the bottom of this file</code> and it will play right here.
+          </p></div></div>`;
+      cta = `<a class="btn btn--line" href="${CHANNEL}" target="_blank" rel="noopener">Visit the channel</a>`;
+    }
+
+    window.SMKmodal(`
+      <span class="chip chip--gold">${LABEL[lec.kind]} · ${lec.dur}</span>
+      <h3 style="margin:14px 0 20px">${lec.t}</h3>
+      ${inner}
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:24px">
+        ${cta}
+        <button class="btn btn--line" data-nb2="progress tracking">Mark as complete</button>
+      </div>`);
+
+    $('[data-nb2]')?.addEventListener('click', () => {
+      window.SMKtoast?.('Progress saving needs a backend — not in this build.');
+    });
+  }
+
+  /* logout */
+  $('#logout')?.addEventListener('click', () => {
+    session.clear();
+    location.href = 'portal.html';
+  });
+})();
+
+</script>
+</body>
+</html>
