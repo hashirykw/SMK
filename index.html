@@ -211,13 +211,23 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 /* galaxy backdrop */
 .galaxy{position:absolute;left:50%;top:50%;translate:-50% -50%;z-index:0;pointer-events:none;
   width:min(1120px,138vw);aspect-ratio:1;display:grid;place-items:center}
-.galaxy img{width:100%;height:100%;object-fit:contain;
-  animation:spin-slow 260s linear infinite;opacity:.92}
-@keyframes spin-slow{to{transform:rotate(360deg)}}
+.galaxy__stack{position:absolute;inset:0;border-radius:50%;overflow:hidden;
+  transform:translate3d(var(--gx,0px),var(--gy,0px),0);will-change:transform;
+  animation:drift 26s ease-in-out infinite;
+  /* any rectangular photo melts into the page instead of sitting in a box */
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 40%,rgba(0,0,0,.6) 62%,transparent 76%);
+  mask-image:radial-gradient(circle at 50% 50%,#000 40%,rgba(0,0,0,.6) 62%,transparent 76%)}
+.galaxy__stack img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  opacity:0;transition:opacity 1.6s var(--ease)}
+.galaxy__stack img.on{opacity:.9}
+@keyframes drift{
+  0%,100%{scale:1;filter:brightness(1)}
+  50%{scale:1.045;filter:brightness(1.08)}}
 .galaxy::after{content:"";position:absolute;inset:0;border-radius:50%;
   background:radial-gradient(circle,transparent 8%,color-mix(in srgb,var(--bg) 62%,transparent) 40%,
     color-mix(in srgb,var(--bg) 90%,transparent) 68%,var(--bg) 84%)}
-[data-theme="light"] .galaxy img{opacity:.5;filter:saturate(1.25) brightness(.85)}
+[data-theme="light"] .galaxy__stack img.on{opacity:.42}
+[data-theme="light"] .galaxy__stack{filter:saturate(1.2) brightness(.9)}
 [data-theme="focus"] .galaxy{display:none}
 .w{display:inline-block;overflow:hidden;vertical-align:bottom}
 .wi{display:inline-block;transform:translateY(112%);transition:transform .95s var(--ease)}
@@ -668,6 +678,35 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 .flip:hover .flip__wm{transform:translate(-8px,-8px) rotate(-6deg);opacity:.09}
 @media (max-width:520px){.flip--course{height:452px}.flip__wm{width:120px}}
 
+
+/* ================= AUTO-SCROLL IMAGE RAIL ================= */
+.rail{overflow:hidden;padding-block:6px;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.rail__t{display:flex;gap:18px;width:max-content;animation:rail 46s linear infinite}
+.rail:hover .rail__t{animation-play-state:paused}
+@keyframes rail{to{transform:translateX(-50%)}}
+.shot{margin:0;flex:none;width:clamp(230px,26vw,330px);border-radius:var(--r-lg);
+  overflow:hidden;border:1px solid var(--line-soft);background:var(--panel);
+  position:relative;transition:transform .5s var(--ease),border-color .35s,box-shadow .5s}
+.shot:hover{transform:translateY(-6px) scale(1.015);border-color:var(--gold-400);
+  box-shadow:0 24px 56px rgba(0,0,0,.45)}
+.shot img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block;
+  transition:transform .7s var(--ease)}
+.shot:hover img{transform:scale(1.06)}
+.shot figcaption{position:absolute;left:0;right:0;bottom:0;padding:26px 16px 13px;
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink);
+  background:linear-gradient(transparent,rgba(5,11,24,.88))}
+[data-theme="light"] .shot figcaption{color:#fff}
+[data-theme="focus"] .rail__t{animation:none}
+[data-theme="focus"] .shot figcaption{background:#000;color:#fff;position:static;padding:9px 14px}
+@media (prefers-reduced-motion:reduce){
+  .rail__t{animation:none;flex-wrap:nowrap;overflow-x:auto}
+  .galaxy img{animation:none}
+}
+@media (max-width:520px){.shot{width:74vw}}
+
 </style>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -733,7 +772,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 <!-- ================= HERO ================= -->
 <section class="hero">
   <div class="galaxy" aria-hidden="true">
-    <img src="galaxy.png" alt="">
+    <div class="galaxy__stack"></div>
     <div class="orb"><i></i></div>
     <div class="orb"><i></i></div>
     <div class="orb"><i></i></div>
@@ -780,6 +819,25 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 
     <div class="note" style="margin-top:28px" data-rv>
       <b>On-site classes run in Karachi only</b> — SWK Solution (Gulshan, Johar, North) and Askari (Bahadurabad). Live online classes are open to students anywhere in the world, with class times shown in your own timezone.
+    </div>
+  </div>
+</section>
+
+<!-- ================= VISUAL STRIP ================= -->
+<section class="sec" id="gallery" style="padding-bottom:clamp(50px,6vw,90px)">
+  <div class="wrap">
+    <div class="eyebrow">The subject</div>
+    <h2 data-rv>Physics, rendered</h2>
+    <p class="lede" data-rv style="--d:1;margin-bottom:38px">Interference, fields, particles, spectra &mdash; the ideas behind the syllabus.</p>
+  </div>
+  <div class="rail" aria-hidden="true">
+    <div class="rail__t">
+      <figure class="shot"><img src="ph-waves.webp" alt="" decoding="async"><figcaption>Two-source interference</figcaption></figure>
+      <figure class="shot"><img src="ph-field.webp" alt="" decoding="async"><figcaption>Field lines between poles</figcaption></figure>
+      <figure class="shot"><img src="ph-nebula.webp" alt="" decoding="async"><figcaption>Emission nebula</figcaption></figure>
+      <figure class="shot"><img src="ph-particles.webp" alt="" decoding="async"><figcaption>Particle field</figcaption></figure>
+      <figure class="shot"><img src="ph-trails.webp" alt="" decoding="async"><figcaption>Star trails, long exposure</figcaption></figure>
+      <figure class="shot"><img src="ph-spectrum.webp" alt="" decoding="async"><figcaption>Emission spectrum</figcaption></figure>
     </div>
   </div>
 </section>
@@ -1219,6 +1277,24 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 /* ==========================================================================
    SITE CONFIG
    ========================================================================== */
+
+/* HERO IMAGES ------------------------------------------------------------
+   The hero cycles through these, crossfading between them.
+   Put the files in the repo root and list their EXACT filenames here,
+   including the extension and any capital letters.
+
+   Example if your files are galaxy1.jpg ... galaxy6.jpg:
+     window.HERO_IMAGES = ['galaxy1.jpg','galaxy2.jpg','galaxy3.jpg',
+                           'galaxy4.jpg','galaxy5.jpg','galaxy6.jpg'];
+
+   One filename = a single static image, no cycling.
+   Any file that fails to load is skipped automatically, so a typo or a
+   missing file can never leave the hero blank.
+------------------------------------------------------------------------- */
+window.HERO_IMAGES = ['galaxy.webp'];
+
+/* seconds each image is held before fading to the next */
+window.HERO_INTERVAL = 7;
 
 window.SMK_CONFIG = {
   SUPABASE_URL: 'https://rfqidyjtldsyyiyvuyrn.supabase.co',
@@ -1685,6 +1761,56 @@ const SYN = {
       `<span class="w"><span class="wi">${w}</span></span>`).join(' ');
     $$('.wi', h).forEach((s, i) => s.style.transitionDelay = (i * 70 + 250) + 'ms');
   });
+
+  /* ---- rail: duplicate for a seamless loop ---- */
+  (function () {
+    const t = $('.rail__t');
+    if (t) t.innerHTML += t.innerHTML;
+  })();
+
+  /* ---- hero: crossfading image stack + cursor parallax ---- */
+  (function () {
+    const stack = $('.galaxy__stack');
+    if (!stack) return;
+    const list = (window.HERO_IMAGES || []).filter(Boolean);
+    if (!list.length) return;
+
+    const layers = [];
+    list.forEach((src, i) => {
+      const img = document.createElement('img');
+      img.alt = ''; img.decoding = 'async';
+      if (i === 0) img.fetchPriority = 'high';
+      // a file that 404s is dropped rather than showing an empty frame
+      img.addEventListener('error', () => {
+        img.remove();
+        const k = layers.indexOf(img);
+        if (k > -1) layers.splice(k, 1);
+      });
+      img.src = src;
+      if (i === 0) img.classList.add('on');
+      stack.appendChild(img);
+      layers.push(img);
+    });
+
+    if (list.length > 1 && !RM) {
+      let i = 0;
+      const every = Math.max(3, +(window.HERO_INTERVAL || 7)) * 1000;
+      setInterval(() => {
+        if (layers.length < 2) return;
+        layers[i % layers.length].classList.remove('on');
+        i = (i + 1) % layers.length;
+        layers[i].classList.add('on');
+      }, every);
+    }
+
+    if (RM || !FINE) return;
+    addEventListener('pointermove', e => {
+      const x = (e.clientX / innerWidth - .5) * 26;
+      const y = (e.clientY / innerHeight - .5) * 18;
+      stack.style.setProperty('--gx', x.toFixed(1) + 'px');
+      stack.style.setProperty('--gy', y.toFixed(1) + 'px');
+    }, { passive: true });
+  })();
 
   /* ================= STARFIELD ================= */
   const sky = $('#stars');
