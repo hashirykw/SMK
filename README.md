@@ -1,6 +1,6 @@
 # Sir Mehboob Khan — Academy Website
 
-Three self-contained pages. **All CSS and JavaScript are inlined** — there are no `.css` or `.js` files. Only images and the syllabus PDFs are external.
+Three self-contained pages. **All CSS and JavaScript are inlined** — there are no `.css` or `.js` files. Only images and the syllabus PDFs are external, and they all sit at the repo root.
 
 ```bash
 python3 -m http.server 8000     # then open http://localhost:8000
@@ -13,9 +13,11 @@ Or drag the folder onto Netlify Drop, or push it to a GitHub repo and turn on Pa
 | `index.html` | Everything except lectures |
 | `portal.html` | Student login |
 | `course.html` | The student's own course and lectures |
-| `assets/img/` | Logos — SMK plus all six affiliation marks, backgrounds removed |
-| `assets/docs/` | The two downloadable syllabus PDFs |
-| `logo.png`, `favicon.png` | Also copied to the repo root, so `logo.png` resolves from anywhere |
+| 10 `.png` files | Logos — SMK plus all six affiliation marks, backgrounds removed |
+| 2 `.pdf` files | The downloadable syllabus outlines |
+
+**Flat layout:** every file sits at the repo root. There are no folders, so uploading to
+GitHub is a single drag-and-drop and there is no `assets/` path to get wrong.
 
 ---
 
@@ -133,7 +135,7 @@ I left it empty deliberately. A reviews section filled with invented quotes is w
 
 **Affiliations are real now.** All six logos, backgrounds removed by flood-fill (the Whales logo sat on textured fabric, so a simple white-threshold cut wouldn't have worked). Morning: Whales, Credo, Highbrow, Beaconhouse College Programme. Evening: SWK Solution (Gulshan, Johar, North) and Askari (Bahadurabad). Plus online worldwide and recorded modules.
 
-**Syllabus is real and downloadable.** O Level is the six sections you gave. Two branded PDFs in `assets/docs/`.
+**Syllabus is real and downloadable.** O Level is the six sections you gave. Two branded PDFs in the root folder.
 
 > ⚠️ **You said you'd attach the AS/A Level syllabus, but only the logo images came through.** The A Level topic list is the standard Cambridge 9702 structure (AS topics 1–11, A2 topics 12–25). Check it against your copy before publishing — if your version differs, edit the syllabus section in `index.html` and re-generate the PDF.
 
