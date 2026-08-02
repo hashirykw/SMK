@@ -219,13 +219,29 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 .cue i{width:1px;height:40px;background:linear-gradient(var(--gold-400),transparent);
   animation:cue 2s ease-in-out infinite}
 @keyframes cue{50%{opacity:.25;transform:scaleY(.6)}}
-.stage{position:relative;aspect-ratio:1/1;width:100%;max-width:620px;margin-inline:auto}
+.stage{position:relative;aspect-ratio:1/1;width:100%;max-width:640px;margin-inline:auto;
+  isolation:isolate}
+/* soft radial vignette: the canvas is opaque (bloom forces it), so instead of a
+   hard-edged rectangle we fade its edges into the page in every theme */
 .stage canvas{position:absolute;inset:0;width:100%!important;height:100%!important;
-  opacity:0;transition:opacity 1.1s var(--ease)}
+  opacity:0;transition:opacity 1.1s var(--ease);border-radius:50%;
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 52%,rgba(0,0,0,.55) 70%,transparent 78%);
+  mask-image:radial-gradient(circle at 50% 50%,#000 52%,rgba(0,0,0,.55) 70%,transparent 78%)}
 .stage canvas.on{opacity:1}
+/* ambient bloom behind the whole stage so it sits in light, not on a slab */
+.stage::before{content:"";position:absolute;inset:-14%;border-radius:50%;z-index:-1;
+  background:radial-gradient(circle,rgba(192,138,52,.20),rgba(192,138,52,.06) 45%,transparent 70%);
+  filter:blur(6px);animation:breathe 9s ease-in-out infinite}
+@keyframes breathe{50%{transform:scale(1.06);opacity:.82}}
+[data-theme="light"] .stage::before{
+  background:radial-gradient(circle,rgba(192,138,52,.26),rgba(192,138,52,.08) 45%,transparent 70%)}
+[data-theme="focus"] .stage::before{display:none}
 .stage__fb{position:absolute;inset:0;display:grid;place-items:center;transition:opacity .8s var(--ease)}
 .stage.up .stage__fb{opacity:0}
-.stage__fb img{width:64%;filter:drop-shadow(0 30px 70px rgba(192,138,52,.3))}
+.stage__fb img{width:62%;filter:drop-shadow(0 26px 60px rgba(192,138,52,.34));
+  animation:hover 7s ease-in-out infinite}
+@keyframes hover{50%{transform:translateY(-13px) rotate(-1.2deg)}}
+[data-theme="light"] .stage__fb img{filter:drop-shadow(0 22px 46px rgba(120,85,20,.28))}
 .orb{position:absolute;border:1px solid var(--gold-500);border-radius:50%;opacity:.4}
 .orb:nth-child(1){inset:6%;animation:o1 20s linear infinite}
 .orb:nth-child(2){inset:-4%;animation:o2 30s linear infinite;opacity:.22}
@@ -759,14 +775,12 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 
 <script>
 /* ==========================================================================
-   SITE CONFIG — set these two values to make the registration form live.
-   Until then the form still validates and confirms, and shows a WhatsApp
-   fallback so no enquiry is lost.
-   Get both from Supabase: Project Settings → API
+   SITE CONFIG
    ========================================================================== */
+
 window.SMK_CONFIG = {
-  SUPABASE_URL: 'YOUR-PROJECT-URL',       // e.g. https://abcdefgh.supabase.co
-  SUPABASE_ANON_KEY: 'YOUR-ANON-KEY',     // the public "anon" key, not the service key
+  SUPABASE_URL: 'https://rfqidyjtldsyyiyvuyrn.supabase.co',
+  SUPABASE_ANON_KEY: 'sb_publishable_Jqy6vPplT6WZZr6PQ8RMtQ_pGMVKhmC',
   TABLE: 'registrations'
 };
 
