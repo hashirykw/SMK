@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -8,7 +8,7 @@
 <meta name="view-transition" content="same-origin">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="favicon.png">
-<meta name="theme-color" content="#050B18">
+<meta name="theme-color" content="#FAF8F4">
 <meta property="og:title" content="Sir Mehboob Khan — O/A Level Physics">
 <meta property="og:description" content="Cambridge Physics for O Level, IGCSE, AS and A2. Karachi campuses and live online worldwide.">
 <meta property="og:image" content="lockup.png">
@@ -96,15 +96,15 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 .lede{font-size:clamp(1rem,1.4vw,1.16rem);color:var(--muted);max-width:56ch}
 
 /* ================= PRELOADER — orbital mechanics ================= */
-#pre{position:fixed;inset:0;z-index:9999;background:var(--navy-950);display:grid;
+#pre{position:fixed;inset:0;z-index:9999;background:var(--bg);display:grid;
   place-items:center;transition:opacity .8s var(--ease),visibility .8s}
 #pre.gone{opacity:0;visibility:hidden;pointer-events:none}
 .pl{display:grid;place-items:center;gap:0}
 .pl__sys{position:relative;width:min(230px,54vw);aspect-ratio:1/1;display:grid;place-items:center}
-.pl__sun{width:38%;z-index:3;filter:drop-shadow(0 0 32px rgba(224,169,76,.55));
+.pl__sun{width:38%;z-index:3;filter:drop-shadow(0 0 30px rgba(192,138,52,.42));
   animation:plsun 3s ease-in-out infinite}
 @keyframes plsun{50%{transform:scale(1.06)}}
-.pl__o{position:absolute;border:1px solid rgba(224,169,76,.24);border-radius:50%;
+.pl__o{position:absolute;border:1px solid rgba(192,138,52,.34);border-radius:50%;
   transform-style:preserve-3d}
 .pl__o:nth-of-type(1){inset:22%;animation:plo 3.4s linear infinite}
 .pl__o:nth-of-type(2){inset:9%;animation:plo 5.6s linear infinite reverse}
@@ -116,7 +116,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 .pl__o:nth-of-type(2) .pl__p{width:9px;height:9px;top:calc(50% - 4.5px);right:-5px;
   background:var(--ice);box-shadow:0 0 14px var(--ice)}
 .pl__o:nth-of-type(3) .pl__p{width:5px;height:5px;bottom:-3px;left:calc(50% - 2.5px)}
-.pl__t{width:min(250px,56vw);height:2px;background:rgba(255,255,255,.09);
+.pl__t{width:min(250px,56vw);height:2px;background:var(--line-soft);
   margin-top:36px;border-radius:9px;overflow:hidden}
 .pl__b{height:100%;width:0;background:linear-gradient(90deg,var(--gold-600),var(--gold-300));
   transition:width .3s linear}
@@ -677,6 +677,36 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 .flip:hover .flip__wm{transform:translate(-8px,-8px) rotate(-6deg);opacity:.09}
 @media (max-width:520px){.flip--course{height:452px}.flip__wm{width:120px}}
 
+
+
+/* ---------- corner prompts ---------- */
+.nag{position:fixed;z-index:400;width:min(320px,calc(100vw - 32px));
+  background:color-mix(in srgb,var(--navy-800) 96%,transparent);backdrop-filter:blur(18px);
+  border:1px solid var(--line);border-radius:16px;padding:18px 18px 16px;
+  box-shadow:0 22px 60px rgba(0,0,0,.4);
+  opacity:0;transform:translateY(14px) scale(.97);pointer-events:none;
+  transition:opacity .45s var(--ease),transform .45s var(--ease)}
+[data-theme="light"] .nag{background:#fff;box-shadow:0 22px 60px rgba(20,30,50,.16)}
+.nag.on{opacity:1;transform:none;pointer-events:auto}
+.nag--left{left:20px;bottom:20px}
+.nag--right{right:20px;bottom:96px}
+.nag h4{font-family:var(--display);font-size:1.02rem;margin:0 0 6px;padding-right:22px}
+.nag p{font-size:.86rem;color:var(--muted);margin:0 0 14px}
+.nag ul{list-style:none;padding:0;margin:0 0 14px;display:grid;gap:6px;font-size:.84rem;color:var(--muted)}
+.nag li{display:flex;gap:8px;align-items:flex-start}
+.nag li::before{content:"";width:5px;height:5px;background:var(--gold-500);
+  transform:rotate(45deg);margin-top:7px;flex:none}
+.nag .btn{width:100%}
+.nag__x{position:absolute;top:12px;right:14px;font-size:20px;line-height:1;color:var(--muted);
+  width:26px;height:26px;border-radius:7px}
+.nag__x:hover{background:var(--panel-2);color:var(--text)}
+@media (max-width:860px){.nag{display:none}}
+
+/* preloader follows the theme */
+[data-theme="light"] .pl__p{box-shadow:0 0 12px rgba(192,138,52,.7)}
+[data-theme="light"] .pl__x{color:var(--gold-600)}
+[data-theme="focus"] #pre{background:#fff}
+[data-theme="focus"] .pl__o,[data-theme="focus"] .pl__p{border-color:#7A5312;background:#7A5312}
 </style>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -709,6 +739,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
     <nav class="nav">
       <a href="#courses">Courses</a>
       <a href="#syllabus">Syllabus</a>
+      <a href="#papers">Past Papers</a>
       <a href="#affiliations">Campuses</a>
       <a href="#method">Method</a>
       <a href="#results">Results</a>
@@ -726,6 +757,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 <nav class="mob" aria-label="Mobile menu">
   <a href="#courses">Courses <span>3 LEVELS</span></a>
   <a href="#syllabus">Syllabus <span>PDF</span></a>
+  <a href="#papers">Past Papers <span>10 YEARS</span></a>
   <a href="#affiliations">Campuses <span>KARACHI</span></a>
   <a href="#method">Method</a>
   <a href="#how">How it works</a>
@@ -927,6 +959,47 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
   </div>
 </section>
 
+
+<!-- ================= PAST PAPERS ================= -->
+<section class="sec" id="papers">
+  <div class="wrap">
+    <div class="eyebrow">Free for everyone</div>
+    <h2 data-rv>Ten years of past papers</h2>
+    <p class="lede" data-rv style="--d:1;margin-bottom:40px">Yearly papers and topical collections, organised by syllabus and session. No account needed to browse.</p>
+
+    <div class="bento">
+      <a class="ccard c4" href="pastpapers.html" data-rv data-tilt style="--d:0">
+        <div class="ccard__ring"></div>
+        <span class="chip chip--gold">Yearly</span>
+        <h3 style="margin:14px 0 10px">Complete papers</h3>
+        <p class="muted" style="font-size:.92rem">Every paper from the last ten sessions, exactly as it was sat. Paper 1, 2 and the practicals.</p>
+        <div class="ccard__go">&rarr;</div>
+      </a>
+      <a class="ccard c4" href="pastpapers.html#topical" data-rv data-tilt style="--d:1">
+        <div class="ccard__ring"></div>
+        <span class="chip chip--gold">Topical</span>
+        <h3 style="margin:14px 0 10px">Grouped by topic</h3>
+        <p class="muted" style="font-size:.92rem">Every waves question from ten years in one file. The format students actually revise from.</p>
+        <div class="ccard__go">&rarr;</div>
+      </a>
+      <div class="ccard c4" data-rv data-tilt style="--d:2">
+        <div class="ccard__ring"></div>
+        <span class="chip">Enrolled students</span>
+        <h3 style="margin:14px 0 10px">Mark schemes &amp; reports</h3>
+        <p class="muted" style="font-size:.92rem">Marking schemes and examiner reports for every paper, plus downloads. Included with any course.</p>
+        <a class="btn btn--line btn--sm" style="margin-top:18px" href="#register">How to get access</a>
+      </div>
+    </div>
+
+    <div class="strip" style="margin-top:40px" data-rv>
+      <div><b><span data-count="10">0</span></b><span>Years covered</span></div>
+      <div><b><span data-count="3">0</span></b><span>Syllabi</span></div>
+      <div><b><span data-count="2">0</span></b><span>Sessions a year</span></div>
+      <div><b>Free</b><span>To browse</span></div>
+    </div>
+  </div>
+</section>
+
 <!-- ================= METHOD ================= -->
 <section class="sec" id="method">
   <div class="wrap">
@@ -1012,15 +1085,15 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
     <h2 data-rv>Watch before you decide anything</h2>
     <p class="lede" data-rv style="--d:1;margin-bottom:40px">A full lesson per level — not a trailer.</p>
     <div class="bento">
-      <button class="demo3 c4" data-rv data-tilt style="--d:0" data-modal="O Level / IGCSE demo lesson" data-modal-body="Video coming soon — meanwhile the YouTube channel has topic clips for every section.">
+      <button class="demo3 c4" data-rv data-tilt style="--d:0" data-modal="O Level / IGCSE demo lesson" data-modal-body="Full lesson, taught end to end. Also on the YouTube channel.">
         <div class="demo3__t"><img src="mark.png" alt=""><span class="chip chip--gold demo3__badge">5054 / 0625</span><div class="demo3__p">&#9654;</div></div>
         <div class="demo3__b"><h4>O Level / IGCSE</h4><p class="muted" style="font-size:.88rem;margin:0">A full topic taught end to end, so you can judge the pace before enrolling.</p></div>
       </button>
-      <button class="demo3 c4" data-rv data-tilt style="--d:1" data-modal="AS Level demo lesson" data-modal-body="Video coming soon — meanwhile the YouTube channel has topic clips for every section.">
+      <button class="demo3 c4" data-rv data-tilt style="--d:1" data-modal="AS Level demo lesson" data-modal-body="Full lesson, taught end to end. Also on the YouTube channel.">
         <div class="demo3__t"><img src="mark.png" alt=""><span class="chip chip--gold demo3__badge">9702 (AS)</span><div class="demo3__p">&#9654;</div></div>
         <div class="demo3__b"><h4>AS Level</h4><p class="muted" style="font-size:.88rem;margin:0">Shows the working-out standard AS expects — the thing most students underestimate.</p></div>
       </button>
-      <button class="demo3 c4" data-rv data-tilt style="--d:2" data-modal="A2 Level demo lesson" data-modal-body="Video coming soon — meanwhile the YouTube channel has topic clips for every section.">
+      <button class="demo3 c4" data-rv data-tilt style="--d:2" data-modal="A2 Level demo lesson" data-modal-body="Full lesson, taught end to end. Also on the YouTube channel.">
         <div class="demo3__t"><img src="mark.png" alt=""><span class="chip chip--gold demo3__badge">9702 (A2)</span><div class="demo3__p">&#9654;</div></div>
         <div class="demo3__b"><h4>A2 Level</h4><p class="muted" style="font-size:.88rem;margin:0">A Paper 5 walkthrough — the paper that rewards method over knowledge.</p></div>
       </button>
@@ -1060,6 +1133,52 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
     <h2 data-rv>What students say</h2>
   </div>
   <div class="wrap"><div class="bento" id="revGrid" style="margin-top:32px"></div></div>
+</section>
+
+
+<!-- ================= ACCESS TIERS ================= -->
+<section class="sec" id="access">
+  <div class="wrap">
+    <div class="eyebrow">Two ways in</div>
+    <h2 data-rv>Start free. Upgrade when it's worth it.</h2>
+    <p class="lede" data-rv style="--d:1;margin-bottom:44px">A free account gets you the first lecture of every topic — enough to judge the teaching before you spend anything.</p>
+
+    <div class="bento">
+      <div class="ccard c6" data-rv data-tilt style="--d:0">
+        <div class="ccard__ring"></div>
+        <span class="chip">Free account</span>
+        <h3 style="margin:14px 0 6px">See how it's taught</h3>
+        <p class="muted" style="font-size:.92rem;margin-bottom:18px">Name, email and phone. Nothing else, no payment.</p>
+        <ul class="flip__list" style="max-height:none;font-size:.9rem">
+          <li>First lecture of <b>every topic</b>, free</li>
+          <li>All yearly and topical past papers</li>
+          <li>Demo lessons for every level</li>
+          <li>Class timings and syllabus updates</li>
+        </ul>
+        <a class="btn btn--line btn--wide" style="margin-top:22px" href="portal.html">Create a free account</a>
+      </div>
+
+      <div class="ccard c6" data-rv data-tilt style="--d:1;border-color:var(--gold-500)">
+        <div class="ccard__ring"></div>
+        <span class="chip chip--gold">Enrolled student</span>
+        <h3 style="margin:14px 0 6px">The full course</h3>
+        <p class="muted" style="font-size:.92rem;margin-bottom:18px">Everything in the free account, plus:</p>
+        <ul class="flip__list" style="max-height:none;font-size:.9rem">
+          <li><b>Every lecture</b> of every topic, recorded after each class</li>
+          <li>Live Zoom sessions with questions answered in the moment</li>
+          <li><b>Timed quizzes</b> — topic quizzes and full mock papers, marked automatically</li>
+          <li>Mark schemes and examiner reports for every question</li>
+          <li>Downloadable past papers</li>
+          <li>Progress tracking that names your weakest topic</li>
+        </ul>
+        <a class="btn btn--gold btn--wide" style="margin-top:22px" href="#register" data-mag>Register for a course</a>
+      </div>
+    </div>
+
+    <p class="muted" style="font-size:.86rem;margin-top:22px;text-align:center">
+      A free demo lesson comes before any payment. You decide after.
+    </p>
+  </div>
 </section>
 
 <!-- ================= REGISTER ================= -->
@@ -1164,12 +1283,16 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
         <a href="#courses">AS Level</a>
         <a href="#courses">A2 Level</a>
         <a href="#syllabus">Syllabus</a>
+      <a href="#papers">Past Papers</a>
         <a href="#demo">Demo lessons</a>
+        <a href="#papers">Past papers</a>
+        <a href="pastpapers.html">All papers</a>
         <a href="#method">The method</a>
       </div>
       <div>
         <h4>Students</h4>
         <a href="portal.html">Student login</a>
+        <a href="#access">Free vs enrolled</a>
         <a href="#register">Register</a>
         <a href="#how">How it works</a>
         <a href="#affiliations">Campuses</a>
@@ -1532,15 +1655,26 @@ const SYN = {
     if (snd) { ac().resume && ac().resume(); sfx.click(); }
     toast(snd ? 'Sound on' : 'Sound off');
   });
+  // every card gets its own note, a little lower than the UI clicks so the
+  // two don't blur together when you sweep across a grid
+  const CARDS = '.ccard,.tile,.flip,.aff,.demo3,.shot,.step,.feat,.syl__i,.price';
   let lh = 0;
   document.addEventListener('mouseenter', e => {
     if (!FINE || !e.target.closest) return;
-    if (e.target.closest('a,button') && Date.now() - lh > 90) { sfx.hover(); lh = Date.now(); }
+    if (Date.now() - lh < 90) return;
+    if (e.target.closest(CARDS)) { tone(392, .06, 'sine', .05); lh = Date.now(); }
+    else if (e.target.closest('a,button')) { sfx.hover(); lh = Date.now(); }
   }, true);
-  document.addEventListener('click', e => { if (e.target.closest('a,button')) sfx.click(); });
+  document.addEventListener('click', e => {
+    if (!e.target.closest) return;
+    if (e.target.closest(CARDS) && !e.target.closest('.btn')) {
+      tone(523, .07, 'triangle', .11);
+      setTimeout(() => tone(784, .08, 'triangle', .07), 55);
+    } else if (e.target.closest('a,button')) sfx.click();
+  });
 
   /* ================= THEME ================= */
-  const TH = ['dark', 'light', 'focus'];
+  const TH = ['light', 'dark', 'focus'];
   const TICON = {
     dark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>',
     light: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
@@ -1549,7 +1683,7 @@ const SYN = {
   let ti = 0;
   const tBtn = $('[data-theme-btn]');
   if (tBtn) {
-    tBtn.innerHTML = TICON.dark;
+    tBtn.innerHTML = TICON.light;
     tBtn.addEventListener('click', () => {
       ti = (ti + 1) % TH.length;
       const t = TH[ti];
@@ -2179,6 +2313,111 @@ async function boot() {
   stage.classList.add('up');
 }
 
+</script>
+
+
+
+<script>
+/* ==========================================================================
+   CORNER PROMPTS
+   ---------------------------------------------------------------------------
+   Tune everything here. Times are in minutes.
+   ========================================================================== */
+window.NAG_CONFIG = {
+  firstDelay:   45 / 60,   // wait before the first one appears (45 seconds)
+  reappear:     20,        // minutes before a dismissed prompt returns
+  secondAfter:  2,         // if the first is ignored this long, show the other side
+  maxDismissals: 3,        // stop for the session after this many dismissals.
+                           // set to 0 to keep showing them forever.
+  mobile:       false      // show on phones? see the note in the README
+};
+
+(function () {
+  var C = window.NAG_CONFIG;
+  if (!C.mobile && matchMedia('(max-width: 860px)').matches) return;
+
+  var NAGS = [
+    { side: 'left', title: 'Free account',
+      lead: 'No payment, no card. Just so we know who you are.',
+      points: ['First lecture of <b>every topic</b>', 'All past papers, ten years', 'Class timings and updates'],
+      cta: 'Create a free account', href: 'portal.html', kind: 'line' },
+    { side: 'right', title: 'Enrolled students get more',
+      lead: 'Everything free, plus the parts that actually move a grade.',
+      points: ['Every lecture, after each class', 'Timed quizzes, marked automatically',
+               'Mark schemes and examiner reports'],
+      cta: 'See what is included', href: '#access', kind: 'gold' }
+  ];
+
+  var dismissed = 0, shown = [null, null], timers = [];
+  var ready = false;
+
+  function build(n, i) {
+    var el = document.createElement('aside');
+    el.className = 'nag nag--' + n.side;
+    el.setAttribute('role', 'complementary');
+    el.innerHTML =
+      '<button class="nag__x" aria-label="Dismiss">&times;</button>' +
+      '<h4>' + n.title + '</h4><p>' + n.lead + '</p><ul>' +
+      n.points.map(function (p) { return '<li>' + p + '</li>'; }).join('') +
+      '</ul><a class="btn btn--' + n.kind + '" href="' + n.href + '"' +
+      (n.href.indexOf('.html') > -1 ? '' : '') + '>' + n.cta + '</a>';
+    document.body.appendChild(el);
+    requestAnimationFrame(function () { el.classList.add('on'); });
+
+    el.querySelector('.nag__x').addEventListener('click', function () {
+      hide(el);
+      dismissed++;
+      shown[i] = null;
+      // dismissing one also clears the "they ignored it" timer for the other
+      if (C.maxDismissals && dismissed >= C.maxDismissals) { clearAll(); return; }
+      timers.push(setTimeout(function () { show(i); }, C.reappear * 60000));
+    });
+
+    // a prompt that gets clicked has done its job — stop showing them
+    el.querySelector('.btn').addEventListener('click', clearAll);
+    return el;
+  }
+
+  function show(i) {
+    if (!ready || shown[i]) return;
+    if (C.maxDismissals && dismissed >= C.maxDismissals) return;
+    shown[i] = build(NAGS[i], i);
+    // if this one is still sitting there untouched, bring in the other side
+    if (i === 0) {
+      timers.push(setTimeout(function () {
+        if (shown[0]) show(1);
+      }, C.secondAfter * 60000));
+    }
+  }
+
+  function hide(el) {
+    el.classList.remove('on');
+    setTimeout(function () { el.remove(); }, 500);
+  }
+
+  function clearAll() {
+    timers.forEach(clearTimeout);
+    timers = [];
+    shown.forEach(function (el) { if (el) hide(el); });
+    shown = [null, null];
+    dismissed = 99;
+  }
+
+  // never interrupt someone who is already filling the form or reading the FAQ
+  function atRegister() {
+    var r = document.getElementById('register');
+    if (!r) return false;
+    var b = r.getBoundingClientRect();
+    return b.top < innerHeight && b.bottom > 0;
+  }
+
+  ready = true;
+  timers.push(setTimeout(function () {
+    if (!atRegister()) show(0);
+  }, C.firstDelay * 60000));
+
+  window.SMKnag = { show: show, clearAll: clearAll, config: C };
+})();
 </script>
 </body>
 </html>
