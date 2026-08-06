@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Sir Mehboob Khan — O/A Level Physics, Karachi &amp; Online</title>
-<meta name="description" content="Cambridge Physics with Sir Mehboob Khan. O Level, IGCSE, AS and A2 — on campus in Karachi at SWK Solution and Askari, and live online worldwide. Teaching since 2007.">
+<meta name="description" content="Cambridge Physics with Sir Mehboob Khan. O Level, IGCSE, AS and A2 — on campus in Karachi at SWK Solution, and live online worldwide. Teaching since 2007.">
 <meta name="view-transition" content="same-origin">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="favicon.png">
-<meta name="theme-color" content="#FAF8F4">
+<meta name="theme-color" content="#F4EBE0">
 <meta property="og:title" content="Sir Mehboob Khan — O/A Level Physics">
 <meta property="og:description" content="Cambridge Physics for O Level, IGCSE, AS and A2. Karachi campuses and live online worldwide.">
 <meta property="og:image" content="lockup.png">
@@ -27,7 +27,7 @@
   --navy-700:#16294B; --navy-600:#1F3A66;
   --gold-600:#A8752A; --gold-500:#C08A34; --gold-400:#D49C42;
   --gold-300:#E0A94C; --gold-100:#F2DDB4;
-  --ice:#7FA8E8; --paper:#FAF8F4; --ink:#F3EEE3; --dim:#98A2B8;
+  --ice:#7FA8E8; --paper:#F4EBE0; --ink:#F3EEE3; --dim:#98A2B8;
   --ok:#42B07C; --bad:#D0574B;
 
   --bg:var(--navy-950);
@@ -48,7 +48,7 @@
 [data-theme="light"]{
   --bg:var(--paper); --panel:rgba(8,18,38,.04); --panel-2:rgba(8,18,38,.07);
   --line:rgba(168,117,42,.3); --line-soft:rgba(8,18,38,.11);
-  --text:#0B1730; --muted:#54607A; --navy-800:#fff; --navy-900:#F2EDE3;
+  --text:#0B1730; --muted:#54607A; --navy-800:#FBF6EF; --navy-900:#EADFD1;
 }
 [data-theme="focus"]{
   --bg:#fff; --panel:#fff; --panel-2:#F1F1F1; --line:#000; --line-soft:#000;
@@ -80,7 +80,7 @@ p{margin:0 0 1rem;max-width:64ch}
 /* ---- custom scrollbar ---- */
 ::-webkit-scrollbar{width:11px;height:11px}
 ::-webkit-scrollbar-track{background:var(--navy-900)}
-[data-theme="light"] ::-webkit-scrollbar-track{background:#EDE7DA}
+[data-theme="light"] ::-webkit-scrollbar-track{background:#E4D9C9}
 ::-webkit-scrollbar-thumb{border-radius:99px;border:3px solid transparent;
   background-clip:content-box;background-color:var(--gold-600)}
 ::-webkit-scrollbar-thumb:hover{background-color:var(--gold-400)}
@@ -100,15 +100,15 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
   place-items:center;transition:opacity .8s var(--ease),visibility .8s}
 #pre.gone{opacity:0;visibility:hidden;pointer-events:none}
 .pl{display:grid;place-items:center;gap:0}
-.pl__sys{position:relative;width:min(230px,54vw);aspect-ratio:1/1;display:grid;place-items:center}
-.pl__sun{width:38%;z-index:3;filter:drop-shadow(0 0 30px rgba(192,138,52,.42));
+.pl__sys{position:relative;width:min(190px,44vw);aspect-ratio:1/1;display:grid;place-items:center}
+.pl__sun{width:42%;z-index:3;filter:drop-shadow(0 0 30px rgba(192,138,52,.42));
   animation:plsun 3s ease-in-out infinite}
 @keyframes plsun{50%{transform:scale(1.06)}}
 .pl__o{position:absolute;border:1px solid rgba(192,138,52,.34);border-radius:50%;
   transform-style:preserve-3d}
-.pl__o:nth-of-type(1){inset:22%;animation:plo 3.4s linear infinite}
-.pl__o:nth-of-type(2){inset:9%;animation:plo 5.6s linear infinite reverse}
-.pl__o:nth-of-type(3){inset:-4%;animation:plo 8.2s linear infinite}
+.pl__o:nth-of-type(1){inset:26%;animation:plo 4.2s linear infinite}
+.pl__o:nth-of-type(2){inset:13%;animation:plo 6.4s linear infinite reverse}
+.pl__o:nth-of-type(3){inset:0;animation:plo 9s linear infinite}
 @keyframes plo{to{transform:rotate(360deg)}}
 .pl__p{position:absolute;border-radius:50%;background:var(--gold-300);
   box-shadow:0 0 14px var(--gold-400)}
@@ -473,9 +473,18 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 .dock__b.snd-on .eq i:nth-child(3){animation-delay:.3s}
 .dock__b.snd-on .eq i:nth-child(4){animation-delay:.45s}
 @keyframes eqb{0%,100%{height:4px}50%{height:14px}}
-.dock__b .slash{position:absolute;width:23px;height:1.6px;background:currentColor;
-  transform:rotate(-45deg);border-radius:2px;transition:opacity .25s}
-.dock__b.snd-on .slash{opacity:0}
+.dock__b--snd svg{width:21px;height:21px}
+.dock__b--snd .wv{opacity:0;transform-origin:12px 12px;transition:opacity .3s var(--ease)}
+.dock__b--snd .slash2{opacity:1;transition:opacity .3s var(--ease),stroke-dashoffset .4s var(--ease);
+  stroke-dasharray:24;stroke-dashoffset:0}
+.dock__b.snd-on .slash2{opacity:0;stroke-dashoffset:24}
+.dock__b.snd-on .wv1{opacity:1;animation:wv 1.5s ease-in-out infinite}
+.dock__b.snd-on .wv2{opacity:1;animation:wv 1.5s ease-in-out .25s infinite}
+@keyframes wv{0%,100%{opacity:.35;transform:scale(.9)}50%{opacity:1;transform:scale(1.06)}}
+.dock__b--snd::after{content:"";position:absolute;inset:-4px;border-radius:50%;
+  border:1px solid var(--gold-400);opacity:0;transform:scale(.85);transition:.4s var(--ease)}
+.dock__b.snd-on.dock__b--snd::after{opacity:.5;transform:scale(1);animation:ring 2.4s ease-out infinite}
+@keyframes ring{0%{opacity:.55;transform:scale(.9)}70%{opacity:0;transform:scale(1.35)}100%{opacity:0}}
 .dock__ai{width:60px;height:60px;border-radius:50%;position:relative;
   background:linear-gradient(135deg,var(--gold-600),var(--gold-300));color:#0B1730;
   display:grid;place-items:center;box-shadow:0 10px 34px rgba(192,138,52,.42);
@@ -707,6 +716,71 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 [data-theme="light"] .pl__x{color:var(--gold-600)}
 [data-theme="focus"] #pre{background:#fff}
 [data-theme="focus"] .pl__o,[data-theme="focus"] .pl__p{border-color:#7A5312;background:#7A5312}
+
+/* ---------- past papers ---------- */
+.tabs2{display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--line-soft);padding-bottom:2px}
+.tabs2 button{padding:11px 20px;font-size:.88rem;font-weight:500;color:var(--muted);
+  border-bottom:2px solid transparent;transition:.25s var(--ease)}
+.tabs2 button:hover{color:var(--text)}
+.tabs2 button.on{color:var(--gold-300);border-bottom-color:var(--gold-500)}
+.plist{display:grid;gap:9px}
+.prow{display:grid;grid-template-columns:38px 1fr auto;gap:14px;align-items:center;
+  padding:15px 18px;border-radius:12px;background:var(--panel);border:1px solid var(--line-soft);
+  transition:.32s var(--ease)}
+.prow:hover{border-color:var(--gold-400);transform:translateX(5px);
+  box-shadow:0 10px 30px rgba(0,0,0,.14)}
+.prow__n{font-family:var(--display);font-size:1.2rem;color:var(--gold-400);text-align:center}
+.prow__t{font-size:.95rem;font-weight:600}
+.prow__s{font-family:var(--mono);font-size:.7rem;color:var(--muted);letter-spacing:.05em;margin-top:2px}
+.plinks{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.plink{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;
+  padding:7px 12px;border-radius:8px;border:1px solid var(--line-soft);color:var(--muted);
+  white-space:nowrap;transition:.25s var(--ease)}
+.plink:hover{border-color:var(--gold-400);color:var(--gold-300);background:var(--panel-2)}
+.plink--ms{border-style:dashed}
+.plink--ms::after{content:" 🔒";font-size:.8em}
+.plink--ms.open{border-style:solid}
+.plink--ms.open::after{content:""}
+@media(max-width:700px){
+  .prow{grid-template-columns:32px 1fr;gap:10px}
+  .plinks{grid-column:1 / -1;justify-content:flex-start;margin-top:4px}
+}
+.yrgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.yr{padding:16px;border-radius:12px;background:var(--panel);border:1px solid var(--line-soft);
+  text-align:center;transition:.32s var(--ease)}
+.yr:hover{border-color:var(--gold-400);transform:translateY(-4px);
+  box-shadow:0 14px 34px rgba(0,0,0,.16)}
+.yr b{display:block;font-family:var(--display);font-size:1.35rem}
+.yr span{font-family:var(--mono);font-size:.68rem;color:var(--muted);letter-spacing:.09em}
+
+/* review avatars */
+.rev__by{display:flex;align-items:center;gap:12px;margin-top:16px}
+.rev__pic{width:44px;height:44px;border-radius:50%;flex:none;object-fit:cover;
+  border:1px solid var(--line)}
+.rev__pic--ph{display:grid;place-items:center;font-family:var(--display);font-size:1.15rem;
+  color:var(--gold-300);background:var(--panel-2)}
+
+/* extra hover feedback */
+.syl__i:hover .syl__n{color:var(--gold-300);transform:scale(1.14)}
+.syl__n{transition:.35s var(--spring)}
+.strip > div{transition:background-color .4s,transform .4s var(--ease)}
+.strip > div:hover{transform:translateY(-4px)}
+.strip > div:hover b{color:var(--gold-400)}
+.strip b{transition:color .35s}
+.acc summary{transition:color .25s,padding-left .3s var(--ease)}
+.acc summary:hover{color:var(--gold-300);padding-left:6px}
+.ftr h4{transition:letter-spacing .4s var(--ease)}
+.ftr > .wrap > .ftr__g > div:hover h4{letter-spacing:.26em}
+.nag:hover{border-color:var(--gold-400)}
+.logo img{transition:transform .5s var(--spring)}
+.logo:hover img{transform:rotate(-8deg) scale(1.08)}
+.hero__m > div{transition:transform .4s var(--ease)}
+.hero__m > div:hover{transform:translateY(-4px)}
+.hero__m > div:hover b{color:var(--gold-400)}
+.hero__m b{transition:color .35s}
+.chip{transition:border-color .3s,color .3s}
+.tile:hover .tile__n{color:var(--gold-400)}
+.tile__n{transition:color .4s}
 </style>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -789,7 +863,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
     </div>
     <div class="hero__m">
       <div><b><span data-count="19">0</span></b><span>Years teaching</span></div>
-      <div><b><span data-count="6">0</span></b><span>Campus affiliations</span></div>
+      <div><b><span data-count="7">0</span></b><span>Campus affiliations</span></div>
       <div><b><span data-count="7">0</span></b><span>Distinctions / 10 yrs</span></div>
     </div>
   </div>
@@ -800,7 +874,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 <section class="sec" id="affiliations">
   <div class="wrap">
     <div class="eyebrow">Where he teaches</div>
-    <h2 data-rv>Six campuses across Karachi</h2>
+    <h2 data-rv>Seven campuses across Karachi</h2>
     <p class="lede" data-rv style="--d:1;margin-bottom:44px">Morning college programmes and evening academy batches — plus live online classes open worldwide.</p>
 
     <div class="mono" style="font-size:.7rem;letter-spacing:.2em;color:var(--gold-400);margin-bottom:16px">MORNING AFFILIATIONS</div>
@@ -813,14 +887,14 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 
     <div class="mono" style="font-size:.7rem;letter-spacing:.2em;color:var(--gold-400);margin-bottom:16px">EVENING AFFILIATIONS</div>
     <div class="affg">
-      <div class="aff" data-rv style="--d:0"><div class="aff__logo"><img src="aff-swk.png" alt="SWK Solution"></div><b>SWK Solution</b><span>Gulshan &middot; Johar &middot; North</span></div>
-      <div class="aff" data-rv style="--d:1"><div class="aff__logo"><img src="aff-askari.png" alt="Askari"></div><b>Askari</b><span>Bahadurabad &middot; Evening</span></div>
-      <div class="aff" data-rv style="--d:2"><div class="aff__logo" style="font-family:var(--display);font-size:2rem;color:var(--gold-300)">&#9673;</div><b>Live Online</b><span>Worldwide &middot; Zoom</span></div>
-      <div class="aff" data-rv style="--d:3"><div class="aff__logo" style="font-family:var(--display);font-size:2rem;color:var(--gold-300)">&#9998;</div><b>Recorded Modules</b><span>Anytime &middot; Portal</span></div>
+      <div class="aff" data-rv style="--d:0"><div class="aff__logo"><img src="aff-swk.png" alt="SWK Solution"></div><b>SWK Solution</b><span>Gulshan &middot; Evening</span></div>
+      <div class="aff" data-rv style="--d:1"><div class="aff__logo"><img src="aff-swk.png" alt="SWK Solution"></div><b>SWK Solution</b><span>Johar &middot; Evening</span></div>
+      <div class="aff" data-rv style="--d:2"><div class="aff__logo"><img src="aff-swk.png" alt="SWK Solution"></div><b>SWK Solution</b><span>North &middot; Evening</span></div>
+      <div class="aff" data-rv style="--d:3"><div class="aff__logo" style="font-family:var(--display);font-size:2rem;color:var(--gold-300)">&#9673;</div><b>Live Online</b><span>Worldwide &middot; Zoom</span></div>
     </div>
 
     <div class="note" style="margin-top:28px" data-rv>
-      <b>On-site classes run in Karachi only</b> — SWK Solution (Gulshan, Johar, North) and Askari (Bahadurabad). Live online classes are open to students anywhere in the world, with class times shown in your own timezone.
+      <b>On-site classes run in Karachi only</b> — SWK Solution at Gulshan, Johar and North. Live online classes are open to students anywhere in the world, with class times shown in your own timezone.
     </div>
   </div>
 </section>
@@ -913,7 +987,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 
     <div class="strip" style="margin-top:44px" data-rv>
       <div><b><span data-count="19">0</span></b><span>Years teaching</span></div>
-      <div><b><span data-count="6">0</span></b><span>Karachi campuses</span></div>
+      <div><b><span data-count="7">0</span></b><span>Karachi campuses</span></div>
       <div><b><span data-count="31">0</span></b><span>Syllabus topics</span></div>
       <div><b><span data-count="3">0</span></b><span>Cambridge codes</span></div>
     </div>
@@ -964,39 +1038,24 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 <section class="sec" id="papers">
   <div class="wrap">
     <div class="eyebrow">Free for everyone</div>
-    <h2 data-rv>Ten years of past papers</h2>
-    <p class="lede" data-rv style="--d:1;margin-bottom:40px">Yearly papers and topical collections, organised by syllabus and session. No account needed to browse.</p>
+    <h2 data-rv>Every past paper, 2002 to 2024</h2>
+    <p class="lede" data-rv style="--d:1">Question papers open to anyone. <b>Mark schemes unlock with a free account</b> — name, email and phone, nothing else.</p>
 
-    <div class="bento">
-      <a class="ccard c4" href="pastpapers.html" data-rv data-tilt style="--d:0">
-        <div class="ccard__ring"></div>
-        <span class="chip chip--gold">Yearly</span>
-        <h3 style="margin:14px 0 10px">Complete papers</h3>
-        <p class="muted" style="font-size:.92rem">Every paper from the last ten sessions, exactly as it was sat. Paper 1, 2 and the practicals.</p>
-        <div class="ccard__go">&rarr;</div>
-      </a>
-      <a class="ccard c4" href="pastpapers.html#topical" data-rv data-tilt style="--d:1">
-        <div class="ccard__ring"></div>
-        <span class="chip chip--gold">Topical</span>
-        <h3 style="margin:14px 0 10px">Grouped by topic</h3>
-        <p class="muted" style="font-size:.92rem">Every waves question from ten years in one file. The format students actually revise from.</p>
-        <div class="ccard__go">&rarr;</div>
-      </a>
-      <div class="ccard c4" data-rv data-tilt style="--d:2">
-        <div class="ccard__ring"></div>
-        <span class="chip">Enrolled students</span>
-        <h3 style="margin:14px 0 10px">Mark schemes &amp; reports</h3>
-        <p class="muted" style="font-size:.92rem">Marking schemes and examiner reports for every paper, plus downloads. Included with any course.</p>
-        <a class="btn btn--line btn--sm" style="margin-top:18px" href="#register">How to get access</a>
-      </div>
+    <div class="strip" style="margin:34px 0 30px" data-rv>
+      <div><b><span data-count="46">0</span></b><span>Topical books</span></div>
+      <div><b><span data-count="55">0</span></b><span>Exam sessions</span></div>
+      <div><b><span data-count="1204">0</span></b><span>Paper files</span></div>
+      <div><b><span data-count="23">0</span></b><span>Years covered</span></div>
     </div>
 
-    <div class="strip" style="margin-top:40px" data-rv>
-      <div><b><span data-count="10">0</span></b><span>Years covered</span></div>
-      <div><b><span data-count="3">0</span></b><span>Syllabi</span></div>
-      <div><b><span data-count="2">0</span></b><span>Sessions a year</span></div>
-      <div><b>Free</b><span>To browse</span></div>
+    <div class="tabs2" role="tablist">
+      <button class="on" data-lvl="O">O Level</button>
+      <button data-lvl="AS">AS Level</button>
+      <button data-lvl="A2">A2 Level</button>
+      <button data-lvl="YR">By year</button>
     </div>
+
+    <div id="paperHost" style="margin-top:22px"></div>
   </div>
 </section>
 
@@ -1033,7 +1092,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
           <div class="flip__hint"><i></i> Why it matters</div>
         </div><div class="flip__f flip__f--b">
           <span class="chip chip--gold">Success</span>
-          <p class="muted" style="font-size:.92rem;margin-top:14px">Weekly quizzes and full past papers under timed conditions, marked against the real Cambridge scheme — so exam day is the fifth time you've done this, not the first.</p>
+          <p class="muted" style="font-size:.92rem;margin-top:14px">Full past papers worked under timed conditions, marked against the real Cambridge scheme — so exam day is the fifth time you've done this, not the first.</p>
         </div></div>
       </div>
     </div>
@@ -1050,7 +1109,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
       <div class="step"><div class="step__n">1</div><h4>Register</h4><p>Send the form or a WhatsApp message with your level and exam session.</p></div>
       <div class="step"><div class="step__n">2</div><h4>Free demo lesson</h4><p>Sit in on a real session. No payment details, no obligation.</p></div>
       <div class="step"><div class="step__n">3</div><h4>Get your student ID</h4><p>Your ID unlocks the portal — your course only, nothing else.</p></div>
-      <div class="step"><div class="step__n">4</div><h4>Start learning</h4><p>Live classes, recorded modules, quizzes and past papers, module by module.</p></div>
+      <div class="step"><div class="step__n">4</div><h4>Start learning</h4><p>Live classes, recorded lectures, notes and past papers, module by module.</p></div>
     </div>
   </div>
 </section>
@@ -1058,22 +1117,44 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 <!-- ================= RESULTS ================= -->
 <section class="sec" id="results">
   <div class="wrap">
-    <div class="eyebrow">Results</div>
-    <h2 data-rv style="max-width:16ch">Counted honestly, not rounded up.</h2>
-    <p class="lede" data-rv style="--d:1">Seven distinctions across ten years — three at A Level, four at O Level.</p>
-    <div class="bento" style="margin-top:46px">
+    <div class="eyebrow">Distinctions</div>
+    <h2 data-rv style="max-width:17ch">Seven distinctions in ten years.</h2>
+    <p class="lede" data-rv style="--d:1">Three at A Level, four at O Level. A counted figure, not a rounded one — and deliberately the number shown here instead of a student headcount.</p>
+
+    <div class="bento" style="margin-top:44px">
       <div class="tile tile--glare c3" data-rv style="--d:0"><div class="tile__n" data-count="7">0</div><span class="tile__k">Total distinctions</span></div>
-      <div class="tile tile--glare c3" data-rv style="--d:1"><div class="tile__n" data-count="3">0</div><span class="tile__k">A Level distinctions</span></div>
-      <div class="tile tile--glare c3" data-rv style="--d:2"><div class="tile__n" data-count="4">0</div><span class="tile__k">O Level distinctions</span></div>
+      <div class="tile tile--glare c3" data-rv style="--d:1"><div class="tile__n" data-count="3">0</div><span class="tile__k">A Level</span></div>
+      <div class="tile tile--glare c3" data-rv style="--d:2"><div class="tile__n" data-count="4">0</div><span class="tile__k">O Level</span></div>
       <div class="tile tile--glare c3" data-rv style="--d:3"><div class="tile__n" data-count="2007">0</div><span class="tile__k">Teaching since</span></div>
+
       <div class="tile c7 d3" data-tilt data-rv style="--d:4"><div class="z1">
-        <h3>Taught in London, too</h3>
-        <p class="muted" style="font-size:.94rem;margin:0">Years spent as an educator in London before returning to teach Cambridge students here — which covers every version of 5054, 0625 and 9702 currently in circulation, and every way a student can get stuck on them.</p>
+        <span class="chip chip--gold">What a distinction means</span>
+        <h3 style="margin-top:14px">Not the same as an A</h3>
+        <p class="muted" style="font-size:.94rem;margin:0">A distinction sits above the top grade band — awarded to candidates in the highest tier of the cohort worldwide, not just those who scored an A. In a subject where a strong school might see one in several years, seven is a track record rather than a run of luck.</p>
       </div></div>
       <div class="tile c5 d3" data-tilt data-rv style="--d:5"><div class="z1">
-        <h3>Physics only</h3>
-        <p class="muted" style="font-size:.94rem;margin:0">One subject, four syllabi, nineteen years. That focus is the whole point — there's no second subject splitting the attention.</p>
+        <span class="chip">Nineteen years</span>
+        <h3 style="margin-top:14px">Every version of the syllabus</h3>
+        <p class="muted" style="font-size:.94rem;margin:0">Teaching since 2007, including years as an educator in London. That covers every revision of 5054, 0625 and 9702 currently in circulation — and every way a student can get stuck on them.</p>
       </div></div>
+
+      <div class="tile c4" data-rv style="--d:6">
+        <div class="tile__n" data-count="46">0</div><span class="tile__k">Topical paper books</span>
+        <p class="muted" style="font-size:.88rem;margin:12px 0 0">Built up over years of teaching, one per topic, with mark schemes.</p>
+      </div>
+      <div class="tile c4" data-rv style="--d:7">
+        <div class="tile__n" data-count="55">0</div><span class="tile__k">Exam sessions archived</span>
+        <p class="muted" style="font-size:.88rem;margin:12px 0 0">Every session from 2002 to 2024, papers and mark schemes.</p>
+      </div>
+      <div class="tile c4" data-rv style="--d:8">
+        <div class="tile__n" data-count="7">0</div><span class="tile__k">Karachi campuses</span>
+        <p class="muted" style="font-size:.88rem;margin:12px 0 0">Four college programmes and three SWK Solution branches.</p>
+      </div>
+
+      <div class="tile c12" data-rv style="--d:9">
+        <span class="chip">Certificate wall</span>
+        <p class="muted" style="font-size:.92rem;margin:12px 0 0">Real student certificates go here, names blurred where families prefer. This space ships empty on purpose — invented results would undercut the one section whose whole job is proof.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -1108,7 +1189,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
       <div class="tile c7" data-rv style="display:flex;flex-direction:column;justify-content:center">
         <div class="eyebrow">Enrolled students</div>
         <h2 style="font-size:clamp(1.7rem,3.4vw,2.7rem)">Your lectures live behind one login</h2>
-        <p class="muted">Sign in with the student ID issued at enrollment. Your ID opens exactly the course you registered for, with every lecture, live session, past paper and quiz laid out module by module.</p>
+        <p class="muted">Sign in with the student ID issued at enrollment. Your ID opens exactly the course you registered for, with every lecture, live session, note and past paper laid out module by module.</p>
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:22px">
           <a class="btn btn--gold" href="portal.html" data-mag>Open Student Portal</a>
           <a class="btn btn--line" href="#register">Not enrolled yet?</a>
@@ -1119,7 +1200,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
           <div class="feat"><div class="feat__i">&#9654;</div><div><b>Recorded lectures</b><p>Rewatch any derivation as often as you need.</p></div></div>
           <div class="feat"><div class="feat__i">&#9673;</div><div><b>Live Zoom sessions</b><p>Questions answered in the moment.</p></div></div>
           <div class="feat"><div class="feat__i">&#9998;</div><div><b>Past paper walkthroughs</b><p>Marked to the real Cambridge scheme.</p></div></div>
-          <div class="feat"><div class="feat__i">&#10003;</div><div><b>Topic quizzes</b><p>With worked explanations, not just a score.</p></div></div>
+          <div class="feat"><div class="feat__i">&#10003;</div><div><b>Lecture notes</b><p>Written notes for every topic, alongside the video.</p></div></div>
         </div>
       </div>
     </div>
@@ -1148,10 +1229,11 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
         <div class="ccard__ring"></div>
         <span class="chip">Free account</span>
         <h3 style="margin:14px 0 6px">See how it's taught</h3>
-        <p class="muted" style="font-size:.92rem;margin-bottom:18px">Name, email and phone. Nothing else, no payment.</p>
+        <p class="muted" style="font-size:.92rem;margin-bottom:18px">Email, phone and your syllabus. Nothing else, no payment.</p>
         <ul class="flip__list" style="max-height:none;font-size:.9rem">
-          <li>First lecture of <b>every topic</b>, free</li>
-          <li>All yearly and topical past papers</li>
+          <li>First lecture of <b>every topic</b>, every syllabus</li>
+          <li><b>Mark schemes</b> for every past paper</li>
+          <li>Topical papers, all 46 books</li>
           <li>Demo lessons for every level</li>
           <li>Class timings and syllabus updates</li>
         </ul>
@@ -1166,12 +1248,11 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
         <ul class="flip__list" style="max-height:none;font-size:.9rem">
           <li><b>Every lecture</b> of every topic, recorded after each class</li>
           <li>Live Zoom sessions with questions answered in the moment</li>
-          <li><b>Timed quizzes</b> — topic quizzes and full mock papers, marked automatically</li>
           <li>Mark schemes and examiner reports for every question</li>
           <li>Downloadable past papers</li>
           <li>Progress tracking that names your weakest topic</li>
         </ul>
-        <a class="btn btn--gold btn--wide" style="margin-top:22px" href="#register" data-mag>Register for a course</a>
+        <div style="margin:6px 0 14px"><span style="font-family:var(--display);font-size:2rem;color:var(--gold-300)">PKR 7,000</span><span class="muted" style="font-size:.86rem"> / month</span></div><a class="btn btn--gold btn--wide" href="#register" data-mag>Register for a course</a>
       </div>
     </div>
 
@@ -1212,8 +1293,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
                 <option>On campus — SWK Gulshan</option>
                 <option>On campus — SWK Johar</option>
                 <option>On campus — SWK North</option>
-                <option>On campus — Askari, Bahadurabad</option>
-              </select></div>
+                              </select></div>
           </div>
           <div class="fld"><label for="rs">Exam session</label>
             <select id="rs" name="session"><option>May/June</option><option>Oct/Nov</option><option>Not sure yet</option></select></div>
@@ -1256,7 +1336,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
     <h2 data-rv>Questions worth asking</h2>
     <p class="lede" data-rv style="--d:1">Anything not here, ask the SMK Assistant in the corner — it answers from the same information.</p>
     <div class="acc" style="margin-top:30px">
-      <details open><summary>Where are the on-site classes?</summary><div class="body">In Karachi — SWK Solution at Gulshan, Johar and North, and Askari at Bahadurabad. Morning college programmes run at Whales, Credo, Highbrow and Beaconhouse College Programme.</div></details>
+      <details open><summary>Where are the on-site classes?</summary><div class="body">In Karachi — SWK Solution at Gulshan, Johar and North. Morning college programmes run at Whales, Credo, Highbrow and Beaconhouse College Programme.</div></details>
       <details><summary>Do you teach students outside Karachi or Pakistan?</summary><div class="body">Yes. Live online classes are open worldwide, and class times are shown in your own timezone once you enrol.</div></details>
       <details><summary>What's the difference between O Level and IGCSE Physics?</summary><div class="body">The physics content overlaps heavily. The differences are mainly in paper structure and assessment — 0625 has more paper variants, including separate practical options. Which one you sit is set by your school's entry, not by you.</div></details>
       <details><summary>How does the student portal work?</summary><div class="body">You get a student ID at enrollment. Signing in opens exactly the course you registered for, with lectures grouped by module. Recorded lectures play in place; live sessions open a Zoom link.</div></details>
@@ -1313,8 +1393,13 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 
 <div class="dock">
   <button class="dock__b" data-theme-btn aria-label="Theme"></button>
-  <button class="dock__b" data-sound aria-label="Sound off" aria-pressed="false">
-    <span class="eq"><i></i><i></i><i></i><i></i></span><span class="slash"></span>
+  <button class="dock__b dock__b--snd" data-sound aria-label="Sound off" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 9.5h3.2L12 5.4v13.2L7.2 14.5H4z"/>
+      <path class="wv wv1" d="M15.4 9.6a3.4 3.4 0 0 1 0 4.8"/>
+      <path class="wv wv2" d="M17.9 7.1a6.9 6.9 0 0 1 0 9.8"/>
+      <path class="slash2" d="M4 20 20 4"/>
+    </svg>
   </button>
   <button class="dock__ai" aria-label="Open SMK Assistant" aria-expanded="false">
     <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.1A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z"/></svg>
@@ -1361,7 +1446,16 @@ window.SMK_CONFIG = {
 </script>
 <script>
 /* ===== DATA — everything you edit lives here ===== */
-const REVIEWS = [];
+const REVIEWS = [
+  /* PLACEHOLDERS — swap the text for real quotes and drop a photo filename into `pic`.
+     Leave `pic` empty and the initial is used instead. Set REVIEWS = [] to hide the section. */
+  {name:'Student A', role:'O Level', level:'2024', pic:'',
+   text:'Replace with a real quote. Two or three sentences works best — something specific beats something glowing.'},
+  {name:'Parent B', role:'Parent', level:'AS Level', pic:'',
+   text:'A parent review lands hardest when it mentions something concrete: a grade jump, a topic that finally clicked, how communication worked.'},
+  {name:'Student C', role:'A2 Level', level:'2024', pic:'',
+   text:'Ask leavers for a line about Paper 5 or exam technique specifically. Generic praise reads as invented even when it is not.'}
+];
 
 const CHANNEL = 'https://youtube.com/@mehboobkhan7260';
 
@@ -1411,12 +1505,12 @@ const KB = [
  a:'Nothing formal to start. Just your name, level, exam session and a contact number.'},
 
 /* ---------------- locations & mode ---------------- */
-{c:'Location',q:'Where are the physical classes?',k:['where','located','location','address','campus','branch','branches','physical class','onsite','on site','face to face','in person','offline','karachi','come to class','centre','center','gulshan','johar','north','bahadurabad','nazimabad','defence','clifton','area'],
- a:'On-site classes run in Karachi at <b>SWK Solution</b> — Gulshan, Johar and North branches — and at <b>Askari</b>, Bahadurabad. Online classes are open worldwide.'},
+{c:'Location',q:'Where are the physical classes?',k:['where','located','location','address','campus','branch','branches','physical class','onsite','on site','face to face','in person','offline','karachi','come to class','centre','center','gulshan','johar','north','nazimabad','defence','clifton','area'],
+ a:'On-site classes run in Karachi at <b>SWK Solution</b> — Gulshan, Johar and North branches. Online classes are open worldwide.'},
 {c:'Location',q:'Do you teach online?',k:['online','zoom','remote','from home','virtual','live online','internet class','video class'],
  a:'Yes. Live online classes run on Zoom and are open worldwide, with every session recorded and added to your portal.'},
-{c:'Location',q:'Which colleges do you teach at?',k:['college','school','affiliation','affiliations','whales','credo','highbrow','beaconhouse','bcp','swk','askari','institute','academy','morning','evening','teach at'],
- a:'Morning: <b>Whales College</b>, <b>Credo College</b>, <b>Highbrow College</b> and <b>Beaconhouse College Programme</b>. Evening: <b>SWK Solution</b> (Gulshan, Johar, North) and <b>Askari</b> (Bahadurabad).'},
+{c:'Location',q:'Which colleges do you teach at?',k:['college','school','affiliation','affiliations','whales','credo','highbrow','beaconhouse','bcp','swk','institute','academy','morning','evening','teach at'],
+ a:'Morning: <b>Whales College</b>, <b>Credo College</b>, <b>Highbrow College</b> and <b>Beaconhouse College Programme</b>. Evening: <b>SWK Solution</b> — Gulshan, Johar and North.'},
 {c:'Location',q:'Do you teach students outside Pakistan?',k:['outside pakistan','international','abroad','overseas','dubai','uae','uk','usa','canada','saudi','qatar','oman','bahrain','kuwait','different country','other country','timezone','time zone','live in','from another','join from','not in karachi','outside karachi'],
  a:'Yes. Online classes run worldwide and your class times are shown in your own timezone once you enrol.'},
 
@@ -1573,12 +1667,15 @@ const SYN = {
     if (typeof REVIEWS !== 'undefined' && REVIEWS.length) {
       document.getElementById('reviews').style.display = '';
       document.getElementById('revGrid').innerHTML = REVIEWS.map(function (r, i) {
+        var av = r.pic
+          ? '<img src="' + r.pic + '" alt="" class="rev__pic">'
+          : '<span class="rev__pic rev__pic--ph">' + r.name.charAt(0) + '</span>';
         return '<div class="tile tile--glare c4" data-tilt data-rv style="--d:' + i + '">'
           + '<div style="color:var(--gold-400);letter-spacing:3px;margin-bottom:10px">&#9733;&#9733;&#9733;&#9733;&#9733;</div>'
           + '<p class="muted" style="font-size:.94rem">&ldquo;' + r.text + '&rdquo;</p>'
-          + '<b style="font-size:.92rem">' + r.name + '</b>'
-          + '<span class="mono" style="display:block;font-size:.68rem;color:var(--gold-400);letter-spacing:.12em;margin-top:3px">'
-          + r.role + ' &middot; ' + r.level + '</span></div>';
+          + '<div class="rev__by">' + av + '<div><b style="font-size:.92rem">' + r.name + '</b>'
+          + '<span class="mono" style="display:block;font-size:.68rem;color:var(--gold-400);letter-spacing:.12em">'
+          + r.role + ' &middot; ' + r.level + '</span></div></div></div>';
       }).join('');
     }
   })();
@@ -1640,10 +1737,16 @@ const SYN = {
     } catch (e) { }
   };
   const sfx = {
-    hover: () => tone(540, .05, 'sine', .05),
-    click: () => { tone(680, .06, 'triangle', .12); setTimeout(() => tone(900, .07, 'triangle', .08), 40); },
-    ok: () => [523, 659, 784].forEach((f, i) => setTimeout(() => tone(f, .13, 'sine', .1), i * 95)),
-    err: () => tone(180, .18, 'sawtooth', .09)
+    hover:  () => tone(540, .05, 'sine', .05),
+    click:  () => { tone(680, .06, 'triangle', .12); setTimeout(() => tone(900, .07, 'triangle', .08), 40); },
+    card:   () => tone(392, .06, 'sine', .05),
+    open:   () => { tone(523, .07, 'triangle', .11); setTimeout(() => tone(784, .08, 'triangle', .07), 55); },
+    close:  () => { tone(660, .06, 'sine', .08); setTimeout(() => tone(440, .08, 'sine', .06), 55); },
+    toggle: () => { tone(880, .05, 'square', .05); setTimeout(() => tone(1180, .06, 'square', .04), 45); },
+    tab:    () => tone(720, .05, 'triangle', .07),
+    ok:     () => [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => tone(f, .13, 'sine', .1), i * 85)),
+    err:    () => { tone(180, .16, 'sawtooth', .09); setTimeout(() => tone(140, .18, 'sawtooth', .07), 90); },
+    swipe:  () => tone(300, .09, 'sine', .06)
   };
   window.SMKsfx = sfx;
   const sBtn = $('[data-sound]');
@@ -1652,7 +1755,7 @@ const SYN = {
     sBtn.classList.toggle('snd-on', snd);
     sBtn.setAttribute('aria-pressed', snd);
     sBtn.setAttribute('aria-label', snd ? 'Sound on' : 'Sound off');
-    if (snd) { ac().resume && ac().resume(); sfx.click(); }
+    if (snd) { ac().resume && ac().resume(); sfx.toggle(); }
     toast(snd ? 'Sound on' : 'Sound off');
   });
   // every card gets its own note, a little lower than the UI clicks so the
@@ -1667,10 +1770,12 @@ const SYN = {
   }, true);
   document.addEventListener('click', e => {
     if (!e.target.closest) return;
-    if (e.target.closest(CARDS) && !e.target.closest('.btn')) {
-      tone(523, .07, 'triangle', .11);
-      setTimeout(() => tone(784, .08, 'triangle', .07), 55);
-    } else if (e.target.closest('a,button')) sfx.click();
+    var t = e.target;
+    if (t.closest('.tabs2 button,.acc summary')) sfx.tab();
+    else if (t.closest('.nag__x,.modal__x,.bot__x')) sfx.close();
+    else if (t.closest('[data-theme-btn],[data-sound]')) sfx.toggle();
+    else if (t.closest(CARDS) && !t.closest('.btn')) sfx.open();
+    else if (t.closest('a,button')) sfx.click();
   });
 
   /* ================= THEME ================= */
@@ -2338,12 +2443,12 @@ window.NAG_CONFIG = {
 
   var NAGS = [
     { side: 'left', title: 'Free account',
-      lead: 'No payment, no card. Just so we know who you are.',
-      points: ['First lecture of <b>every topic</b>', 'All past papers, ten years', 'Class timings and updates'],
+      lead: 'Email, phone and your syllabus. No payment, no card.',
+      points: ['First lecture of <b>every topic</b>', 'Mark schemes for every paper', 'All 46 topical books'],
       cta: 'Create a free account', href: 'portal.html', kind: 'line' },
     { side: 'right', title: 'Enrolled students get more',
       lead: 'Everything free, plus the parts that actually move a grade.',
-      points: ['Every lecture, after each class', 'Timed quizzes, marked automatically',
+      points: ['Every lecture, after each class', 'Lecture notes for every topic',
                'Mark schemes and examiner reports'],
       cta: 'See what is included', href: '#access', kind: 'gold' }
   ];
@@ -2417,6 +2522,88 @@ window.NAG_CONFIG = {
   }, C.firstDelay * 60000));
 
   window.SMKnag = { show: show, clearAll: clearAll, config: C };
+})();
+</script>
+
+<script src="papers.js"></script>
+<script>
+/* ==========================================================================
+   PAST PAPERS — rendered from papers.js, which is generated from the repo.
+   Question papers are open. Mark schemes need a free account.
+   ========================================================================== */
+(function () {
+  var host = document.getElementById('paperHost');
+  if (!host || typeof TOPICAL === 'undefined') return;
+
+  // a free account is recorded here after signup; until then mark schemes lock
+  var signedIn = !!localStorage.getItem('smk_free_account');
+
+  var LEVEL = { O: 'O Level & IGCSE', AS: 'AS Level', A2: 'A2 Level' };
+
+  function lockNote() {
+    return signedIn ? '' :
+      '<div class="note" style="margin-bottom:18px">' +
+      '<b>Mark schemes are locked.</b> Create a free account — name, email, phone and your ' +
+      'syllabus — and every mark scheme on this page opens. No payment, no card.' +
+      ' <a href="portal.html" style="color:var(--gold-300)">Create a free account →</a></div>';
+  }
+
+  function link(url, label, isMs) {
+    if (!url) return '';
+    if (isMs && !signedIn)
+      return '<a class="plink plink--ms" href="portal.html" title="Free account required">' + label + '</a>';
+    return '<a class="plink' + (isMs ? ' plink--ms open' : '') + '" href="' + url +
+           '" target="_blank" rel="noopener">' + label + '</a>';
+  }
+
+  function renderLevel(lvl) {
+    var books = TOPICAL.filter(function (b) { return b.lvl === lvl; });
+    host.innerHTML = lockNote() + '<div class="plist">' + books.map(function (b) {
+      return '<div class="prow">' +
+        '<div class="prow__n">' + b.n + '</div>' +
+        '<div><div class="prow__t">' + b.topic + '</div>' +
+        '<div class="prow__s">' + LEVEL[b.lvl] + ' · topical</div></div>' +
+        '<div class="plinks">' +
+          link(b.paper, 'Paper') +
+          link(b.mcq, 'MCQ') +
+          link(b.ms_mcq, 'MCQ MS', true) +
+          link(b.theory, 'Theory') +
+          link(b.ms_theory, 'Theory MS', true) +
+        '</div></div>';
+    }).join('') + '</div>';
+  }
+
+  function renderYears() {
+    host.innerHTML = lockNote() + '<div class="yrgrid">' + SESSIONS.map(function (s, i) {
+      return '<button class="yr" data-i="' + i + '"><b>' + s.year + '</b>' +
+             '<span>' + s.session + ' · ' + s.files.length + ' files</span></button>';
+    }).join('') + '</div><div id="yrFiles" style="margin-top:18px"></div>';
+
+    Array.prototype.forEach.call(host.querySelectorAll('.yr'), function (btn) {
+      btn.addEventListener('click', function () {
+        var s = SESSIONS[+btn.dataset.i];
+        document.getElementById('yrFiles').innerHTML =
+          '<h3 style="font-size:1.05rem;margin:8px 0 12px">' + s.session + ' ' + s.year + '</h3>' +
+          '<div class="plist">' + s.files.map(function (f) {
+            var isMs = /\bms\b|mark ?scheme/i.test(f.n);
+            return '<div class="prow"><div class="prow__n">' + (isMs ? 'MS' : '📄') + '</div>' +
+              '<div><div class="prow__t" style="font-size:.88rem">' +
+              f.n.replace(/\.pdf$/i, '') + '</div></div>' +
+              '<div class="plinks">' + link(f.u, isMs ? 'Mark scheme' : 'Open', isMs) + '</div></div>';
+          }).join('') + '</div>';
+      });
+    });
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('.tabs2 button'), function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('.tabs2 button').forEach(function (x) { x.classList.remove('on'); });
+      b.classList.add('on');
+      if (b.dataset.lvl === 'YR') renderYears(); else renderLevel(b.dataset.lvl);
+    });
+  });
+
+  renderLevel('O');
 })();
 </script>
 </body>
