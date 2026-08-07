@@ -5,7 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Lecture Manager — SMK Admin</title>
 <meta name="robots" content="noindex,nofollow">
-<link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter+Tight:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -908,9 +912,10 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
       <p class="muted" style="font-size:.86rem">Add it to the bottom of the <code>LECTURES</code> list, just above the closing <code>];</code></p>
       <div class="code" id="out" style="margin-top:14px">Fill the form to generate the line…</div>
       <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:16px">
-        <button class="btn btn--gold" id="copyBtn">Copy line</button>
-        <button class="btn btn--line" id="addBtn">Add to preview list</button>
+        <button class="btn btn--gold" id="addBtn">Save to list</button>
+        <button class="btn btn--line" id="copyBtn">Copy just this line</button>
       </div>
+      <div class="msg msg--ok" id="savedMsg" style="display:none;margin-top:14px"></div>
       <div class="note" style="margin-top:16px">
         <b>Which portal does it land in?</b> Lecture <b>1</b> of any topic appears in the
         <a href="portal.html" style="color:var(--gold-300)">free portal</a> for everyone with an
@@ -925,6 +930,23 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
         it can be downloaded and shared.
       </div>
     </div>
+  </div>
+
+  <div class="tile" style="margin-top:34px;border-color:var(--gold-500)">
+    <div style="display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center">
+      <div>
+        <h3 style="font-size:1.1rem;margin:0">Publish your changes</h3>
+        <p class="muted" style="font-size:.87rem;margin:6px 0 0">
+          Copy the finished block and paste it into <b>portal.html</b> and <b>premium.html</b>,
+          replacing everything between <code>const LECTURES = [</code> and <code>];</code></p>
+      </div>
+      <div style="display:flex;gap:9px;flex-wrap:wrap">
+        <button class="btn btn--gold" id="exportBtn">Copy full list</button>
+        <button class="btn btn--line" id="showBtn">Show block</button>
+      </div>
+    </div>
+    <div class="code" id="exportOut" style="display:none;margin-top:16px;max-height:340px;overflow:auto"></div>
+    <div class="msg msg--ok" id="expMsg" style="display:none;margin-top:12px"></div>
   </div>
 
   <h2 style="font-size:1.3rem;margin-top:46px">Current lectures</h2>
@@ -1041,6 +1063,23 @@ const LECTURES = [
 (function () {
   var $ = function (s) { return document.querySelector(s); };
   var pad = function (n) { return String(n).padStart(2, '0'); };
+  var WKEY = 'smk_lecture_draft';
+
+  /* Working copy. Everything you add is kept here, so you can add lectures all
+     week and export the finished block once instead of pasting after each class. */
+  var WORK = (function () {
+    try {
+      var d = JSON.parse(localStorage.getItem(WKEY));
+      if (d && d.length) return d;
+    } catch (e) { }
+    return LECTURES.slice();
+  })();
+  function save() { localStorage.setItem(WKEY, JSON.stringify(WORK)); }
+  function fmt(l) {
+    return "  { id:'" + l.id + "', lvl:'" + l.lvl + "', topic:" + l.topic + ", n:" + l.n +
+           ", t:'" + String(l.t).replace(/'/g, "\\'") + "', dur:'" + (l.dur || '') + "'" +
+           ", vid:'" + (l.vid || '') + "', notes:'" + (l.notes || '') + "', date:'" + (l.date || '') + "' },";
+  }
 
   function fillTopics() {
     var lvl = $('#lLvl').value;
@@ -1061,7 +1100,7 @@ const LECTURES = [
         date = $('#lDate').value.trim();
 
     var id = lvl.toLowerCase() + '-' + topic + '-' + pad(n);
-    var clash = LECTURES.some(function (l) { return l.id === id; });
+    var clash = WORK.some(function (l) { return l.id === id; });
 
     var line = "  { id:'" + id + "', lvl:'" + lvl + "', topic:" + topic + ", n:" + n +
                ", t:'" + title.replace(/'/g, "\\'") + "', dur:'" + dur + "'" +
@@ -1086,23 +1125,68 @@ const LECTURES = [
   $('#copyBtn').addEventListener('click', function () {
     navigator.clipboard.writeText($('#out').textContent.split('\n')[0]).then(function () {
       $('#copyBtn').textContent = 'Copied ✓';
-      setTimeout(function () { $('#copyBtn').textContent = 'Copy line'; }, 1600);
+      setTimeout(function () { $('#copyBtn').textContent = 'Copy just this line'; }, 1600);
+    });
+  });
+
+  function block() {
+    var rows = WORK.slice().sort(function (a, b) {
+      var order = { O: 0, AS: 1, A2: 2 };
+      return order[a.lvl] - order[b.lvl] || a.topic - b.topic || a.n - b.n;
+    });
+    return 'const LECTURES = [\n' + rows.map(fmt).join('\n').replace(/,$/, '') + '\n];';
+  }
+
+  $('#showBtn').addEventListener('click', function () {
+    var el = $('#exportOut');
+    var open = el.style.display === 'none';
+    el.style.display = open ? 'block' : 'none';
+    el.textContent = block();
+    this.textContent = open ? 'Hide block' : 'Show block';
+  });
+
+  $('#exportBtn').addEventListener('click', function () {
+    navigator.clipboard.writeText(block()).then(function () {
+      var m = $('#expMsg');
+      m.style.display = 'block';
+      m.innerHTML = '<b>Copied ' + WORK.length + ' lectures.</b> Now paste it into ' +
+        '<b>portal.html</b> and <b>premium.html</b>, replacing the whole existing ' +
+        '<code>const LECTURES = [ … ];</code> block in each. Then commit.';
     });
   });
 
   $('#addBtn').addEventListener('click', function () {
     var lvl = $('#lLvl').value, topic = +$('#lTopic').value, n = +$('#lNum').value;
-    LECTURES.push({ id: lvl.toLowerCase() + '-' + topic + '-' + pad(n), lvl: lvl, topic: topic, n: n,
-      t: $('#lTitle').value.trim() || 'Untitled', dur: $('#lDur').value.trim(),
-      vid: $('#lVid').value.trim(), notes: $('#lNotes').value.trim(), date: $('#lDate').value.trim() });
+    var id = lvl.toLowerCase() + '-' + topic + '-' + pad(n);
+    var title = $('#lTitle').value.trim();
+    if (!title) { alert('Give the lecture a title first.'); $('#lTitle').focus(); return; }
+
+    var row = { id: id, lvl: lvl, topic: topic, n: n, t: title,
+      dur: $('#lDur').value.trim(), vid: $('#lVid').value.trim(),
+      notes: $('#lNotes').value.trim(), date: $('#lDate').value.trim() };
+
+    var at = WORK.findIndex(function (x) { return x.id === id; });
+    if (at > -1) {
+      if (!confirm('A lecture with id ' + id + ' already exists.\n\nReplace it?')) return;
+      WORK[at] = row;
+    } else WORK.push(row);
+    save();
+
+    var m = $('#savedMsg');
+    m.style.display = 'block';
+    m.innerHTML = '<b>Saved.</b> ' + title + ' &mdash; ' + (n === 1 ? 'free portal' : 'paid portal') +
+      '. ' + WORK.length + ' lectures in the list. Add more, then press <b>Copy full list</b> when you are done.';
+
+    // clear for the next one, keeping level and topic so a run of lectures is quick
+    $('#lTitle').value = ''; $('#lVid').value = ''; $('#lNotes').value = ''; $('#lDur').value = '';
+    $('#lNum').value = n + 1;
     $('#fLvl').value = lvl;
-    renderList();
-    build();
+    renderList(); build(); $('#lTitle').focus();
   });
 
   function renderList() {
     var lvl = $('#fLvl').value;
-    var rows = LECTURES.filter(function (l) { return l.lvl === lvl; })
+    var rows = WORK.filter(function (l) { return l.lvl === lvl; })
       .sort(function (a, b) { return a.topic - b.topic || a.n - b.n; });
     var names = {};
     (TOPICS[lvl] || []).forEach(function (t) { names[t.n] = t.name; });
@@ -1118,10 +1202,14 @@ const LECTURES = [
 
     document.querySelectorAll('.del').forEach(function (b) {
       b.addEventListener('click', function () {
-        var l = LECTURES.find(function (x) { return x.id === b.dataset.id; });
-        alert('Delete this line from lectures.js:\n\n' +
-          "{ id:'" + l.id + "', lvl:'" + l.lvl + "', topic:" + l.topic + ", n:" + l.n + ", t:'" + l.t + "', … }\n\n" +
-          'Then commit. The lecture disappears from both portals.');
+        var l = WORK.find(function (x) { return x.id === b.dataset.id; });
+        if (!confirm('Remove "' + l.t + '" from the list?')) return;
+        WORK = WORK.filter(function (x) { return x.id !== b.dataset.id; });
+        save(); renderList();
+        var m = $('#expMsg');
+        m.style.display = 'block';
+        m.innerHTML = '<b>Removed.</b> Press <b>Copy full list</b> and paste into the two portal ' +
+          'files to publish the change.';
       });
     });
   }
