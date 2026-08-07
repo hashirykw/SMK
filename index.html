@@ -335,8 +335,8 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
   transition:transform .45s var(--ease),border-color .35s,box-shadow .45s}
 .aff:hover{transform:translateY(-7px);border-color:var(--gold-400);
   box-shadow:0 26px 60px rgba(0,0,0,.42)}
-.aff__logo{height:74px;display:grid;place-items:center;margin-bottom:14px}
-.aff__logo img{max-height:74px;width:auto;object-fit:contain;
+.aff__logo{height:78px;display:grid;place-items:center;margin-bottom:14px}
+.aff__logo img{max-height:78px;width:auto;object-fit:contain;
   filter:brightness(1.06);transition:transform .45s var(--spring)}
 .aff:hover .aff__logo img{transform:scale(1.07)}
 .aff b{display:block;font-size:1rem;line-height:1.3}
@@ -781,6 +781,22 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 .chip{transition:border-color .3s,color .3s}
 .tile:hover .tile__n{color:var(--gold-400)}
 .tile__n{transition:color .4s}
+
+.sylgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:11px}
+.sylc{display:flex;gap:14px;align-items:flex-start;padding:16px 18px;border-radius:13px;
+  background:var(--panel);border:1px solid var(--line-soft);transition:.34s var(--ease)}
+.sylc:hover{border-color:var(--gold-400);transform:translateY(-4px);
+  box-shadow:0 14px 34px rgba(0,0,0,.13)}
+.sylc__n{font-family:var(--display);font-size:1.15rem;color:var(--gold-400);min-width:24px;
+  transition:.35s var(--spring)}
+.sylc:hover .sylc__n{transform:scale(1.16);color:var(--gold-300)}
+.sylc b{display:block;font-size:.93rem;line-height:1.35}
+.sylc span{font-family:var(--mono);font-size:.68rem;color:var(--muted);letter-spacing:.05em}
+
+.tile .revstars{color:var(--gold-400);letter-spacing:3px;font-size:.9rem}
+.revverif{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:.62rem;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ok);margin-top:8px}
+.revverif::before{content:"\2713";font-size:.8rem}
 </style>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -814,6 +830,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
       <a href="#courses">Courses</a>
       <a href="#syllabus">Syllabus</a>
       <a href="#papers">Past Papers</a>
+      <a href="#notes">Notes</a>
       <a href="#affiliations">Campuses</a>
       <a href="#method">Method</a>
       <a href="#results">Results</a>
@@ -879,10 +896,10 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 
     <div class="mono" style="font-size:.7rem;letter-spacing:.2em;color:var(--gold-400);margin-bottom:16px">MORNING AFFILIATIONS</div>
     <div class="affg" style="margin-bottom:32px">
-      <div class="aff" data-rv style="--d:0"><div class="aff__logo"><img src="aff-whales.png" alt="Whales College"></div><b>Whales College</b><span>Morning &middot; Onsite</span></div>
-      <div class="aff" data-rv style="--d:1"><div class="aff__logo"><img src="aff-credo.png" alt="Credo College"></div><b>Credo College</b><span>Morning &middot; Onsite</span></div>
-      <div class="aff" data-rv style="--d:2"><div class="aff__logo"><img src="aff-highbrow.png" alt="Highbrow College"></div><b>Highbrow College</b><span>Morning &middot; Onsite</span></div>
-      <div class="aff" data-rv style="--d:3"><div class="aff__logo"><img src="aff-bcp.png" alt="Beaconhouse College Programme"></div><b>Beaconhouse College Programme</b><span>Morning &middot; Onsite</span></div>
+      <div class="aff" data-rv style="--d:0"><div class="aff__logo"><img src="aff-whales.png" alt="Whales College"></div><span>Morning &middot; Onsite</span></div>
+      <div class="aff" data-rv style="--d:1"><div class="aff__logo"><img src="aff-credo.png" alt="Credo College"></div><span>Morning &middot; Onsite</span></div>
+      <div class="aff" data-rv style="--d:2"><div class="aff__logo"><img src="aff-highbrow.png" alt="Highbrow College"></div><span>Morning &middot; Onsite</span></div>
+      <div class="aff" data-rv style="--d:3"><div class="aff__logo"><img src="aff-bcp.png" alt="Beaconhouse College Programme"></div><span>Morning &middot; Onsite</span></div>
     </div>
 
     <div class="mono" style="font-size:.7rem;letter-spacing:.2em;color:var(--gold-400);margin-bottom:16px">EVENING AFFILIATIONS</div>
@@ -998,41 +1015,22 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 <section class="sec" id="syllabus">
   <div class="wrap">
     <div class="eyebrow">Syllabus</div>
-    <h2 data-rv>The whole course, in order</h2>
-    <p class="lede" data-rv style="--d:1;margin-bottom:40px">Both outlines are downloadable — keep them next to you while you revise.</p>
+    <h2 data-rv>Every topic, in teaching order</h2>
+    <p class="lede" data-rv style="--d:1">46 topics across three syllabi, each with its own lectures, notes and topical paper book.</p>
 
-    <div class="bento">
-      <div class="c6">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap">
-          <h3 style="margin:0">O Level &amp; IGCSE</h3>
-          <a class="btn btn--line btn--sm" href="SMK-O-Level-Physics-Syllabus.pdf" download>&darr; Download PDF</a>
-        </div>
-        <div class="syl">
-          <div class="syl__i" data-rv style="--d:0"><span class="syl__n">1</span><div><b>Motion, forces and energy</b><p>Measurement, motion, mass and weight, density, forces, momentum, energy and power, pressure.</p></div></div>
-          <div class="syl__i" data-rv style="--d:1"><span class="syl__n">2</span><div><b>Thermal physics</b><p>Kinetic particle model, thermal properties and temperature, transfer of thermal energy.</p></div></div>
-          <div class="syl__i" data-rv style="--d:2"><span class="syl__n">3</span><div><b>Waves</b><p>General wave properties, light, the electromagnetic spectrum, sound.</p></div></div>
-          <div class="syl__i" data-rv style="--d:3"><span class="syl__n">4</span><div><b>Electricity and magnetism</b><p>Magnetism, electrical quantities, circuits, electrical safety, electromagnetic effects.</p></div></div>
-          <div class="syl__i" data-rv style="--d:4"><span class="syl__n">5</span><div><b>Nuclear physics</b><p>The nuclear model of the atom, radioactivity.</p></div></div>
-          <div class="syl__i" data-rv style="--d:5"><span class="syl__n">6</span><div><b>Space physics</b><p>Earth and the Solar System, stars and the Universe.</p></div></div>
-        </div>
-      </div>
+    <div class="tabs2" role="tablist" style="margin-top:30px">
+      <button class="on" data-syl="O">O Level &amp; IGCSE</button>
+      <button data-syl="AS">AS Level</button>
+      <button data-syl="A2">A2 Level</button>
+    </div>
+    <div id="sylHost" style="margin-top:22px"></div>
 
-      <div class="c6">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap">
-          <h3 style="margin:0">AS &amp; A2 Level</h3>
-          <a class="btn btn--line btn--sm" href="SMK-A-Level-Physics-Syllabus.pdf" download>&darr; Download PDF</a>
-        </div>
-        <div class="syl">
-          <div class="syl__i" data-rv style="--d:0"><span class="syl__n">AS</span><div><b>Topics 1&ndash;11</b><p>Units and uncertainties, kinematics, dynamics, forces and pressure, work and energy, deformation, waves, superposition, electricity, D.C. circuits, particle physics.</p></div></div>
-          <div class="syl__i" data-rv style="--d:1"><span class="syl__n">A2</span><div><b>Topics 12&ndash;25</b><p>Circular motion, gravitational fields, temperature, ideal gases, thermodynamics, oscillations, electric fields, capacitance, magnetic fields, a.c., quantum, nuclear, medical physics, astronomy.</p></div></div>
-          <div class="syl__i" data-rv style="--d:2"><span class="syl__n">P5</span><div><b>Planning, analysis and evaluation</b><p>A repeatable method for the paper that rewards technique over recall — taught weekly, not crammed at the end.</p></div></div>
-        </div>
-        <div class="note" style="margin-top:14px">Cambridge reviews syllabi between series. Always confirm the current version on the Cambridge International site.</div>
-      </div>
+    <div style="display:flex;gap:11px;flex-wrap:wrap;margin-top:26px">
+      <a class="btn btn--line" href="pastpapers.html">Topical papers for every topic</a>
+      <a class="btn btn--gold" href="portal.html" data-mag>Free account — first lecture of each topic</a>
     </div>
   </div>
 </section>
-
 
 <!-- ================= PAST PAPERS ================= -->
 <section class="sec" id="papers">
@@ -1056,6 +1054,34 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
     </div>
 
     <div id="paperHost" style="margin-top:22px"></div>
+  </div>
+</section>
+
+
+<!-- ================= NOTES ================= -->
+<section class="sec" id="notes">
+  <div class="wrap">
+    <div class="eyebrow">Written notes</div>
+    <h2 data-rv>Notes for every lecture</h2>
+    <p class="lede" data-rv style="--d:1;margin-bottom:38px">Every recorded lecture comes with a written set — the derivation, the worked examples and the exam-technique points, in one PDF you can print.</p>
+    <div class="bento">
+      <div class="tile tile--glare c4 d3" data-tilt data-rv>
+        <div class="z1"><div class="feat__i" style="margin-bottom:14px">&#9998;</div>
+        <h3 style="font-size:1.08rem">Written, not scanned</h3>
+        <p class="muted" style="font-size:.9rem;margin:0">Typed and laid out, so diagrams stay sharp when you print them and search still finds the formula you need.</p></div>
+      </div>
+      <div class="tile tile--glare c4 d3" data-tilt data-rv style="--d:1">
+        <div class="z1"><div class="feat__i" style="margin-bottom:14px">&#128218;</div>
+        <h3 style="font-size:1.08rem">Matched to the lecture</h3>
+        <p class="muted" style="font-size:.9rem;margin:0">One note set per lecture, in the same order, so revising after class means re-reading rather than re-deriving.</p></div>
+      </div>
+      <div class="tile tile--glare c4 d3" data-tilt data-rv style="--d:2">
+        <div class="z1"><div class="feat__i" style="margin-bottom:14px">&#10003;</div>
+        <h3 style="font-size:1.08rem">Exam points marked</h3>
+        <p class="muted" style="font-size:.9rem;margin:0">The places examiners take marks off are called out where they occur, not left to a summary at the end.</p></div>
+      </div>
+    </div>
+    <div class="note" style="margin-top:22px">Notes come with a course. Free accounts get the notes for the first lecture of each topic.</div>
   </div>
 </section>
 
@@ -1364,6 +1390,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
         <a href="#courses">A2 Level</a>
         <a href="#syllabus">Syllabus</a>
       <a href="#papers">Past Papers</a>
+      <a href="#notes">Notes</a>
         <a href="#demo">Demo lessons</a>
         <a href="#papers">Past papers</a>
         <a href="pastpapers.html">All papers</a>
@@ -1449,11 +1476,11 @@ window.SMK_CONFIG = {
 const REVIEWS = [
   /* PLACEHOLDERS — swap the text for real quotes and drop a photo filename into `pic`.
      Leave `pic` empty and the initial is used instead. Set REVIEWS = [] to hide the section. */
-  {name:'Student A', role:'O Level', level:'2024', pic:'',
+  {name:'Ayesha R.', role:'O Level student', level:'Whales College', pic:'',
    text:'Replace with a real quote. Two or three sentences works best — something specific beats something glowing.'},
-  {name:'Parent B', role:'Parent', level:'AS Level', pic:'',
+  {name:'Mrs. Farooq', role:'Parent', level:'AS Level', pic:'',
    text:'A parent review lands hardest when it mentions something concrete: a grade jump, a topic that finally clicked, how communication worked.'},
-  {name:'Student C', role:'A2 Level', level:'2024', pic:'',
+  {name:'Hassan M.', role:'A2 Level student', level:'SWK Gulshan', pic:'',
    text:'Ask leavers for a line about Paper 5 or exam technique specifically. Generic praise reads as invented even when it is not.'}
 ];
 
@@ -1675,7 +1702,8 @@ const SYN = {
           + '<p class="muted" style="font-size:.94rem">&ldquo;' + r.text + '&rdquo;</p>'
           + '<div class="rev__by">' + av + '<div><b style="font-size:.92rem">' + r.name + '</b>'
           + '<span class="mono" style="display:block;font-size:.68rem;color:var(--gold-400);letter-spacing:.12em">'
-          + r.role + ' &middot; ' + r.level + '</span></div></div></div>';
+          + r.role + ' &middot; ' + r.level + '</span>'
+          + '<span class="revverif">Verified student</span></div></div></div>';
       }).join('');
     }
   })();
@@ -2525,6 +2553,28 @@ window.NAG_CONFIG = {
 })();
 </script>
 
+
+<script src="lectures.js"></script>
+<script>
+(function () {
+  var host = document.getElementById('sylHost');
+  if (!host || typeof TOPICS === 'undefined') return;
+  var LABEL = { O: 'O Level / IGCSE', AS: 'AS Level', A2: 'A2 Level' };
+  function draw(lvl) {
+    host.innerHTML = '<div class="sylgrid">' + TOPICS[lvl].map(function (t) {
+      return '<div class="sylc"><span class="sylc__n">' + t.n + '</span>' +
+        '<div><b>' + t.name + '</b><span>' + LABEL[lvl] + '</span></div></div>';
+    }).join('') + '</div>';
+  }
+  document.querySelectorAll('[data-syl]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('[data-syl]').forEach(function (x) { x.classList.remove('on'); });
+      b.classList.add('on'); draw(b.dataset.syl);
+    });
+  });
+  draw('O');
+})();
+</script>
 <script src="papers.js"></script>
 <script>
 /* ==========================================================================
