@@ -1136,7 +1136,7 @@ const LECTURES = [
   'use strict';
   const $ = (s, c) => (c || document).querySelector(s);
   const $$ = (s, c) => Array.from((c || document).querySelectorAll(s));
-  const KEY = 'smk_session';
+  const KEY = 'smk_free';   // same key index.html uses
 
   /* ---------------- session ---------------- */
   const Session = {
@@ -1479,19 +1479,24 @@ const LECTURES = [
       return;
     }
     err.style.display = 'none';
-    localStorage.setItem(PKEY, id);
+    localStorage.setItem(PKEY, JSON.stringify({ sid: id.toUpperCase(), name: stu.name, lvl: stu.level }));
+    localStorage.setItem('smk_premium_id', id);
     open(stu, id);
     scrollTo(0, 0);
   });
 
   $('#pOut').addEventListener('click', function () {
-    var id = localStorage.getItem(PKEY);
+    var id = localStorage.getItem('smk_premium_id');
     if (id) SMKdevice.release(id);       // frees the slot for another device
     localStorage.removeItem(PKEY);
+    localStorage.removeItem('smk_premium_id');
     location.reload();
   });
 
-  var saved = localStorage.getItem(PKEY);
+  var saved = localStorage.getItem('smk_premium_id');
+  if (!saved) {
+    try { var o = JSON.parse(localStorage.getItem(PKEY)); if (o && o.sid) saved = o.sid.toLowerCase(); } catch (e) { }
+  }
   if (saved && STUDENTS[saved]) open(STUDENTS[saved], saved);
 })();
 </script>
