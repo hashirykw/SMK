@@ -657,7 +657,6 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 }
 @media print{.hdr,.ftr,.dock,.bot,.stage,#stars,.aura,#pre{display:none!important}}
 
-
 /* ---- counter spans always inherit their container's type ---- */
 .hero__m b [data-count], .strip b [data-count], .tile b [data-count]{
   font:inherit;color:inherit;letter-spacing:inherit;text-transform:none;
@@ -686,14 +685,12 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
   .flip__list--2col{grid-template-columns:1fr}
 }
 
-
 /* front face watermark — fills the lower area intentionally instead of
    leaving the dead space the taller card would otherwise show */
 .flip__wm{position:absolute;right:-18px;bottom:-26px;width:158px;opacity:.055;
   pointer-events:none;transition:transform .8s var(--ease),opacity .5s}
 .flip:hover .flip__wm{transform:translate(-8px,-8px) rotate(-6deg);opacity:.09}
 @media (max-width:520px){.flip--course{height:452px}.flip__wm{width:120px}}
-
 
 
 /* ---------- corner prompts ---------- */
@@ -1057,6 +1054,59 @@ button.plink:hover{border-color:var(--gold-400);color:var(--gold-300);background
   border:1px solid var(--line-soft);color:var(--muted);transition:.28s var(--ease)}
 .soc a:hover{border-color:var(--gold-400);color:var(--gold-300);transform:translateY(-3px)}
 .soc svg{width:19px;height:19px}
+
+/* ---------- free portal overlay ---------- */
+.portalv{position:fixed;inset:0;z-index:850;background:var(--bg);display:none;
+  flex-direction:column;overflow-y:auto}
+.portalv.open{display:flex;animation:pop .3s var(--ease)}
+body.pv-lock{overflow:hidden}
+.portalv__bar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:14px;
+  padding:14px 20px;border-bottom:1px solid var(--line-soft);
+  background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(14px)}
+.portalv__t{display:flex;align-items:center;gap:10px;flex:1}
+.portalv__t b{font-family:var(--display);font-size:1rem}
+.portalv__body{flex:1}
+@media(max-width:640px){.portalv__bar{padding:11px 14px}.portalv__t b{font-size:.9rem}}
+
+
+/* ---------- sign-in ---------- */
+.auth2{position:fixed;inset:0;z-index:850;display:none}
+.auth2.open{display:block}
+.auth2__bg{position:absolute;inset:0;background:rgba(10,16,28,.62);backdrop-filter:blur(6px)}
+.auth2__p{position:absolute;left:50%;top:50%;translate:-50% -50%;width:min(420px,calc(100vw - 28px));
+  max-height:92svh;overflow-y:auto;background:var(--navy-800);border:1px solid var(--line);
+  border-radius:20px;padding:26px;animation:pop .3s var(--ease)}
+[data-theme="light"] .auth2__p{background:#fff}
+.auth2__x{position:absolute;top:14px;right:18px;font-size:24px;line-height:1;color:var(--muted)}
+.switch--sm{margin-bottom:18px}
+.switch--sm button{padding:8px;font-size:.8rem}
+
+/* ---------- locked sections ---------- */
+.lockwrap{position:relative}
+.lockwrap[data-locked] > .lockbody{max-height:330px;overflow:hidden;
+  -webkit-mask-image:linear-gradient(#000 45%,transparent);mask-image:linear-gradient(#000 45%,transparent)}
+.lockbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;padding:16px 20px;border-radius:14px;
+  border:1px dashed var(--line);background:var(--panel);margin-top:14px}
+.lockwrap[data-locked] .lockbar{display:flex}
+.lockbar b{font-size:.94rem;flex:1;min-width:180px}
+.lockbar span{display:block;font-size:.84rem;color:var(--muted);font-weight:400;margin-top:2px}
+.lockbar .btn{flex:none}
+.lockicon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;
+  background:var(--panel-2);color:var(--gold-400);font-size:15px}
+
+/* ---------- who's signed in ---------- */
+.who{display:inline-flex;align-items:center;gap:9px;padding:6px 12px;border-radius:99px;
+  border:1px solid var(--line);background:var(--panel);font-size:.82rem}
+.who i{width:7px;height:7px;border-radius:50%;background:var(--ok);font-style:normal}
+.badge-prem{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:3px 8px;border-radius:99px;background:linear-gradient(135deg,var(--gold-600),var(--gold-300));
+  color:#150F04;font-weight:700}
+@media(max-width:760px){
+  .auth2__p{padding:20px 18px}
+  .lockbar{padding:13px 15px;gap:10px}
+  .lockbar b{font-size:.88rem}
+  .lockwrap[data-locked] > .lockbody{max-height:240px}
+}
 </style>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -1290,22 +1340,34 @@ button.plink:hover{border-color:var(--gold-400);color:var(--gold-300);background
 <!-- ================= PAST PAPERS ================= -->
 <section class="sec" id="papers">
   <div class="wrap">
-    <div class="eyebrow">Free for everyone</div>
-    <h2 data-rv>Every past paper, 2002 to 2024</h2>
-    <p class="lede" data-rv style="--d:1">Question papers open to anyone, straight in the browser. Mark schemes unlock with a free account.</p>
+    <div class="eyebrow">Past papers</div>
+    <h2 data-rv>Every paper, 2002 to 2024</h2>
+    <p class="lede" data-rv style="--d:1">Question papers open to everyone, straight in the browser. Mark schemes need a free account.</p>
 
-    <div class="strip" style="margin:24px 0 18px" data-rv>
+    <div class="strip" style="margin:22px 0 18px" data-rv>
       <div><b><span data-count="46">46</span></b><span>Topical books</span></div>
       <div><b><span data-count="55">55</span></b><span>Sessions</span></div>
       <div><b><span data-count="1204">1204</span></b><span>Files</span></div>
       <div><b><span data-count="23">23</span></b><span>Years</span></div>
     </div>
 
-    <div class="mini">
-      <a class="mini__c" href="pastpapers.html"><b>Topical</b><span>By topic, all years</span></a>
-      <a class="mini__c" href="pastpapers.html"><b>O Level &middot; 5054</b><span>44 sessions</span></a>
-      <a class="mini__c" href="pastpapers.html"><b>AS &amp; A2 &middot; 9702</b><span>55 sessions</span></a>
-      <a class="mini__c mini__c--go" href="pastpapers.html"><b>Open the archive &rarr;</b><span>1,426 papers</span></a>
+    <div class="lockwrap" id="papersLock" data-locked>
+      <div class="lockbody">
+        <div class="tabs2" role="tablist">
+          <button class="on" data-lvl="O">O Level</button>
+          <button data-lvl="AS">AS Level</button>
+          <button data-lvl="A2">A2 Level</button>
+          <button data-lvl="YR">By year</button>
+        </div>
+        <div id="paperHost" style="margin-top:18px"></div>
+      </div>
+      <div class="lockbar">
+        <span class="lockicon">&#128274;</span>
+        <b>See all 1,426 papers and every mark scheme
+          <span>A free account opens the full archive. No payment, no card.</span></b>
+        <button class="btn btn--gold btn--sm" data-open-auth="free">Create a free account</button>
+        <button class="btn btn--line btn--sm" data-open-auth="free-in">Already have one</button>
+      </div>
     </div>
   </div>
 </section>
@@ -1463,30 +1525,37 @@ button.plink:hover{border-color:var(--gold-400);color:var(--gold-300);background
 <!-- ================= PORTAL ================= -->
 <section class="sec" id="portal">
   <div class="wrap">
-    <div class="eyebrow">Student portal</div>
-    <h2 data-rv>Two ways in</h2>
-    <p class="lede" data-rv style="--d:1;margin-bottom:24px">Start free and see how it's taught. Upgrade when you want the whole course.</p>
+    <div class="eyebrow">Lectures</div>
+    <h2 data-rv>Recorded after every class</h2>
+    <p class="lede" data-rv style="--d:1;margin-bottom:22px">A free account opens the first lecture of every topic. The full course opens all of them, with written notes.</p>
 
-    <div class="two">
-      <a class="two__c" href="portal.html" data-rv>
-        <span class="chip">Free</span>
-        <b>Free account</b>
-        <p>First lecture of every topic in your syllabus, plus mark schemes for every past paper.</p>
-        <ul><li>Email, phone, syllabus</li><li>No payment, no card</li></ul>
-        <span class="two__go">Create a free account &rarr;</span>
-      </a>
-      <a class="two__c two__c--gold" href="portal.html" data-rv style="--d:1">
-        <span class="chip chip--gold">PKR 7,000 / month</span>
-        <b>Full course</b>
-        <p>Every lecture recorded after each class, written notes, downloads and live sessions.</p>
-        <ul><li>All lectures for your level</li><li>Notes for every topic</li><li>Sign in on 2 devices</li></ul>
-        <span class="two__go">See what's included &rarr;</span>
-      </a>
+    <div class="lockwrap" id="lecLock" data-locked>
+      <div class="lockbody">
+        <div class="two">
+          <div class="two__c">
+            <span class="chip">Free</span>
+            <b>First lecture of every topic</b>
+            <p>One opening lecture per topic in your syllabus &mdash; enough to judge the teaching before paying anything.</p>
+            <ul><li>Every topic, your level</li><li>Mark schemes for every paper</li></ul>
+          </div>
+          <div class="two__c two__c--gold">
+            <span class="chip chip--gold">PKR 7,000 / month</span>
+            <b>The full course</b>
+            <p>Every lecture, recorded after each class, with the written notes that go with it.</p>
+            <ul><li>All lectures for your level</li><li>Written notes per topic</li><li>Downloadable papers</li><li>Sign in on 2 devices</li></ul>
+          </div>
+        </div>
+      </div>
+      <div class="lockbar">
+        <span class="lockicon">&#9654;</span>
+        <b>Open your lectures
+          <span>Free account for the first of each topic &mdash; or the full course for all of them.</span></b>
+        <button class="btn btn--gold btn--sm" data-open-auth="free">Free account</button>
+        <button class="btn btn--line btn--sm" data-open-auth="prem">I have a premium ID</button>
+      </div>
     </div>
 
-    <p class="muted" style="text-align:center;font-size:.88rem;margin-top:18px">
-      Already have an account? <a href="portal.html" style="color:var(--gold-300)">Sign in</a>
-    </p>
+    <div id="lecLive" style="display:none;margin-top:6px"></div>
   </div>
 </section>
 
@@ -1589,6 +1658,90 @@ button.plink:hover{border-color:var(--gold-400);color:var(--gold-300);background
 </section>
 
 <!-- ================= FOOTER ================= -->
+<div class="portalv" id="portalv" role="dialog" aria-modal="true" aria-label="Free student portal">
+  <div class="portalv__bar">
+    <div class="portalv__t"><img src="mark.png" alt="" style="height:24px"><b id="pvTitle">Free Portal</b></div>
+    <button class="btn btn--line btn--sm" id="pvClose">Close &amp; keep browsing</button>
+  </div>
+  <div class="portalv__body">
+    <div class="wrap" style="max-width:760px;padding-block:34px 60px">
+
+      <section id="pvAuth">
+        <div class="auth">
+          <img src="logo.png" alt="SMK">
+          <div class="switch">
+            <button class="on" data-pvmode="up">Create account</button>
+            <button data-pvmode="in">Sign in</button>
+          </div>
+
+          <div id="pvUp">
+            <h2 style="font-size:1.35rem;text-align:center;margin-bottom:4px">Free account</h2>
+            <p class="muted" style="text-align:center;font-size:.85rem;margin-bottom:20px">
+              First lecture of every topic, plus mark schemes for every past paper &mdash; unlocked
+              across the whole site as soon as you sign up.</p>
+            <form id="pvSignup" novalidate>
+              <div class="fld"><label for="pvName">Full name <span class="rq">*</span></label>
+                <input id="pvName" data-check="name" autocomplete="name"></div>
+              <div class="fld"><label for="pvEmail">Email <span class="rq">*</span></label>
+                <input id="pvEmail" type="email" data-check="email" autocomplete="email"></div>
+              <div class="fld"><label for="pvPhone">Phone / WhatsApp <span class="rq">*</span></label>
+                <input id="pvPhone" type="tel" data-check="phone" placeholder="03XX XXXXXXX" autocomplete="tel"></div>
+              <div class="fld"><label for="pvLevel">Syllabus <span class="rq">*</span></label>
+                <select id="pvLevel" data-check="required">
+                  <option value="">Choose your syllabus&hellip;</option>
+                  <option value="O">O Level / IGCSE</option>
+                  <option value="AS">AS Level</option>
+                  <option value="A2">A2 Level</option>
+                </select></div>
+              <div class="hp"><input type="text" tabindex="-1" aria-hidden="true"></div>
+              <button class="btn btn--gold btn--wide" type="submit">Create my free account</button>
+              <p class="muted" style="font-size:.72rem;margin-top:10px;text-align:center">No payment. About twenty seconds.</p>
+            </form>
+            <div class="msg msg--bad" id="pvUpErr" style="display:none;margin-top:12px"></div>
+          </div>
+
+          <div id="pvIn" style="display:none">
+            <h2 style="font-size:1.35rem;text-align:center;margin-bottom:4px">Welcome back</h2>
+            <p class="muted" style="text-align:center;font-size:.85rem;margin-bottom:20px">Sign in with the email you registered with.</p>
+            <form id="pvSignin" novalidate>
+              <div class="fld"><label for="pvInEmail">Email</label>
+                <input id="pvInEmail" type="email" data-check="email" autocomplete="email"></div>
+              <button class="btn btn--gold btn--wide" type="submit">Sign in</button>
+            </form>
+            <div class="msg msg--bad" id="pvInErr" style="display:none;margin-top:12px"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="pvHome" style="display:none">
+        <div class="eyebrow">Free account</div>
+        <h1 style="font-size:clamp(1.6rem,4vw,2.3rem)">Welcome, <span id="pvName2">student</span></h1>
+        <p class="lede" id="pvLead"></p>
+
+        <div class="bento" style="margin:22px 0 26px">
+          <div class="tile c4"><div class="tile__n" id="pvTopics">0</div><span class="tile__k">Topics unlocked</span></div>
+          <div class="tile c4"><div class="tile__n" id="pvFree">0</div><span class="tile__k">Free lectures</span></div>
+          <div class="tile c4"><div class="tile__n">46</div><span class="tile__k">Topical books + MS</span></div>
+        </div>
+
+        <div class="note" style="margin-bottom:22px">
+          <b>Mark schemes are unlocked</b> everywhere on this site, including
+          <a href="pastpapers.html" style="color:var(--gold-300)">past papers</a>. Enrolled students
+          get every lecture &mdash; <a href="premium.html" style="color:var(--gold-300)">PKR 7,000/month</a>.
+        </div>
+
+        <h2 style="font-size:1.2rem">Your lectures</h2>
+        <div class="topics" id="pvTopicHost" style="margin-top:14px"></div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:28px">
+          <a class="btn btn--line" href="pastpapers.html">Past papers &amp; mark schemes</a>
+          <button class="btn btn--line" id="pvSignOut">Sign out</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
 <footer class="ftr">
   <div class="wrap">
     <div class="ftr__g">
@@ -1674,6 +1827,26 @@ window.SMK_CONFIG = {
   SUPABASE_ANON_KEY: 'sb_publishable_Jqy6vPplT6WZZr6PQ8RMtQ_pGMVKhmC',
   TABLE: 'registrations'
 };
+
+async function SMKsave(row) {
+  var C = window.SMK_CONFIG || {};
+  if (!C.SUPABASE_URL || !C.SUPABASE_ANON_KEY) return { ok: false, reason: 'unconfigured' };
+  try {
+    var res = await fetch(C.SUPABASE_URL + '/rest/v1/' + (C.TABLE || 'registrations'), {
+      method: 'POST',
+      headers: {
+        apikey: C.SUPABASE_ANON_KEY,
+        Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal'
+      },
+      body: JSON.stringify(row)
+    });
+    return res.ok ? { ok: true } : { ok: false, reason: 'http ' + res.status };
+  } catch (e) { return { ok: false, reason: 'network' }; }
+}
+window.SMKsave = SMKsave;
+
 
 </script>
 <script>
@@ -2528,7 +2701,6 @@ async function boot() {
     renderer.toneMappingExposure = light ? 1.0 : 1.2;
   };
 
-
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(), .04).texture;
 
@@ -2656,7 +2828,6 @@ async function boot() {
 </script>
 
 
-
 <script>
 /* ==========================================================================
    CORNER PROMPTS
@@ -2759,7 +2930,6 @@ window.NAG_CONFIG = {
   window.SMKnag = { show: show, clearAll: clearAll, config: C };
 })();
 </script>
-
 
 <script>
 /* ==========================================================================
@@ -2889,6 +3059,38 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
 </script>
 <script>
 /* ==========================================================================
+   LECTURES
+   ---------------------------------------------------------------------------
+   This is the only file you edit after a class. Add one line, commit, done.
+
+   Use the Lecture Manager in the admin panel to generate the line — it gives
+   you a Copy button so you never have to get the punctuation right by hand.
+
+   FIELDS
+     id      unique. Convention: level-topic-number   e.g. 'o-3-04'
+     lvl     'O' | 'AS' | 'A2'
+     topic   topic number, matches the topics list below
+     n       lecture number inside that topic. n:1 is FREE for everyone.
+     t       title shown to students
+     dur     '48:12'
+     vid     video ID or URL from your host (Bunny.net / Vimeo / YouTube)
+     notes   optional PDF filename or URL for that lecture's notes
+     date    optional, shown as "recorded on"
+
+   ANY lecture with n:1 is visible to free accounts.
+   Everything else needs a premium account. Nothing else to configure.
+   ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   Add new lectures at the bottom. The examples below show the shape —
+   delete them once your real ones are in.
+   -------------------------------------------------------------------------- */
+
+</script>
+
+<script>
+/* ==========================================================================
    PAST PAPERS — rendered from papers.js, which is generated from the repo.
    Question papers are open. Mark schemes need a free account.
    ========================================================================== */
@@ -2897,12 +3099,12 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   if (!host || typeof TOPICAL === 'undefined') return;
 
   // a free account is recorded here after signup; until then mark schemes lock
-  var signedIn = !!localStorage.getItem('smk_free_account') || !!localStorage.getItem('smk_premium');
+  var signedIn = function(){return !!localStorage.getItem('smk_free_account') || !!localStorage.getItem('smk_premium');};
 
   var LEVEL = { O: 'O Level & IGCSE', AS: 'AS Level', A2: 'A2 Level' };
 
   function lockNote() {
-    return signedIn ? '' :
+    return signedIn() ? '' :
       '<div class="note" style="margin-bottom:18px">' +
       '<b>Mark schemes are locked.</b> Create a free account — name, email, phone and your ' +
       'syllabus — and every mark scheme on this page opens. No payment, no card.' +
@@ -2913,7 +3115,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     if (!url) return '';
     if (url.indexOf('http') !== 0) url = (typeof PBASE !== 'undefined' ? PBASE : '') + url;
     // mark schemes need an account; question papers open for anyone
-    if (ms && !signedIn)
+    if (ms && !signedIn())
       return '<a class="plink plink--ms" href="portal.html" title="Free account unlocks mark schemes">' + label + '</a>';
     var t = (label + ' — ' + (window.__paperTitle || 'Paper')).replace(/"/g, '');
     return '<button class="plink' + (ms ? ' plink--ms open' : '') + '" ' +
@@ -2997,6 +3199,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     });
   });
 
+  window.renderPapers = function () { renderLevel('O'); };
   renderLevel('O');
 })();
 </script>
@@ -3100,6 +3303,518 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       bar.style.width = '0%';
     }
   };
+})();
+</script>
+<script>
+/* ==========================================================================
+   FREE PORTAL — lives inside index.html as a full-screen overlay.
+   Reuses index.html's own SMKmodal/theme/burger/reveal system; only adds
+   what index.html didn't already have (session, validation, lecture list).
+   ========================================================================== */
+(function () {
+  var $ = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+  var SKEY = 'smk_session';
+
+  var Session = {
+    get: function () { try { return JSON.parse(localStorage.getItem(SKEY)); } catch (e) { return null; } },
+    set: function (o) { localStorage.setItem(SKEY, JSON.stringify(o)); localStorage.setItem('smk_free_account', '1'); },
+    clear: function () { localStorage.removeItem(SKEY); localStorage.removeItem('smk_free_account'); }
+  };
+
+  var V = {
+    name: function (v) { return v.trim().length >= 2 || 'Please enter a name of at least 2 characters.'; },
+    email: function (v) { return /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v.trim()) || 'That email address does not look right.'; },
+    phone: function (v) {
+      var d = v.replace(/\D/g, '');
+      if (d.length < 10) return 'A phone number needs at least 10 digits.';
+      if (d.length > 15) return 'That is too many digits for a phone number.';
+      return true;
+    },
+    required: function (v) { return (v && v.trim() !== '') || 'Please choose an option.'; }
+  };
+
+  function fieldError(fld, msg) {
+    fld.classList.toggle('bad', !!msg);
+    var er = $('.er', fld);
+    if (!er) { er = document.createElement('div'); er.className = 'er'; fld.appendChild(er); }
+    er.textContent = msg || '';
+  }
+  function checkForm(form) {
+    var ok = true;
+    $$('.fld', form).forEach(function (fld) {
+      var i = $('input,select,textarea', fld); if (!i || !i.dataset.check) return;
+      var res = V[i.dataset.check] ? V[i.dataset.check](i.value) : true;
+      if (res !== true) { fieldError(fld, res); ok = false; } else fieldError(fld, '');
+    });
+    return ok;
+  }
+  document.addEventListener('blur', function (e) {
+    var i = e.target; if (!i.dataset || !i.dataset.check) return;
+    var fld = i.closest('.fld'); if (!fld) return;
+    var res = V[i.dataset.check] ? V[i.dataset.check](i.value) : true;
+    fieldError(fld, res === true ? '' : res);
+  }, true);
+
+  var LEVELNAME = { O: 'O Level / IGCSE', AS: 'AS Level', A2: 'A2 Level' };
+
+  function lecturesByTopic(lvl) {
+    if (typeof LECTURES === 'undefined') return [];
+    var list = LECTURES.filter(function (l) { return l.lvl === lvl; });
+    var topics = (typeof TOPICS !== 'undefined' ? TOPICS[lvl] : []) || [];
+    return topics.map(function (t) {
+      return { n: t.n, name: t.name, lectures: list.filter(function (l) { return l.topic === t.n; }).sort(function (a, b) { return a.n - b.n; }) };
+    }).filter(function (t) { return t.lectures.length; });
+  }
+  function freeLectures(lvl) {
+    return lecturesByTopic(lvl).map(function (t) { return { n: t.n, name: t.name, lectures: t.lectures.filter(function (l) { return l.n === 1; }) }; })
+      .filter(function (t) { return t.lectures.length; });
+  }
+
+  var pv = $('#portalv'), savedScroll = 0;
+  function openPv() {
+    savedScroll = window.scrollY;
+    pv.classList.add('open');
+    document.body.classList.add('pv-lock');
+    var sess = Session.get();
+    if (sess) show(sess); else { $('#pvAuth').style.display = ''; $('#pvHome').style.display = 'none'; }
+  }
+  function closePv() {
+    pv.classList.remove('open');
+    document.body.classList.remove('pv-lock');
+    if (history.replaceState) history.replaceState(null, '', location.pathname + location.search);
+    scrollTo(0, savedScroll);
+  }
+  var openBtn = $('#openFreeBtn');
+  if (openBtn) openBtn.addEventListener('click', openPv);
+  $('#pvClose').addEventListener('click', closePv);
+  addEventListener('keydown', function (e) { if (e.key === 'Escape' && pv.classList.contains('open')) closePv(); });
+
+  if (location.hash === '#portal-open') openPv();
+
+  $$('.switch button', pv).forEach(function (b) {
+    b.addEventListener('click', function () {
+      $$('.switch button', pv).forEach(function (x) { x.classList.remove('on'); });
+      b.classList.add('on');
+      $('#pvUp').style.display = b.dataset.pvmode === 'up' ? '' : 'none';
+      $('#pvIn').style.display = b.dataset.pvmode === 'in' ? '' : 'none';
+    });
+  });
+
+  function show(sess) {
+    $('#pvAuth').style.display = 'none';
+    $('#pvHome').style.display = '';
+    $('#pvName2').textContent = (sess.name || 'student').split(' ')[0];
+    $('#pvLead').textContent = LEVELNAME[sess.level] + ' \u2014 the opening lecture of every topic is yours.';
+
+    var groups = freeLectures(sess.level);
+    $('#pvTopics').textContent = groups.length;
+    $('#pvFree').textContent = groups.reduce(function (a, g) { return a + g.lectures.length; }, 0);
+
+    $('#pvTopicHost').innerHTML = groups.length ? groups.map(function (g, i) {
+      var all = lecturesByTopic(sess.level).find(function (t) { return t.n === g.n; });
+      var locked = all.lectures.length - g.lectures.length;
+      return '<div class="topic' + (i === 0 ? ' open' : '') + '">' +
+        '<button class="topic__h"><span class="topic__n">' + g.n + '</span>' +
+        '<span class="topic__t"><b>' + g.name + '</b><span>' + g.lectures.length + ' free' +
+        (locked > 0 ? ' \u00b7 ' + locked + ' more with a course' : '') + '</span></span>' +
+        '<span class="topic__c">\u25be</span></button>' +
+        '<div class="topic__b"><div>' + g.lectures.map(function (l) {
+          return '<button class="lec2 lec2--free" data-id="' + l.id + '"><span class="lec2__p">\u25b6</span>' +
+            '<span class="lec2__t"><b>' + l.t + '</b><span>Lecture ' + l.n + ' \u00b7 ' + l.dur + ' \u00b7 free</span></span></button>';
+        }).join('') +
+        (locked > 0 ? '<div class="lec2 lec2--lock"><span class="lec2__p">\ud83d\udd12</span>' +
+          '<span class="lec2__t"><b>' + locked + ' more lecture' + (locked > 1 ? 's' : '') + ' in this topic</b>' +
+          '<span>Included with a course \u2014 PKR 7,000/mo</span></span></div>' : '') +
+        '</div></div></div>';
+    }).join('') : '<div class="gate"><p class="muted" style="margin:0">Lectures for ' + LEVELNAME[sess.level] +
+      ' are being uploaded after each class. Check back shortly.</p></div>';
+
+    $$('.topic__h', pv).forEach(function (h) { h.addEventListener('click', function () { h.parentElement.classList.toggle('open'); }); });
+    $$('.lec2[data-id]', pv).forEach(function (b) { b.addEventListener('click', function () { playLecture(b.dataset.id, sess); }); });
+    if (window.SMKreveal) SMKreveal();
+  }
+
+  function playLecture(id, sess) {
+    var l = LECTURES.find(function (x) { return x.id === id; });
+    if (!l) return;
+    var tag = (sess.email || '').split('@')[0] + ' \u00b7 ' + (sess.phone || '');
+    var inner = l.vid
+      ? '<iframe src="' + l.vid + '" allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>'
+      : '<div class="player__ph"><div><div style="font-size:30px">\u25b6</div>' +
+        '<b style="font-family:var(--display);font-size:1.05rem;display:block;margin-top:9px">Video not linked yet</b></div></div>';
+    window.SMKmodal('<span class="chip chip--gold">Lecture ' + l.n + ' \u00b7 ' + l.dur + '</span>' +
+      '<h3 style="margin:12px 0 16px">' + l.t + '</h3>' +
+      '<div class="player" id="pvPlayerHost">' + inner + '</div>' +
+      (l.notes ? '<a class="notepill" style="margin-top:14px" href="' + l.notes + '" target="_blank" rel="noopener">\ud83d\udcc4 Lecture notes</a>' : '') +
+      '<p class="muted" style="font-size:.76rem;margin-top:12px">Your account details appear on the video.</p>');
+    watermark($('#pvPlayerHost'), tag);
+  }
+
+  function watermark(host, label) {
+    if (!host) return;
+    var wm = document.createElement('div'); wm.className = 'wm'; wm.textContent = label;
+    var wm2 = wm.cloneNode(true); wm2.classList.add('wm--b');
+    host.appendChild(wm); host.appendChild(wm2);
+    var spots = [[6, 8], [62, 14], [10, 74], [58, 80], [34, 44], [72, 52]], i = 0;
+    var move = function () {
+      var a = spots[i % spots.length], b = spots[(i + 3) % spots.length];
+      wm.style.left = a[0] + '%'; wm.style.top = a[1] + '%';
+      wm2.style.left = b[0] + '%'; wm2.style.top = b[1] + '%'; i++;
+    };
+    move(); host._wmTimer = setInterval(move, 7000);
+  }
+
+  $('#pvSignup').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    if ($('.hp input', this).value) return;
+    if (!checkForm(this)) return;
+    var btn = this.querySelector('button[type=submit]'), label = btn.textContent;
+    btn.textContent = 'Creating\u2026'; btn.disabled = true;
+
+    var sess = { name: $('#pvName').value.trim(), email: $('#pvEmail').value.trim().toLowerCase(),
+      phone: $('#pvPhone').value.trim(), level: $('#pvLevel').value, tier: 'free', at: Date.now() };
+    var r = { ok: false };
+    try {
+      r = await window.SMKsave({ name: sess.name, email: sess.email, phone: sess.phone,
+        level: LEVELNAME[sess.level], mode: 'Free account', session: '', message: '', source: '/index.html#portal' });
+    } catch (e2) { }
+    Session.set(sess);
+    btn.textContent = label; btn.disabled = false;
+    if (!r.ok) {
+      var er = $('#pvUpErr'); er.style.display = 'block';
+      er.textContent = 'Account created on this device, but we could not reach the server. Please also message 0302 8056789.';
+    }
+    show(sess);
+  });
+
+  $('#pvSignin').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!checkForm(this)) return;
+    var sess = Session.get();
+    if (sess && sess.email === $('#pvInEmail').value.trim().toLowerCase()) { show(sess); return; }
+    var er = $('#pvInErr'); er.style.display = 'block';
+    er.textContent = 'No account found on this device with that email. Create one above \u2014 it takes twenty seconds.';
+  });
+
+  $('#pvSignOut').addEventListener('click', function () { Session.clear(); location.reload(); });
+
+  var existing = Session.get();
+  if (existing && location.hash === '#portal-open') show(existing);
+})();
+</script>
+
+<!-- ================= SIGN IN ================= -->
+<div class="auth2" id="auth2" role="dialog" aria-label="Sign in">
+  <div class="auth2__bg"></div>
+  <div class="auth2__p">
+    <button class="auth2__x" aria-label="Close">&times;</button>
+    <img src="logo.png" alt="SMK" style="height:56px;margin:0 auto 16px;display:block">
+
+    <div class="switch" id="authTabs">
+      <button class="on" data-tab="free">Free account</button>
+      <button data-tab="prem">Premium</button>
+    </div>
+
+    <!-- FREE -->
+    <div data-pane="free">
+      <div class="switch switch--sm">
+        <button class="on" data-sub="up">Create</button>
+        <button data-sub="in">Already have one</button>
+      </div>
+
+      <form id="fUp" novalidate>
+        <div class="fld"><label for="aName">Name <span class="rq">*</span></label>
+          <input id="aName" data-check="name" autocomplete="name"></div>
+        <div class="fld"><label for="aEmail">Email <span class="rq">*</span></label>
+          <input id="aEmail" type="email" data-check="email" autocomplete="email"></div>
+        <div class="fld"><label for="aPhone">Phone <span class="rq">*</span></label>
+          <input id="aPhone" type="tel" data-check="phone" placeholder="03XX XXXXXXX" autocomplete="tel"></div>
+        <div class="fld"><label for="aLevel">Syllabus <span class="rq">*</span></label>
+          <select id="aLevel" data-check="required">
+            <option value="">Choose…</option>
+            <option value="O">O Level / IGCSE</option>
+            <option value="AS">AS Level</option>
+            <option value="A2">A2 Level</option>
+          </select></div>
+        <div class="hp"><input type="text" tabindex="-1" aria-hidden="true"></div>
+        <button class="btn btn--gold btn--wide" type="submit">Create free account</button>
+        <p class="muted" style="font-size:.76rem;text-align:center;margin:10px 0 0">
+          Unlocks mark schemes and the first lecture of every topic. No payment.</p>
+      </form>
+
+      <form id="fIn" novalidate style="display:none">
+        <div class="fld"><label for="aInEmail">Email</label>
+          <input id="aInEmail" type="email" data-check="email" autocomplete="email"></div>
+        <button class="btn btn--gold btn--wide" type="submit">Sign in</button>
+        <div class="msg msg--bad" id="fInErr" style="display:none;margin-top:12px"></div>
+      </form>
+    </div>
+
+    <!-- PREMIUM -->
+    <div data-pane="prem" style="display:none">
+      <form id="pIn" novalidate>
+        <div class="fld"><label for="aSid">Student ID</label>
+          <input id="aSid" placeholder="SMK-O26-0147" spellcheck="false" autocomplete="username"></div>
+        <div class="fld"><label for="aPin">Password</label>
+          <input id="aPin" type="password" autocomplete="current-password"></div>
+        <button class="btn btn--gold btn--wide" type="submit">Sign in</button>
+        <div class="msg msg--bad" id="pInErr" style="display:none;margin-top:12px"></div>
+      </form>
+      <div class="note" style="margin-top:16px;font-size:.84rem">
+        <b>No student ID yet?</b> Fill the registration form below. We reply on WhatsApp within
+        2–3 hours, arrange payment, and send your ID and password.
+        <a href="#register" class="auth2__close-go" style="color:var(--gold-300)">Register &rarr;</a>
+      </div>
+      <p class="muted" style="font-size:.76rem;text-align:center;margin-top:12px">
+        You can sign in on up to <b>2 devices</b> with the same ID.</p>
+    </div>
+  </div>
+</div>
+
+
+<script>
+/* form validation — index.html doesn't load portal.js, so it carries its own */
+(function () {
+  var V = {
+    name: function (v) { return v.trim().length >= 2 || 'Please enter a name of at least 2 characters.'; },
+    email: function (v) { return /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v.trim()) || 'That email address does not look right.'; },
+    phone: function (v) {
+      var d = v.replace(/\D/g, '');
+      if (d.length < 10) return 'A phone number needs at least 10 digits.';
+      if (d.length > 15) return 'That is too many digits for a phone number.';
+      return true;
+    },
+    required: function (v) { return (v && v.trim() !== '') || 'Please choose an option.'; }
+  };
+  function err(fld, msg) {
+    fld.classList.toggle('bad', !!msg);
+    var e = fld.querySelector('.er');
+    if (!e) { e = document.createElement('div'); e.className = 'er'; fld.appendChild(e); }
+    e.textContent = msg || '';
+  }
+  window.SMKcheckForm = function (form) {
+    var ok = true;
+    Array.prototype.forEach.call(form.querySelectorAll('.fld'), function (fld) {
+      var i = fld.querySelector('input,select,textarea');
+      if (!i || !i.dataset.check) return;
+      var r = V[i.dataset.check] ? V[i.dataset.check](i.value) : true;
+      if (r !== true) { err(fld, r); ok = false; } else err(fld, '');
+    });
+    return ok;
+  };
+  document.addEventListener('blur', function (e) {
+    var i = e.target;
+    if (!i.dataset || !i.dataset.check) return;
+    var fld = i.closest('.fld'); if (!fld) return;
+    var r = V[i.dataset.check] ? V[i.dataset.check](i.value) : true;
+    err(fld, r === true ? '' : r);
+  }, true);
+  if (!window.SMKsave) {
+    window.SMKsave = async function (row) {
+      var C = window.SMK_CONFIG || {};
+      if (!C.SUPABASE_URL || C.SUPABASE_URL.indexOf('http') !== 0) return { ok: false };
+      try {
+        var r = await fetch(C.SUPABASE_URL + '/rest/v1/' + (C.TABLE || 'registrations'), {
+          method: 'POST',
+          headers: { apikey: C.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY,
+                     'Content-Type': 'application/json', Prefer: 'return=minimal' },
+          body: JSON.stringify(row)
+        });
+        return { ok: r.ok };
+      } catch (e) { return { ok: false }; }
+    };
+  }
+})();
+</script>
+
+<script>
+/* ==========================================================================
+   TIER STATE
+   none  → question papers only
+   free  → mark schemes, full archive, lecture 1 of every topic
+   prem  → everything, plus downloads and notes (lectures live in premium.html)
+   Sessions persist until the student signs out.
+   ========================================================================== */
+(function () {
+  var $ = function (q, c) { return (c || document).querySelector(q); };
+  var $$ = function (q, c) { return Array.prototype.slice.call((c || document).querySelectorAll(q)); };
+  var FREE = 'smk_free', PREM = 'smk_premium';
+
+  var STUDENTS = {
+    'smk-o26-0147': { pin: 'smk2026', name: 'Ayesha R.', lvl: 'O'  },
+    'smk-a26-0032': { pin: 'smk2026', name: 'Bilal K.',  lvl: 'AS' },
+    'smk-t26-0009': { pin: 'smk2026', name: 'Hina S.',   lvl: 'A2' }
+  };
+
+  function session() {
+    try {
+      var p = JSON.parse(localStorage.getItem(PREM));
+      if (p) return { tier: 'prem', name: p.name, lvl: p.lvl, sid: p.sid };
+    } catch (e) { }
+    try {
+      var f = JSON.parse(localStorage.getItem(FREE));
+      if (f) return { tier: 'free', name: f.name, lvl: f.level };
+    } catch (e) { }
+    return { tier: 'none' };
+  }
+
+  /* ---------- apply the tier across the page ---------- */
+  function apply() {
+    var s = session();
+    document.documentElement.setAttribute('data-tier', s.tier);
+
+    // papers open at free and above; lectures need a tier too
+    setLock('#papersLock', s.tier !== 'none');
+    setLock('#lecLock', s.tier !== 'none');
+
+    // header
+    var cta = $('.hdr__cta');
+    if (cta) {
+      cta.innerHTML = s.tier === 'none'
+        ? '<button class="btn btn--line btn--sm" data-open-auth="free-in">Sign in</button>' +
+          '<a class="btn btn--gold btn--sm" href="#register" data-mag>Register</a>'
+        : '<span class="who"><i></i>' + (s.name || 'Student').split(' ')[0] +
+            (s.tier === 'prem' ? ' <span class="badge-prem">Premium</span>' : '') + '</span>' +
+          (s.tier === 'prem'
+            ? '<a class="btn btn--gold btn--sm" href="premium.html">My Course</a>'
+            : '<a class="btn btn--gold btn--sm" href="#portal">Upgrade</a>') +
+          '<button class="btn btn--line btn--sm" id="signOutBtn">Sign out</button>';
+      var so = $('#signOutBtn');
+      if (so) so.addEventListener('click', function () {
+        localStorage.removeItem(FREE); localStorage.removeItem(PREM); location.reload();
+      });
+    }
+
+    if (typeof renderPapers === 'function') renderPapers();
+    renderLectures(s);
+  }
+
+  function setLock(sel, unlocked) {
+    var el = $(sel); if (!el) return;
+    if (unlocked) el.removeAttribute('data-locked'); else el.setAttribute('data-locked', '');
+  }
+
+  /* ---------- lectures shown inline once signed in ---------- */
+  function renderLectures(s) {
+    var host = $('#lecLive');
+    if (!host || s.tier === 'none' || typeof TOPICS === 'undefined') { if (host) host.style.display = 'none'; return; }
+    var lvl = s.lvl || 'O';
+    var groups = (TOPICS[lvl] || []).map(function (t) {
+      var ls = LECTURES.filter(function (l) { return l.lvl === lvl && l.topic === t.n; })
+                       .sort(function (a, b) { return a.n - b.n; });
+      return { t: t, all: ls, show: s.tier === 'prem' ? ls : ls.filter(function (l) { return l.n === 1; }) };
+    }).filter(function (g) { return g.show.length; });
+
+    if (!groups.length) { host.style.display = 'none'; return; }
+    host.style.display = '';
+    host.innerHTML =
+      '<div class="note" style="margin-bottom:14px">' +
+        (s.tier === 'prem'
+          ? '<b>Premium.</b> Every lecture for ' + lvl + ' is below. New ones appear after each class.'
+          : '<b>Free account.</b> The first lecture of each topic is below. ' +
+            '<a href="#register" style="color:var(--gold-300)">Upgrade</a> for all of them plus notes.') +
+      '</div><div class="topics">' +
+      groups.map(function (g, i) {
+        var locked = g.all.length - g.show.length;
+        return '<div class="topic' + (i === 0 ? ' open' : '') + '">' +
+          '<button class="topic__h"><span class="topic__n">' + g.t.n + '</span>' +
+          '<span class="topic__t"><b>' + g.t.name + '</b><span>' + g.show.length + ' available' +
+          (locked > 0 ? ' · ' + locked + ' with a course' : '') + '</span></span>' +
+          '<span class="topic__c">&#9662;</span></button><div class="topic__b"><div>' +
+          g.show.map(function (l) {
+            return '<a class="lec2' + (l.n === 1 ? ' lec2--free' : '') + '" href="premium.html">' +
+              '<span class="lec2__p">&#9654;</span><span class="lec2__t"><b>' + l.t + '</b>' +
+              '<span>Lecture ' + l.n + ' · ' + l.dur + (l.n === 1 ? ' · free' : '') + '</span></span></a>';
+          }).join('') +
+          (locked > 0 ? '<div class="lec2 lec2--lock"><span class="lec2__p">&#128274;</span>' +
+            '<span class="lec2__t"><b>' + locked + ' more in this topic</b>' +
+            '<span>PKR 7,000/month</span></span></div>' : '') +
+          '</div></div></div>';
+      }).join('') + '</div>';
+    $$('.topic__h', host).forEach(function (h) {
+      h.addEventListener('click', function () { h.parentElement.classList.toggle('open'); });
+    });
+  }
+
+  /* ---------- the modal ---------- */
+  var box = $('#auth2');
+  function open(which) {
+    box.classList.add('open'); document.body.classList.add('lock');
+    tab(which === 'prem' ? 'prem' : 'free');
+    if (which === 'free-in') sub('in');
+    if (which === 'free') sub('up');
+  }
+  function close() { box.classList.remove('open'); document.body.classList.remove('lock'); }
+  function tab(t) {
+    $$('#authTabs button').forEach(function (b) { b.classList.toggle('on', b.dataset.tab === t); });
+    $$('[data-pane]').forEach(function (p) { p.style.display = p.dataset.pane === t ? '' : 'none'; });
+  }
+  function sub(v) {
+    $$('[data-sub]').forEach(function (b) { b.classList.toggle('on', b.dataset.sub === v); });
+    $('#fUp').style.display = v === 'up' ? '' : 'none';
+    $('#fIn').style.display = v === 'in' ? '' : 'none';
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-open-auth]');
+    if (t) { e.preventDefault(); open(t.dataset.openAuth); return; }
+    if (e.target.closest('.auth2__x') || e.target.classList.contains('auth2__bg')) close();
+    if (e.target.closest('.auth2__close-go')) close();
+    var tb = e.target.closest('#authTabs button'); if (tb) tab(tb.dataset.tab);
+    var sb = e.target.closest('[data-sub]'); if (sb) sub(sb.dataset.sub);
+  });
+  addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+
+  /* ---------- free signup ---------- */
+  $('#fUp').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    if ($('.hp input', this).value) return;
+    if (!SMKcheckForm(this)) return;
+    var sess = { name: $('#aName').value.trim(), email: $('#aEmail').value.trim().toLowerCase(),
+                 phone: $('#aPhone').value.trim(), level: $('#aLevel').value };
+    localStorage.setItem(FREE, JSON.stringify(sess));
+    localStorage.setItem('smk_free_account', '1');
+    try {
+      await SMKsave({ name: sess.name, email: sess.email, phone: sess.phone,
+        level: { O: 'O Level / IGCSE', AS: 'AS Level', A2: 'A2 Level' }[sess.level],
+        mode: 'Free account', session: '', message: '', source: '/index.html' });
+    } catch (err) { }
+    close(); apply();
+    var el = $('#papers'); if (el) el.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  /* ---------- free sign in ---------- */
+  $('#fIn').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!SMKcheckForm(this)) return;
+    var saved = null;
+    try { saved = JSON.parse(localStorage.getItem(FREE)); } catch (er) { }
+    if (saved && saved.email === $('#aInEmail').value.trim().toLowerCase()) {
+      localStorage.setItem('smk_free_account', '1'); close(); apply(); return;
+    }
+    var m = $('#fInErr'); m.style.display = 'block';
+    m.textContent = 'No free account on this device with that email. Create one — it takes twenty seconds.';
+  });
+
+  /* ---------- premium sign in ---------- */
+  $('#pIn').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var id = $('#aSid').value.trim().toLowerCase(), pin = $('#aPin').value.trim();
+    var stu = STUDENTS[id], m = $('#pInErr');
+    if (!stu || stu.pin !== pin) {
+      m.style.display = 'block';
+      m.textContent = stu ? 'That ID is right but the password is not.'
+                          : 'No student found with that ID. Check the message we sent you.';
+      return;
+    }
+    localStorage.setItem(PREM, JSON.stringify({ sid: id.toUpperCase(), name: stu.name, lvl: stu.lvl }));
+    localStorage.setItem('smk_free_account', '1');
+    m.style.display = 'none'; close(); apply();
+    var el = $('#portal'); if (el) el.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  window.SMKapplyTier = apply;
+  apply();
 })();
 </script>
 </body>
