@@ -557,9 +557,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 @keyframes shk{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}
   30%,50%,70%{transform:translateX(-7px)}40%,60%{transform:translateX(7px)}}
 .shake{animation:shk .5s}
-var STUDENTS = {
-    'smk-t26-0001': { pin: 'Hashir1@', name: 'HASHIR', level: 'A2' }
-  };
+
 /* ================= lectures ================= */
 .lechead{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:flex-end}
 .bar{height:7px;border-radius:99px;background:var(--panel-2);overflow:hidden}
@@ -1368,11 +1366,25 @@ const LECTURES = [
      DEMO STUDENTS — replace with real accounts once the backend is live.
      Credentials in a public file protect nothing; this proves the flow.
      ------------------------------------------------------------------ */
-  var STUDENTS = {
-    'smk-o26-0147': { pin: 'smk2026', name: 'Ayesha R.', level: 'O'  },
-    'smk-a26-0032': { pin: 'smk2026', name: 'Bilal K.',  level: 'AS' },
-    'smk-t26-0009': { pin: 'smk2026', name: 'Hina S.',   level: 'A2' }
-  };
+  /* Students and lectures live in the database. Nothing is hardcoded here, so
+     adding a student in the admin panel takes effect immediately. The password
+     is checked inside the database by student_login() — it never travels. */
+  var C = window.SMK_CONFIG || {};
+  function deviceKey() {
+    var k = localStorage.getItem('smk_device_key');
+    if (!k) { k = 'd-' + Math.random().toString(36).slice(2, 11); localStorage.setItem('smk_device_key', k); }
+    return k;
+  }
+  async function login(id, pw) {
+    var res = await fetch(C.SUPABASE_URL + '/rest/v1/rpc/student_login', {
+      method: 'POST',
+      headers: { apikey: C.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY,
+                 'Content-Type': 'application/json' },
+      body: JSON.stringify({ p_id: id, p_pw: pw, p_device: deviceKey() })
+    });
+    if (!res.ok) throw new Error('Could not reach the server.');
+    return res.json();
+  }
 
   window.SMKmodal = function (html) {
     var m = document.querySelector('.modal');
@@ -1394,7 +1406,19 @@ const LECTURES = [
     $('#pName').textContent = stu.name.split(' ')[0];
     $('#pLead').textContent = LEVELNAME[stu.level] + ' — every lecture, note and past paper for your course.';
 
-    var groups = SMKlectures.byTopic(stu.level);
+    var course = {};
+    try { course = JSON.parse(localStorage.getItem('smk_course')) || {}; } catch (e) { }
+    var lecs = course.lectures || [], tops = course.topics || [];
+    var groups = tops.map(function (t) {
+      return { n: t.n, name: t.name,
+               lectures: lecs.filter(function (l) { return l.topic === t.n; })
+                             .sort(function (a, b) { return a.n - b.n; })
+                             .map(function (l) {
+                               return { id: l.id, n: l.n, t: l.title, dur: l.duration || '',
+                                        vid: l.video_url || '', notes: l.notes_url || '',
+                                        date: l.recorded || '' };
+                             }) };
+    }).filter(function (g) { return g.lectures.length; });
     var all = groups.reduce(function (a, g) { return a + g.lectures.length; }, 0);
     var notes = groups.reduce(function (a, g) { return a + g.lectures.filter(function (l) { return l.notes; }).length; }, 0);
     var mins = groups.reduce(function (a, g) {
@@ -1402,7 +1426,7 @@ const LECTURES = [
         var p = (l.dur || '0:0').split(':'); return b + (+p[0] || 0) + (+p[1] || 0) / 60;
       }, 0);
     }, 0);
-    var totalTopics = (TOPICS[stu.level] || []).length;
+    var totalTopics = tops.length || 22;
 
     $('#mTopics').textContent = groups.length;
     $('#mLectures').textContent = all;
@@ -1460,38 +1484,52 @@ const LECTURES = [
 
   $('#premForm').addEventListener('submit', function (e) {
     e.preventDefault();
-    var id = $('#pId').value.trim().toLowerCase();
-    var pin = $('#pPin').value.trim();
-    var stu = STUDENTS[id];
-    var err = $('#gErr');
-    if (!stu || stu.pin !== pin) {
-      err.style.display = 'block';
-      err.textContent = !stu
-        ? 'No student found with that ID. Check the message you were sent, or ask on WhatsApp.'
-        : 'That ID is right but the access code is not.';
-      this.classList.add('shake');
-      setTimeout(function () { $('#premForm').classList.remove('shake'); }, 500);
-      return;
+    var id = $('#pId').value.trim(), pin = $('#pPin').value.trim();
+    var err = $('#gErr'), btn = this.querySelector('button[type=submit]'), label = btn.textContent;
+    if (!id || !pin) {
+      err.style.display = 'block'; err.textContent = 'Enter your student ID and password.'; return;
     }
-    var claim = SMKdevice.claim(id, 2);
-    if (!claim.ok) {
+    btn.disabled = true; btn.textContent = 'Signing in…';
+
+    login(id, pin).then(function (r) {
+      if (!r || !r.ok) {
+        var why = {
+          no_student: 'No student found with that ID. Check the message we sent you.',
+          bad_password: 'That ID is right but the password is not.',
+          paused: 'This account is paused. Message 0302 8056789 to reactivate it.',
+          too_many_devices: 'This ID is already signed in on 2 devices, which is the limit. ' +
+                            'Sign out on one of them, or message 0302 8056789.'
+        }[(r && r.reason) || ''] || 'Could not sign you in. Please try again.';
+        err.style.display = 'block'; err.textContent = why;
+        return;
+      }
+      err.style.display = 'none';
+      localStorage.setItem(PKEY, JSON.stringify({ sid: r.student_id, name: r.name, lvl: r.level }));
+      localStorage.setItem('smk_premium_id', r.student_id.toLowerCase());
+      localStorage.setItem('smk_free_account', '1');
+      localStorage.setItem('smk_course', JSON.stringify({
+        lectures: r.lectures || [], topics: r.topics || [], devices: r.devices || 1 }));
+      open({ name: r.name, level: r.level }, r.student_id.toLowerCase());
+      scrollTo(0, 0);
+    }).catch(function (ex) {
       err.style.display = 'block';
-      err.innerHTML = 'This account is already signed in on <b>2 devices</b>, which is the limit. ' +
-        'Sign out on one of them, or message <a href="https://wa.me/923028056789" target="_blank" rel="noopener" style="color:var(--gold-300)">0302 8056789</a> to release a device.';
-      return;
-    }
-    err.style.display = 'none';
-    localStorage.setItem(PKEY, JSON.stringify({ sid: id.toUpperCase(), name: stu.name, lvl: stu.level }));
-    localStorage.setItem('smk_premium_id', id);
-    open(stu, id);
-    scrollTo(0, 0);
+      err.textContent = ex.message + ' Check your connection and try again.';
+    }).finally(function () { btn.disabled = false; btn.textContent = label; });
   });
 
   $('#pOut').addEventListener('click', function () {
     var id = localStorage.getItem('smk_premium_id');
-    if (id) SMKdevice.release(id);       // frees the slot for another device
+    if (id) {
+      fetch(C.SUPABASE_URL + '/rest/v1/rpc/release_device', {
+        method: 'POST',
+        headers: { apikey: C.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY,
+                   'Content-Type': 'application/json' },
+        body: JSON.stringify({ p_id: id, p_device: deviceKey() })
+      }).catch(function () { });
+    }
     localStorage.removeItem(PKEY);
     localStorage.removeItem('smk_premium_id');
+    localStorage.removeItem('smk_course');
     location.reload();
   });
 
@@ -1499,7 +1537,12 @@ const LECTURES = [
   if (!saved) {
     try { var o = JSON.parse(localStorage.getItem(PKEY)); if (o && o.sid) saved = o.sid.toLowerCase(); } catch (e) { }
   }
-  if (saved && STUDENTS[saved]) open(STUDENTS[saved], saved);
+  if (saved) {
+    try {
+      var o = JSON.parse(localStorage.getItem(PKEY));
+      if (o && o.sid) open({ name: o.name, level: o.lvl }, saved);
+    } catch (e) { }
+  }
 })();
 </script>
 </body></html>
