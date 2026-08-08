@@ -3,13 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Free Portal — Sir Mehboob Khan</title>
-<meta name="description" content="Create a free account for the first lecture of every topic, plus mark schemes for every past paper.">
+<title>Student Portal — Sir Mehboob Khan</title>
+<meta name="description" content="Sign in to the SMK student portal — free account or enrolled student.">
 <link rel="canonical" href="https://physicswithsmk.vercel.app/portal.html">
-<meta property="og:url" content="https://physicswithsmk.vercel.app/portal.html">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://physicswithsmk.vercel.app/lockup.png">
-<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
@@ -18,7 +14,7 @@
 <meta name="theme-color" content="#F4EBE0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter+Tight:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter+Tight:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 
 /* ==========================================================================
@@ -902,617 +898,63 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 </style>
 </head>
 <body class="ready">
-<canvas id="stars"></canvas>
-<div class="aura"></div>
-
-<header class="hdr">
+<header class="hdr stuck">
   <div class="hdr__in">
     <a class="logo" href="index.html"><img src="mark.png" alt="SMK"><b>SIR <i>MEHBOOB</i> KHAN</b></a>
-    <nav class="nav">
-      <a href="index.html#courses">Courses</a>
-      <a href="pastpapers.html">Past Papers</a>
-      <a href="portal.html" class="on">Free Portal</a>
-      <a href="premium.html">My Course</a>
-      <a href="index.html#faq">FAQ</a>
-    </nav>
-    <div class="hdr__cta"><a class="btn btn--gold btn--sm" href="index.html#register">Register for a course</a></div>
-    <button class="burger" aria-label="Menu"><i></i><i></i><i></i></button>
+    <div class="hdr__cta"><a class="btn btn--line btn--sm" href="index.html">Back to site</a></div>
   </div>
 </header>
-<nav class="mob">
-  <a href="index.html">Home</a>
-  <a href="pastpapers.html">Past Papers</a>
-  <a href="portal.html">Free Portal</a>
-  <a href="premium.html">My Course</a>
-  <a href="index.html#register">Register</a>
-</nav>
 
-<main class="page" id="app">
-  <div class="wrap">
-    <div class="crumb"><a href="index.html">Home</a> / Free Portal</div>
+<main class="page">
+  <div class="wrap" style="max-width:780px">
+    <div class="crumb"><a href="index.html">Home</a> / Student Portal</div>
+    <div class="eyebrow">Student portal</div>
+    <h1 style="font-size:clamp(1.9rem,4.4vw,2.9rem)">Which one are you?</h1>
+    <p class="lede">Free accounts and enrolled students both sign in on the main site &mdash; this just points you at the right door.</p>
 
-    <!-- signed out -->
-    <section id="authView">
-      <div class="auth">
-        <img src="logo.png" alt="SMK">
-        <div class="switch">
-          <button class="on" data-mode="up">Create account</button>
-          <button data-mode="in">Sign in</button>
-        </div>
+    <div class="two" style="margin-top:30px">
+      <a class="two__c" href="index.html#papers" data-go="free">
+        <span class="chip">Free</span>
+        <b>Free account</b>
+        <p>First lecture of every topic, plus mark schemes for every past paper.</p>
+        <ul><li>Email, phone, syllabus</li><li>No payment, no card</li></ul>
+        <span class="two__go">Create one or sign in &rarr;</span>
+      </a>
+      <a class="two__c two__c--gold" href="premium.html">
+        <span class="chip chip--gold">PKR 7,000 / month</span>
+        <b>Enrolled student</b>
+        <p>Every lecture, written notes, downloads. Sign in with the student ID sent to you on WhatsApp.</p>
+        <ul><li>All lectures for your level</li><li>Notes for every topic</li><li>2 devices</li></ul>
+        <span class="two__go">Open My Course &rarr;</span>
+      </a>
+    </div>
 
-        <div id="upPane">
-          <h2 style="font-size:1.45rem;text-align:center;margin-bottom:4px">Free account</h2>
-          <p class="muted" style="text-align:center;font-size:.86rem;margin-bottom:22px">
-            First lecture of every topic, plus mark schemes for every past paper.</p>
-          <form id="signupForm" novalidate>
-            <div class="fld"><label for="sName">Full name <span class="rq">*</span></label>
-              <input id="sName" data-check="name" autocomplete="name"></div>
-            <div class="fld"><label for="sEmail">Email <span class="rq">*</span></label>
-              <input id="sEmail" type="email" data-check="email" autocomplete="email"></div>
-            <div class="fld"><label for="sPhone">Phone / WhatsApp <span class="rq">*</span></label>
-              <input id="sPhone" type="tel" data-check="phone" placeholder="03XX XXXXXXX" autocomplete="tel"></div>
-            <div class="fld"><label for="sLevel">Syllabus <span class="rq">*</span></label>
-              <select id="sLevel" data-check="required">
-                <option value="">Choose your syllabus…</option>
-                <option value="O">O Level / IGCSE</option>
-                <option value="AS">AS Level</option>
-                <option value="A2">A2 Level</option>
-              </select></div>
-            <div class="fld"><label for="sCity">City</label><input id="sCity" autocomplete="address-level2"></div>
-            <div class="hp"><input type="text" tabindex="-1" aria-hidden="true"></div>
-            <button class="btn btn--gold btn--wide" type="submit">Create my free account</button>
-            <p class="muted" style="font-size:.74rem;margin-top:12px;text-align:center">
-              No payment. No card. Takes about twenty seconds.</p>
-          </form>
-          <div class="msg msg--bad" id="upErr" style="display:none;margin-top:14px"></div>
-        </div>
-
-        <div id="inPane" style="display:none">
-          <h2 style="font-size:1.45rem;text-align:center;margin-bottom:4px">Welcome back</h2>
-          <p class="muted" style="text-align:center;font-size:.86rem;margin-bottom:22px">
-            Sign in with the email you registered with.</p>
-          <form id="signinForm" novalidate>
-            <div class="fld"><label for="iEmail">Email</label>
-              <input id="iEmail" type="email" data-check="email" autocomplete="email"></div>
-            <button class="btn btn--gold btn--wide" type="submit">Sign in</button>
-          </form>
-          <div class="msg msg--bad" id="inErr" style="display:none;margin-top:14px"></div>
-          <p class="muted" style="font-size:.78rem;margin-top:18px;text-align:center">
-            Enrolled on a course? <a href="premium.html" style="color:var(--gold-300)">Go to My Course →</a></p>
-        </div>
-      </div>
-    </section>
-
-    <!-- signed in -->
-    <section id="freeView" style="display:none">
-      <div class="eyebrow">Free account</div>
-      <h1 style="font-size:clamp(1.8rem,4vw,2.6rem)">Welcome, <span id="uName">student</span></h1>
-      <p class="lede" id="uLead"></p>
-
-      <div class="bento" style="margin:30px 0 34px">
-        <div class="tile c4" data-rv><div class="tile__n" id="sTopics">0</div><span class="tile__k">Topics unlocked</span></div>
-        <div class="tile c4" data-rv style="--d:1"><div class="tile__n" id="sFree">0</div><span class="tile__k">Free lectures</span></div>
-        <div class="tile c4" data-rv style="--d:2"><div class="tile__n">46</div><span class="tile__k">Topical books + MS</span></div>
-      </div>
-
-      <div class="note" style="margin-bottom:26px">
-        <b>You have the first lecture of every topic.</b> Enrolled students get all of them, plus
-        lecture notes, live sessions and downloads — PKR 7,000 a month.
-        <a href="index.html#register" style="color:var(--gold-300)">Register for a course →</a>
-      </div>
-
-      <h2 style="font-size:1.3rem;margin-top:10px">Your lectures</h2>
-      <div class="topics" id="topicHost" style="margin-top:16px"></div>
-
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:34px">
-        <a class="btn btn--line" href="pastpapers.html">Past papers &amp; mark schemes</a>
-        <a class="btn btn--gold" href="index.html#register">Upgrade — PKR 7,000/mo</a>
-        <button class="btn btn--line" id="signOut">Sign out</button>
-      </div>
-    </section>
+    <div class="note" style="margin-top:24px">
+      <b>No student ID yet?</b> Fill the registration form on the main site. We reply on WhatsApp
+      within 2&ndash;3 hours, arrange payment, and send your ID and password.
+      <a href="index.html#register" style="color:var(--gold-300)">Register &rarr;</a>
+    </div>
   </div>
 </main>
 
-<footer class="ftr">
-  <div class="wrap">
-    <div class="ftr__g">
-      <div><img src="lockup.png" alt="Sir Mehboob Khan">
-        <p class="muted" style="font-size:.86rem;max-width:32ch">O/A Level Physics — Karachi campuses and live online worldwide.</p></div>
-      <div><h4>Learn</h4>
-        <a href="index.html#courses">Courses</a><a href="pastpapers.html">Past papers</a>
-        <a href="portal.html">Free portal</a><a href="premium.html">My course</a></div>
-      <div><h4>Academy</h4>
-        <a href="index.html#results">Results</a><a href="index.html#affiliations">Campuses</a>
-        <a href="index.html#faq">FAQ</a><a href="index.html#register">Register</a></div>
-      <div><h4>Contact</h4>
-        <a href="https://wa.me/923028056789">0302 8056789</a>
-        <a href="tel:+923446267693">0344 6267693</a>
-        <a href="mailto:isamm11979@gmail.com">isamm11979@gmail.com</a></div>
-    </div>
-    <div class="ftr__b"><span>&copy; 2026 Sir Mehboob Khan. Teaching Physics since 2007.</span>
-      <span>Karachi &middot; Online worldwide</span></div>
-  </div>
-</footer>
-
-<div class="dock">
-  <button class="dock__b" data-theme-btn aria-label="Theme">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
-  </button>
-  <button class="dock__b dock__b--snd" data-sound aria-label="Sound off" aria-pressed="false">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M4 9.5h3.2L12 5.4v13.2L7.2 14.5H4z"/>
-      <path class="wv wv1" d="M15.4 9.6a3.4 3.4 0 0 1 0 4.8"/>
-      <path class="wv wv2" d="M17.9 7.1a6.9 6.9 0 0 1 0 9.8"/>
-      <path class="slash2" d="M4 20 20 4"/></svg>
-  </button>
-</div>
-<div class="modal"><div class="modal__in"><button class="modal__x" aria-label="Close">&times;</button><div class="modal__c"></div></div></div>
+<footer class="ftr"><div class="wrap"><div class="ftr__b">
+  <span>&copy; 2026 Sir Mehboob Khan</span><span>Karachi &middot; Online worldwide</span>
+</div></div></footer>
 
 <script>
-window.SMK_CONFIG = {
-  SUPABASE_URL: 'https://rfqidyjtldsyyiyvuyrn.supabase.co',
-  SUPABASE_ANON_KEY: 'sb_publishable_Jqy6vPplT6WZZr6PQ8RMtQ_pGMVKhmC',
-  TABLE: 'registrations'
-};
-</script>
-
-<script>
-/* ==========================================================================
-   LECTURES
-   ---------------------------------------------------------------------------
-   This is the only file you edit after a class. Add one line, commit, done.
-
-   Use the Lecture Manager in the admin panel to generate the line — it gives
-   you a Copy button so you never have to get the punctuation right by hand.
-
-   FIELDS
-     id      unique. Convention: level-topic-number   e.g. 'o-3-04'
-     lvl     'O' | 'AS' | 'A2'
-     topic   topic number, matches the topics list below
-     n       lecture number inside that topic. n:1 is FREE for everyone.
-     t       title shown to students
-     dur     '48:12'
-     vid     video ID or URL from your host (Bunny.net / Vimeo / YouTube)
-     notes   optional PDF filename or URL for that lecture's notes
-     date    optional, shown as "recorded on"
-
-   ANY lecture with n:1 is visible to free accounts.
-   Everything else needs a premium account. Nothing else to configure.
-   ========================================================================== */
-
-const TOPICS = {
-  O: [
-    { n: 1,  name: 'Physical Quantities, Units & Measurements' },
-    { n: 2,  name: 'Mass, Weight & Density' },
-    { n: 3,  name: 'Motion' },
-    { n: 4,  name: 'Forces' },
-    { n: 5,  name: 'Momentum' },
-    { n: 6,  name: 'Energy, Work & Power' },
-    { n: 7,  name: 'Pressure' },
-    { n: 8,  name: 'Kinetic Particle Model' },
-    { n: 9,  name: 'Thermal Properties' },
-    { n: 10, name: 'Transfer of Thermal Energy' },
-    { n: 11, name: 'General Wave Properties' },
-    { n: 12, name: 'Light' },
-    { n: 13, name: 'Electromagnetic Spectrum' },
-    { n: 14, name: 'Sound' },
-    { n: 15, name: 'Magnetism' },
-    { n: 16, name: 'Static Electricity' },
-    { n: 17, name: 'Current Electricity' },
-    { n: 18, name: 'D.C. Circuits' },
-    { n: 19, name: 'Practical Electricity' },
-    { n: 20, name: 'Electromagnetism' },
-    { n: 21, name: 'Electromagnetic Induction' },
-    { n: 22, name: 'Radioactivity' }
-  ],
-  AS: [
-    { n: 1,  name: 'Physical Quantities & Units' },
-    { n: 2,  name: 'Measurements & Techniques' },
-    { n: 3,  name: 'Kinematics' },
-    { n: 4,  name: 'Dynamics' },
-    { n: 5,  name: 'Forces, Density & Pressure' },
-    { n: 6,  name: 'Work, Energy & Power' },
-    { n: 7,  name: 'Deformation of Solids' },
-    { n: 8,  name: 'Waves' },
-    { n: 9,  name: 'Superposition' },
-    { n: 10, name: 'Electricity' },
-    { n: 11, name: 'D.C. Circuits' },
-    { n: 12, name: 'Particle Physics' }
-  ],
-  A2: [
-    { n: 1,  name: 'Circular Motion' },
-    { n: 2,  name: 'Gravitational Fields' },
-    { n: 3,  name: 'Electric Fields' },
-    { n: 4,  name: 'Capacitance' },
-    { n: 5,  name: 'Temperature' },
-    { n: 6,  name: 'Ideal Gases' },
-    { n: 7,  name: 'Thermodynamics' },
-    { n: 8,  name: 'Oscillations' },
-    { n: 9,  name: 'Magnetic Fields' },
-    { n: 10, name: 'Alternating Currents' },
-    { n: 11, name: 'Quantum Physics' },
-    { n: 12, name: 'Space Physics' }
-  ]
-};
-
-/* --------------------------------------------------------------------------
-   Add new lectures at the bottom. The examples below show the shape —
-   delete them once your real ones are in.
-   -------------------------------------------------------------------------- */
-const LECTURES = [
-  { id:'o-3-01',  lvl:'O',  topic:3,  n:1, t:'Introduction to Motion',            dur:'42:18', vid:'', notes:'', date:'' },
-  { id:'o-3-02',  lvl:'O',  topic:3,  n:2, t:'Distance–Time Graphs',              dur:'38:04', vid:'', notes:'', date:'' },
-  { id:'o-3-03',  lvl:'O',  topic:3,  n:3, t:'Velocity–Time Graphs',              dur:'45:30', vid:'', notes:'', date:'' },
-  { id:'o-17-01', lvl:'O',  topic:17, n:1, t:'Current, Charge and Potential Difference', dur:'49:12', vid:'', notes:'', date:'' },
-  { id:'o-17-02', lvl:'O',  topic:17, n:2, t:'Resistance and Resistivity',        dur:'41:55', vid:'', notes:'', date:'' },
-  { id:'as-3-01', lvl:'AS', topic:3,  n:1, t:'Kinematics — Equations of Motion',  dur:'46:50', vid:'', notes:'', date:'' },
-  { id:'as-9-01', lvl:'AS', topic:9,  n:1, t:'Superposition and Interference',    dur:'56:33', vid:'', notes:'', date:'' },
-  { id:'a2-2-01', lvl:'A2', topic:2,  n:1, t:'Gravitational Fields — Field Lines', dur:'58:14', vid:'', notes:'', date:'' },
-  { id:'a2-8-01', lvl:'A2', topic:8,  n:1, t:'Simple Harmonic Motion',            dur:'62:40', vid:'', notes:'', date:'' }
-];
-
-</script>
-<script>
-/* ==========================================================================
-   SMK — shared portal behaviour (auth, lectures, watermarking)
-   ========================================================================== */
+/* Already signed in? Skip the choice and go straight where they belong. */
 (function () {
-  'use strict';
-  const $ = (s, c) => (c || document).querySelector(s);
-  const $$ = (s, c) => Array.from((c || document).querySelectorAll(s));
-  const KEY = 'smk_session';
-
-  /* ---------------- session ---------------- */
-  const Session = {
-    get() { try { return JSON.parse(localStorage.getItem(KEY)); } catch (e) { return null; } },
-    set(o) { localStorage.setItem(KEY, JSON.stringify(o)); localStorage.setItem('smk_free_account', '1'); },
-    clear() { localStorage.removeItem(KEY); localStorage.removeItem('smk_free_account'); },
-    isPremium() { const s = this.get(); return !!s && s.tier === 'premium'; }
-  };
-  window.SMKSession = Session;
-
-  /* ------------------------------------------------------------------
-     DEVICE LIMIT — two devices per account.
-     Each browser gets a stable id the first time it signs in. The list is
-     kept with the account, so a third device is refused until one is
-     released.  ⚠ Enforced in the browser only until the accounts move to
-     Supabase — see student_devices in the SQL. A determined user can clear
-     their storage and start over; this stops casual credential sharing,
-     which is what actually costs you money.
-     ------------------------------------------------------------------ */
-  const DKEY = 'smk_device_id';
-  function deviceId() {
-    let d = localStorage.getItem(DKEY);
-    if (!d) {
-      d = 'd-' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
-      localStorage.setItem(DKEY, d);
-    }
-    return d;
-  }
-  window.SMKdevice = {
-    id: deviceId,
-    /* returns {ok:true} or {ok:false, devices:[…]} */
-    claim(accountKey, max) {
-      max = max || 2;
-      const k = 'smk_devices_' + accountKey;
-      let list = [];
-      try { list = JSON.parse(localStorage.getItem(k)) || []; } catch (e) { }
-      const me = deviceId();
-      const found = list.find(d => d.id === me);
-      if (found) { found.seen = Date.now(); localStorage.setItem(k, JSON.stringify(list)); return { ok: true, list }; }
-      if (list.length >= max) return { ok: false, list };
-      list.push({ id: me, seen: Date.now(), ua: navigator.platform || 'device' });
-      localStorage.setItem(k, JSON.stringify(list));
-      return { ok: true, list };
-    },
-    release(accountKey) {
-      const k = 'smk_devices_' + accountKey;
-      let list = [];
-      try { list = JSON.parse(localStorage.getItem(k)) || []; } catch (e) { }
-      localStorage.setItem(k, JSON.stringify(list.filter(d => d.id !== deviceId())));
-    },
-    list(accountKey) {
-      try { return JSON.parse(localStorage.getItem('smk_devices_' + accountKey)) || []; } catch (e) { return []; }
-    }
-  };
-
-  /* ---------------- Supabase ---------------- */
-  const C = window.SMK_CONFIG || {};
-  const configured = C.SUPABASE_URL && C.SUPABASE_URL.indexOf('http') === 0 &&
-                     C.SUPABASE_ANON_KEY && C.SUPABASE_ANON_KEY.indexOf('YOUR-') !== 0;
-
-  async function saveAccount(row) {
-    if (!configured) return { ok: false, reason: 'unconfigured' };
-    try {
-      const res = await fetch(C.SUPABASE_URL + '/rest/v1/' + (C.TABLE || 'registrations'), {
-        method: 'POST',
-        headers: {
-          apikey: C.SUPABASE_ANON_KEY,
-          Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY,
-          'Content-Type': 'application/json',
-          Prefer: 'return=minimal'
-        },
-        body: JSON.stringify(row)
-      });
-      return res.ok ? { ok: true } : { ok: false, reason: 'http ' + res.status };
-    } catch (e) { return { ok: false, reason: 'network' }; }
-  }
-  window.SMKsave = saveAccount;
-
-  /* ---------------- validation ---------------- */
-  const V = {
-    name: v => v.trim().length >= 2 || 'Please enter a name of at least 2 characters.',
-    email: v => /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v.trim()) || 'That email address does not look right.',
-    phone: v => {
-      const d = v.replace(/\D/g, '');
-      if (d.length < 10) return 'A phone number needs at least 10 digits.';
-      if (d.length > 15) return 'That is too many digits for a phone number.';
-      return true;
-    },
-    required: v => (v && v.trim() !== '') || 'Please choose an option.'
-  };
-  window.SMKvalidate = V;
-
-  function fieldError(fld, msg) {
-    fld.classList.toggle('bad', !!msg);
-    let er = $('.er', fld);
-    if (!er) { er = document.createElement('div'); er.className = 'er'; fld.appendChild(er); }
-    er.textContent = msg || '';
-  }
-
-  window.SMKcheckForm = function (form) {
-    let ok = true;
-    $$('.fld', form).forEach(fld => {
-      const i = $('input,select,textarea', fld);
-      if (!i) return;
-      const rule = i.dataset.check;
-      if (!rule) return;
-      const res = V[rule] ? V[rule](i.value) : true;
-      if (res !== true) { fieldError(fld, res); ok = false; } else fieldError(fld, '');
-    });
-    return ok;
-  };
-
-  // live validation once a field has been touched
-  document.addEventListener('blur', e => {
-    const i = e.target;
-    if (!i.dataset || !i.dataset.check) return;
-    const fld = i.closest('.fld'); if (!fld) return;
-    const res = V[i.dataset.check] ? V[i.dataset.check](i.value) : true;
-    fieldError(fld, res === true ? '' : res);
-  }, true);
-  document.addEventListener('input', e => {
-    const i = e.target;
-    if (i.dataset && i.dataset.check) {
-      const fld = i.closest('.fld');
-      if (fld && fld.classList.contains('bad')) {
-        const res = V[i.dataset.check] ? V[i.dataset.check](i.value) : true;
-        if (res === true) fieldError(fld, '');
-      }
-    }
+  try {
+    if (localStorage.getItem('smk_premium')) { location.replace('premium.html'); return; }
+  } catch (e) { }
+  // the free door opens the sign-in on the main site
+  var f = document.querySelector('[data-go="free"]');
+  if (f) f.addEventListener('click', function (e) {
+    var signed = false;
+    try { signed = !!localStorage.getItem('smk_free'); } catch (er) { }
+    if (!signed) { e.preventDefault(); location.href = 'index.html#papers'; }
   });
-
-  /* ==========================================================================
-     VIDEO WATERMARK
-     A moving overlay carrying the student's ID and phone number.
-     It does not prevent screen recording — nothing can. What it does is make
-     any leaked copy traceable to one account, which is the actual deterrent.
-     ========================================================================== */
-  window.SMKwatermark = function (host, label) {
-    if (!host) return;
-    let wm = $('.wm', host);
-    if (!wm) {
-      wm = document.createElement('div');
-      wm.className = 'wm';
-      wm.textContent = label;
-      host.appendChild(wm);
-      const wm2 = wm.cloneNode(true);
-      wm2.classList.add('wm--b');
-      host.appendChild(wm2);
-    }
-    // drift to a new corner every few seconds so it can't be cropped out
-    let i = 0;
-    const spots = [
-      [6, 8], [62, 14], [10, 74], [58, 80], [34, 44], [72, 52], [4, 40], [40, 12]
-    ];
-    const move = () => {
-      const [x, y] = spots[i % spots.length];
-      const [x2, y2] = spots[(i + 4) % spots.length];
-      wm.style.left = x + '%'; wm.style.top = y + '%';
-      const b = $('.wm--b', host);
-      if (b) { b.style.left = x2 + '%'; b.style.top = y2 + '%'; }
-      i++;
-    };
-    move();
-    clearInterval(host._wmTimer);
-    host._wmTimer = setInterval(move, 7000);
-  };
-
-  /* ---------------- lecture helpers ---------------- */
-  window.SMKlectures = {
-    byTopic(lvl) {
-      if (typeof LECTURES === 'undefined') return [];
-      const list = LECTURES.filter(l => l.lvl === lvl);
-      const topics = (typeof TOPICS !== 'undefined' ? TOPICS[lvl] : []) || [];
-      return topics.map(t => ({
-        ...t,
-        lectures: list.filter(l => l.topic === t.n).sort((a, b) => a.n - b.n)
-      })).filter(t => t.lectures.length);
-    },
-    free(lvl) {
-      return this.byTopic(lvl).map(t => ({ ...t, lectures: t.lectures.filter(l => l.n === 1) }))
-        .filter(t => t.lectures.length);
-    }
-  };
-
-  /* ---------------- shared chrome ---------------- */
-  const tBtn = $('[data-theme-btn]');
-  if (tBtn) {
-    const TH = ['light', 'dark', 'focus'];
-    let ti = 0;
-    tBtn.addEventListener('click', () => {
-      ti = (ti + 1) % TH.length;
-      document.documentElement.setAttribute('data-theme', TH[ti]);
-    });
-  }
-  const burger = $('.burger'), mob = $('.mob');
-  if (burger && mob) {
-    burger.addEventListener('click', e => {
-      e.stopPropagation();
-      const o = mob.classList.toggle('open');
-      burger.classList.toggle('x', o);
-    });
-    document.addEventListener('click', e => {
-      if (mob.classList.contains('open') && !mob.contains(e.target) && !burger.contains(e.target)) {
-        mob.classList.remove('open'); burger.classList.remove('x');
-      }
-    });
-  }
-  addEventListener('scroll', () => {
-    const h = $('.hdr'); if (h) h.classList.toggle('stuck', scrollY > 30);
-  }, { passive: true });
-
-  const rio = new IntersectionObserver(es => es.forEach(e => {
-    if (e.isIntersecting) { e.target.classList.add('in'); rio.unobserve(e.target); }
-  }), { threshold: .08 });
-  $$('[data-rv]').forEach(el => rio.observe(el));
-  window.SMKreveal = () => $$('[data-rv]:not(.in)').forEach(el => rio.observe(el));
-})();
-
-</script>
-<script>
-(function () {
-  var $ = function (s) { return document.querySelector(s); };
-  var LEVELNAME = { O: 'O Level / IGCSE', AS: 'AS Level', A2: 'A2 Level' };
-
-  document.querySelectorAll('.switch button').forEach(function (b) {
-    b.addEventListener('click', function () {
-      document.querySelectorAll('.switch button').forEach(function (x) { x.classList.remove('on'); });
-      b.classList.add('on');
-      $('#upPane').style.display = b.dataset.mode === 'up' ? '' : 'none';
-      $('#inPane').style.display = b.dataset.mode === 'in' ? '' : 'none';
-    });
-  });
-
-  function show(sess) {
-    $('#authView').style.display = 'none';
-    $('#freeView').style.display = '';
-    $('#uName').textContent = (sess.name || 'student').split(' ')[0];
-    $('#uLead').textContent = LEVELNAME[sess.level] + ' — the opening lecture of every topic is yours.';
-
-    var groups = SMKlectures.free(sess.level);
-    $('#sTopics').textContent = groups.length;
-    $('#sFree').textContent = groups.reduce(function (a, g) { return a + g.lectures.length; }, 0);
-
-    $('#topicHost').innerHTML = groups.length ? groups.map(function (g, i) {
-      var all = SMKlectures.byTopic(sess.level).find(function (t) { return t.n === g.n; });
-      var locked = all.lectures.length - g.lectures.length;
-      return '<div class="topic' + (i === 0 ? ' open' : '') + '">' +
-        '<button class="topic__h"><span class="topic__n">' + g.n + '</span>' +
-        '<span class="topic__t"><b>' + g.name + '</b><span>' + g.lectures.length +
-        ' free' + (locked > 0 ? ' · ' + locked + ' more with a course' : '') + '</span></span>' +
-        '<span class="topic__c">&#9662;</span></button>' +
-        '<div class="topic__b"><div>' +
-        g.lectures.map(function (l) {
-          return '<button class="lec2 lec2--free" data-id="' + l.id + '">' +
-            '<span class="lec2__p">&#9654;</span><span class="lec2__t"><b>' + l.t + '</b>' +
-            '<span>Lecture ' + l.n + ' · ' + l.dur + ' · free</span></span></button>';
-        }).join('') +
-        (locked > 0 ? '<div class="lec2 lec2--lock"><span class="lec2__p">&#128274;</span>' +
-          '<span class="lec2__t"><b>' + locked + ' more lecture' + (locked > 1 ? 's' : '') + ' in this topic</b>' +
-          '<span>Included with a course — PKR 7,000/mo</span></span></div>' : '') +
-        '</div></div></div>';
-    }).join('') : '<div class="gate"><p class="muted" style="margin:0">Lectures for ' +
-      LEVELNAME[sess.level] + ' are being uploaded after each class. Check back shortly.</p></div>';
-
-    document.querySelectorAll('.topic__h').forEach(function (h) {
-      h.addEventListener('click', function () { h.parentElement.classList.toggle('open'); });
-    });
-    document.querySelectorAll('.lec2[data-id]').forEach(function (b) {
-      b.addEventListener('click', function () { play(b.dataset.id, sess); });
-    });
-    if (window.SMKreveal) SMKreveal();
-  }
-
-  function play(id, sess) {
-    var l = LECTURES.find(function (x) { return x.id === id; });
-    if (!l) return;
-    var tag = (sess.email || '').split('@')[0] + ' · ' + (sess.phone || '');
-    var inner = l.vid
-      ? '<iframe src="' + l.vid + '" allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>'
-      : '<div class="player__ph"><div><div style="font-size:34px">&#9654;</div>' +
-        '<b style="font-family:var(--display);font-size:1.1rem;display:block;margin-top:10px">Video not linked yet</b>' +
-        '<p class="muted" style="font-size:.84rem;margin-top:8px;max-width:38ch">' +
-        'Add the video URL to this lecture in <code>lectures.js</code> and it plays here.</p></div></div>';
-
-    SMKmodal('<span class="chip chip--gold">Lecture ' + l.n + ' · ' + l.dur + '</span>' +
-      '<h3 style="margin:14px 0 18px">' + l.t + '</h3>' +
-      '<div class="player" id="playerHost">' + inner + '</div>' +
-      (l.notes ? '<a class="notepill" style="margin-top:16px" href="' + l.notes + '" target="_blank" rel="noopener">&#128196; Lecture notes</a>' : '') +
-      '<p class="muted" style="font-size:.78rem;margin-top:14px">Your account details appear on the video. ' +
-      'Sharing a recording is traceable to this account.</p>');
-    SMKwatermark(document.getElementById('playerHost'), tag);
-  }
-
-  /* ---- modal (shared) ---- */
-  window.SMKmodal = function (html) {
-    var m = document.querySelector('.modal');
-    m.querySelector('.modal__c').innerHTML = html;
-    m.classList.add('open'); document.body.classList.add('lock');
-  };
-  var modal = document.querySelector('.modal');
-  modal.addEventListener('click', function (e) {
-    if (e.target === modal || e.target.closest('.modal__x')) {
-      modal.classList.remove('open'); document.body.classList.remove('lock');
-    }
-  });
-  addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') { modal.classList.remove('open'); document.body.classList.remove('lock'); }
-  });
-
-  /* ---- signup ---- */
-  $('#signupForm').addEventListener('submit', async function (e) {
-    e.preventDefault();
-    if (document.querySelector('.hp input').value) return;
-    if (!SMKcheckForm(this)) return;
-    var btn = this.querySelector('button[type=submit]');
-    var label = btn.textContent; btn.textContent = 'Creating…'; btn.disabled = true;
-
-    var sess = {
-      name: $('#sName').value.trim(), email: $('#sEmail').value.trim().toLowerCase(),
-      phone: $('#sPhone').value.trim(), level: $('#sLevel').value,
-      city: $('#sCity').value.trim(), tier: 'free', at: Date.now()
-    };
-    var r = await SMKsave({
-      name: sess.name, email: sess.email, phone: sess.phone,
-      level: LEVELNAME[sess.level], mode: 'Free account', session: '',
-      message: 'City: ' + (sess.city || '—'), source: '/portal.html'
-    });
-    SMKSession.set(sess);
-    btn.textContent = label; btn.disabled = false;
-    if (!r.ok) {
-      var e2 = $('#upErr'); e2.style.display = 'block';
-      e2.textContent = 'Account created on this device, but we could not reach the server. ' +
-        'Please also message 0302 8056789 so your details are not lost.';
-    }
-    show(sess);
-    scrollTo(0, 0);
-  });
-
-  /* ---- sign in ---- */
-  $('#signinForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-    if (!SMKcheckForm(this)) return;
-    var sess = SMKSession.get();
-    if (sess && sess.email === $('#iEmail').value.trim().toLowerCase()) { show(sess); scrollTo(0, 0); return; }
-    var err = $('#inErr'); err.style.display = 'block';
-    err.textContent = 'No account found on this device with that email. Create one above — it takes twenty seconds.';
-  });
-
-  $('#signOut').addEventListener('click', function () { SMKSession.clear(); location.reload(); });
-
-  var existing = SMKSession.get();
-  if (existing) show(existing);
 })();
 </script>
-</body></html>
+</body>
+</html>
