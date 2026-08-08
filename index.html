@@ -1083,8 +1083,11 @@ body.pv-lock{overflow:hidden}
 
 /* ---------- locked sections ---------- */
 .lockwrap{position:relative}
-.lockwrap[data-locked] > .lockbody{max-height:330px;overflow:hidden;
-  -webkit-mask-image:linear-gradient(#000 45%,transparent);mask-image:linear-gradient(#000 45%,transparent)}
+.lockwrap[data-locked] > .lockbody{max-height:392px;overflow:hidden;position:relative;
+  -webkit-mask-image:linear-gradient(#000 68%,rgba(0,0,0,.35) 88%,transparent);
+  mask-image:linear-gradient(#000 68%,rgba(0,0,0,.35) 88%,transparent)}
+.lockwrap[data-locked] > .lockbody *{pointer-events:none}
+.lockwrap[data-locked] > .lockbody .tabs2{pointer-events:auto}
 .lockbar{display:none;align-items:center;gap:14px;flex-wrap:wrap;padding:16px 20px;border-radius:14px;
   border:1px dashed var(--line);background:var(--panel);margin-top:14px}
 .lockwrap[data-locked] .lockbar{display:flex}
@@ -1103,9 +1106,12 @@ body.pv-lock{overflow:hidden}
   color:#150F04;font-weight:700}
 @media(max-width:760px){
   .auth2__p{padding:20px 18px}
-  .lockbar{padding:13px 15px;gap:10px}
-  .lockbar b{font-size:.88rem}
-  .lockwrap[data-locked] > .lockbody{max-height:240px}
+  .lockbar{padding:15px 16px;gap:11px 12px;border-radius:14px}
+  .lockbar b{font-size:.94rem;flex:1 1 100%}
+  .lockbar span{font-size:.85rem}
+  .lockbar .btn{flex:1 1 100%;justify-content:center}
+  .lockicon{width:34px;height:34px;min-width:34px;flex:0 0 34px}
+  .lockwrap[data-locked] > .lockbody{max-height:300px}
 }
 </style>
 <script type="importmap">
@@ -3104,6 +3110,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   var LEVEL = { O: 'O Level & IGCSE', AS: 'AS Level', A2: 'A2 Level' };
 
   function lockNote() {
+    if (document.getElementById('papersLock')) return '';   // the lock bar says it better
     return signedIn() ? '' :
       '<div class="note" style="margin-bottom:18px">' +
       '<b>Mark schemes are locked.</b> Create a free account — name, email, phone and your ' +
