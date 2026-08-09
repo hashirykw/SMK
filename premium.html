@@ -1545,4 +1545,68 @@ const LECTURES = [
   }
 })();
 </script>
+
+<script>
+/* ==========================================================================
+   SESSION CHECK
+   A signed-in student is re-checked against the database on every page load.
+   Without this, deleting or pausing someone in the admin panel left them
+   signed in forever on a device they had already used.
+   It also refreshes their lectures, so new ones appear without signing in again.
+   ========================================================================== */
+(function () {
+  var C = window.SMK_CONFIG || {};
+
+  /* show any pending sign-out notice first — after a sign-out there is no
+     session left, so this has to run before the check below returns */
+  function explain() {
+    var why;
+    try { why = sessionStorage.getItem('smk_signout_reason'); } catch (e) { }
+    if (!why) return;
+    try { sessionStorage.removeItem('smk_signout_reason'); } catch (e) { }
+    var msg = {
+      no_student: 'Your account has been removed. Please contact Sir Mehboob Khan on 0302 8056789.',
+      paused: 'Your account is paused. Contact 0302 8056789 to reactivate it.',
+      device_removed: 'You were signed out on this device. Sign in again to continue.'
+    }[why] || 'You have been signed out. Please sign in again.';
+    var d = document.createElement('div');
+    d.className = 'note';
+    d.style.cssText = 'position:fixed;left:50%;top:14px;translate:-50% 0;z-index:999;' +
+      'max-width:min(520px,calc(100vw - 24px));border-left-color:var(--bad);' +
+      'box-shadow:0 14px 40px rgba(0,0,0,.24);background:var(--bg)';
+    d.innerHTML = '<b>Signed out.</b> ' + msg;
+    document.body.appendChild(d);
+    setTimeout(function () { d.remove(); }, 9000);
+  }
+  if (document.readyState === 'loading') addEventListener('DOMContentLoaded', explain);
+  else explain();
+
+  var sid = localStorage.getItem('smk_premium_id');
+  if (!sid || !C.SUPABASE_URL) return;
+
+  function signOut(reason) {
+    ['smk_premium', 'smk_premium_id', 'smk_course', 'smk_free_account'].forEach(function (k) {
+      localStorage.removeItem(k);
+    });
+    try { sessionStorage.setItem('smk_signout_reason', reason || ''); } catch (e) { }
+    location.reload();
+  }
+
+  fetch(C.SUPABASE_URL + '/rest/v1/rpc/verify_student', {
+    method: 'POST',
+    headers: { apikey: C.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY,
+               'Content-Type': 'application/json' },
+    body: JSON.stringify({ p_id: sid, p_device: localStorage.getItem('smk_device_key') })
+  }).then(function (r) { return r.json(); }).then(function (r) {
+    if (!r || r.ok !== true) { signOut((r && r.reason) || 'revoked'); return; }
+    // still valid — take the fresh lecture list
+    localStorage.setItem('smk_course', JSON.stringify({
+      lectures: r.lectures || [], topics: r.topics || [] }));
+    localStorage.setItem('smk_premium', JSON.stringify({
+      sid: r.student_id, name: r.name, lvl: r.level }));
+    if (window.SMKapplyTier) window.SMKapplyTier();
+  }).catch(function () { /* offline: leave them signed in until they reconnect */ });
+
+})();
+</script>
 </body></html>
