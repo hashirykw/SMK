@@ -96,7 +96,7 @@ p{margin:0 0 1rem;max-width:64ch}
 html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 
 .wrap{width:100%;max-width:var(--max);margin-inline:auto;padding-inline:clamp(18px,4vw,40px)}
-.sec{padding-block:clamp(74px,9vw,150px);position:relative}
+.sec{padding-block:clamp(48px,7vw,110px);position:relative}
 .muted{color:var(--muted)}
 .mono{font-family:var(--mono)}
 .eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);
@@ -637,6 +637,8 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 @media (max-width:680px){
   body{font-size:16px}
   .c3,.c4,.c5,.c6,.c7,.c8{grid-column:span 12}
+  /* a tile that is just a number and a label does not need a whole row */
+  .bento .tile.c3:not(.d3),.bento .tile.c4:not(.d3){grid-column:span 6}
   .ftr__g{grid-template-columns:1fr}
   .bot{right:12px;left:12px;width:auto;bottom:84px;height:min(500px,66svh)}
   .dock{right:14px;bottom:14px}
@@ -1334,6 +1336,30 @@ body.pv-lock{overflow:hidden}
   .fld input,.fld select,.fld textarea{min-height:46px;font-size:16px}  /* 16px stops iOS zooming on focus */
   .topic__h{min-height:60px}
   .seek{height:26px}
+  /* a phone screen is short — the old rhythm meant a lot of empty scrolling */
+  .sec{padding-block:44px}
+  .bento{gap:12px}
+
+  /* ---------- the footer was taking most of a screen on its own ---------- */
+  .ftr{padding-block:32px 16px;margin-top:26px}
+  .ftr__g{grid-template-columns:1fr 1fr;gap:8px 18px}
+  .ftr__brand{grid-column:1/-1;margin-bottom:4px}
+  .ftr img{height:44px;margin-bottom:8px}
+  .ftr__brand p{font-size:.8rem;max-width:38ch;margin:0}
+  .ftr h4{font-size:.6rem;letter-spacing:.13em;margin-bottom:4px}
+  .ftr a{font-size:.83rem;padding:9px 0;min-height:38px}
+  .ftr__l{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+  .ftr .soc{grid-column:1/-1;display:flex;gap:8px;margin-top:6px}
+  .soc a{width:40px;height:40px;min-height:40px}
+  .ftr__b{margin-top:18px;padding-top:14px;gap:6px;font-size:.72rem;
+    flex-direction:column;align-items:flex-start;
+    padding-bottom:66px}          /* clear the floating theme and sound buttons */
+  .ftr__mid{opacity:.75}
+  .byline{margin-top:4px;padding:8px 12px;align-self:flex-end;margin-right:2px}
+  .tile__n{font-size:clamp(1.8rem,8vw,2.4rem)}
+  h2{margin-bottom:.35em}
+  .lede{margin-bottom:18px!important}
+  .strip{margin-top:26px!important}
   /* the floating controls all sat on the right edge, over the chevrons and
      the Notes buttons. The assistant stays right where people expect it;
      theme and sound move to the opposite corner. */
@@ -1352,13 +1378,57 @@ body.pv-lock{overflow:hidden}
   .hp,.hp input{position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important}
 }
 @media (max-width:420px){
-  .tpill{width:100%;justify-content:flex-start}
-  .tlist{gap:7px}
+  .tlist{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .tpill{width:100%;justify-content:flex-start;padding:11px 12px;font-size:.8rem;
+    align-items:flex-start;line-height:1.25}
+  .tpill i{flex:none}
   .lecwrap{flex-wrap:nowrap}
   .xp__h{gap:10px}
   .xp__h h3{font-size:1.05rem;flex:1 1 100%}
   .xp__x{margin-left:0}
 }
+
+/* ---------- a year opens its files in place, inside the grid ---------- */
+.yrdrop{grid-column:1/-1;max-height:0;overflow:hidden;transition:max-height .5s var(--ease)}
+.yrdrop.on{max-height:3200px}
+.yrdrop__in{margin:10px 0 6px;padding:16px;border-radius:16px;
+  border:1px solid var(--line);background:var(--panel)}
+.yrdrop__h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.yrdrop__h b{font-family:var(--display);font-weight:500;font-size:1.02rem}
+.yrdrop__h span{font-size:.68rem;color:var(--muted);letter-spacing:.08em}
+.yr.on{border-color:var(--gold-400);background:var(--panel-2)}
+.yr.on b{color:var(--gold-300)}
+
+/* ---------- long lists collapse until asked ---------- */
+.clamp{position:relative;overflow:hidden;transition:max-height .55s var(--ease)}
+.clamp:not(.open){max-height:var(--clamp,640px)}
+.clamp:not(.open)::after{content:"";position:absolute;left:0;right:0;bottom:0;height:130px;
+  pointer-events:none;background:linear-gradient(transparent,var(--bg) 82%)}
+.moreb{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;margin-top:14px;
+  padding:14px;border-radius:12px;border:1px solid var(--line);background:var(--panel);
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--gold-300);transition:.28s var(--ease);min-height:46px}
+.moreb:hover{border-color:var(--gold-400);background:var(--panel-2)}
+.moreb i{font-style:normal;transition:transform .35s var(--ease)}
+.moreb.up i{transform:rotate(180deg)}
+
+/* ---------- who built it ---------- */
+.ftr__b{padding-right:96px}          /* the floating dock lives in this corner */
+@media(max-width:860px){.ftr__b{padding-right:0}}
+.byline{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:99px;
+  border:1px solid var(--line-soft);color:var(--muted);transition:.3s var(--ease);
+  white-space:nowrap;line-height:1}
+.byline:hover{border-color:var(--gold-400);color:var(--text);
+  background:color-mix(in srgb,var(--gold-500) 8%,transparent)}
+.byline img{height:15px!important;width:auto;margin:0!important;opacity:.85;
+  transition:opacity .3s var(--ease)}
+.byline:hover img{opacity:1}
+.byline__k{font-size:.72rem;opacity:.75}
+.byline__n{font-family:var(--mono);font-weight:700;font-size:.74rem;letter-spacing:.13em;
+  background:linear-gradient(100deg,var(--gold-300),var(--gold-100),var(--gold-400));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.byline__a{width:11px;height:11px;flex:none;opacity:.5;transition:.3s var(--ease)}
+.byline:hover .byline__a{opacity:1;transform:translate(2px,-2px);color:var(--gold-300)}
 </style>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -1936,7 +2006,7 @@ body.pv-lock{overflow:hidden}
 <footer class="ftr">
   <div class="wrap">
     <div class="ftr__g">
-      <div>
+      <div class="ftr__brand">
         <img src="lockup.png" alt="Sir Mehboob Khan">
         <p class="muted" style="font-size:.84rem;max-width:30ch;margin:10px 0 0">O/A Level Physics &mdash; Karachi campuses and live online worldwide. Teaching since 2007.</p>
       </div>
@@ -1963,7 +2033,19 @@ body.pv-lock{overflow:hidden}
         </div>
       </div>
     </div>
-    <div class="ftr__b"><span>&copy; 2026 Sir Mehboob Khan</span><span>Karachi &middot; Online worldwide</span></div>
+    <div class="ftr__b">
+      <span>&copy; 2026 Sir Mehboob Khan</span>
+      <span class="ftr__mid">Karachi &middot; Online worldwide</span>
+      <a class="byline" href="https://nexlyr.solutions/" target="_blank" rel="noopener"
+         aria-label="Website made by Nexlyr">
+        <span class="byline__k">Made by</span>
+        <img src="nexlyr.svg" alt="" onerror="this.remove()">
+        <span class="byline__n">NEXLYR</span>
+        <svg class="byline__a" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 17 17 7M9 7h8v8"/></svg>
+      </a>
+    </div>
   </div>
 </footer>
 
@@ -2096,7 +2178,7 @@ const KB = [
 {c:'Register',q:'Can I join mid-session?',k:['mid session','late join','already started','miss start','join late','halfway','after start'],
  a:'Usually yes. Recorded modules cover what you missed, and a short diagnostic works out what to catch up on first.'},
 {c:'Register',q:'Is there a free demo class?',k:['demo','trial','free class','sample class','try before','test class','sit in','free lesson','demo lecture'],
- a:'Yes — a free demo lesson before you commit. No payment details needed. You can also watch the recorded demo lessons on this page.'},
+ a:'Yes — a free demo lesson before you commit. No payment details needed. You can also watch the full course introduction on this page.'},
 {c:'Register',q:'What documents do I need?',k:['document','documents','id card','b form','requirement','need to bring','paperwork'],
  a:'Nothing formal to start. Just your name, level, exam session and a contact number.'},
 
@@ -3342,32 +3424,47 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     }).filter(function (s) { return s.files.length; });
 
     host.innerHTML = lockNote() +
-      '<div class="switch" style="max-width:340px;margin-bottom:18px">' +
+      '<div class="tabs2" style="max-width:340px;margin-bottom:18px">' +
         '<button class="' + (syl === '5054' ? 'on' : '') + '" data-syl2="5054">O Level · 5054</button>' +
         '<button class="' + (syl === '9702' ? 'on' : '') + '" data-syl2="9702">AS &amp; A2 · 9702</button>' +
       '</div>' +
       '<div class="yrgrid">' + list.map(function (s, i) {
+        /* each year carries its own drawer, so the files open right under the
+           row that was pressed instead of at the bottom of the whole grid */
         return '<button class="yr" data-i="' + i + '"><b>' + s.year + '</b><span>' +
-               s.session + ' · ' + s.files.length + '</span></button>';
-      }).join('') + '</div><div id="yrFiles" style="margin-top:18px"></div>';
+               s.session + ' · ' + s.files.length + '</span></button>' +
+               '<div class="yrdrop" data-drop="' + i + '"></div>';
+      }).join('') + '</div>';
 
     host.querySelectorAll('[data-syl2]').forEach(function (b) {
       b.addEventListener('click', function () { window.__yrSyl = b.dataset.syl2; years(); });
     });
     host.querySelectorAll('.yr').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        var s = list[+btn.dataset.i];
+        var i = +btn.dataset.i, s = list[i];
+        var drop = host.querySelector('.yrdrop[data-drop="' + i + '"]');
+        var wasOpen = drop.classList.contains('on');
+
+        /* only one year open at a time — otherwise the grid becomes a wall */
+        host.querySelectorAll('.yrdrop').forEach(function (d) { d.classList.remove('on'); d.innerHTML = ''; });
+        host.querySelectorAll('.yr').forEach(function (y) { y.classList.remove('on'); });
+        if (wasOpen) return;
+
         window.__paperTitle = s.session + ' ' + s.year;
-        document.getElementById('yrFiles').innerHTML =
-          '<h3 style="font-size:1.05rem;margin:8px 0 12px">' + (syl === '5054' ? 'O Level 5054' : 'AS & A2 9702') +
-          ' · ' + s.session + ' ' + s.year + '</h3><div class="plist">' +
+        btn.classList.add('on');
+        drop.innerHTML = '<div class="yrdrop__in">' +
+          '<div class="yrdrop__h"><b>' + (syl === '5054' ? 'O Level 5054' : 'AS &amp; A2 9702') +
+          ' \u00b7 ' + s.session + ' ' + s.year + '</b>' +
+          '<span class="mono">' + s.files.length + ' files</span></div>' +
+          '<div class="plist">' +
           s.files.map(function (f) {
             return '<div class="prow"><div class="prow__n">' + (f.m ? 'MS' : '&#128196;') + '</div>' +
               '<div><div class="prow__t" style="font-size:.88rem">' + f.n.replace(/\.pdf$/i, '') + '</div>' +
               '<div class="prow__s">' + (f.m ? 'Mark scheme' : 'Question paper') + '</div></div>' +
               '<div class="plinks">' + link(f.u, f.m ? 'Mark scheme' : 'Open paper', !!f.m,
                  f.m ? null : msFor(f, s.files)) + '</div></div>';
-          }).join('') + '</div>';
+          }).join('') + '</div></div>';
+        drop.classList.add('on');
         bindPdf();
       });
     });
@@ -4468,6 +4565,58 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     if (window.SMKapplyTier) window.SMKapplyTier();
   }).catch(function () { /* offline: leave them signed in until they reconnect */ });
 
+})();
+</script>
+<script>
+/* ==========================================================================
+   LONG LISTS
+   The page ran to twenty-five phone screens, most of it lists nobody reads
+   end to end. Anything long now shows a readable amount and opens the rest
+   on request — the content is all still there, it just is not all unrolled
+   at once.
+   ========================================================================== */
+(function () {
+  function wrap(host, label, max) {
+    if (!host || host.dataset.clamped === '1') return;
+    var box = document.createElement('div');
+    box.className = 'clamp';
+    box.style.setProperty('--clamp', max + 'px');
+    host.parentNode.insertBefore(box, host);
+    box.appendChild(host);
+
+    var btn = document.createElement('button');
+    btn.className = 'moreb';
+    btn.innerHTML = '<span>' + label + '</span> <i>&#9662;</i>';
+    box.parentNode.insertBefore(btn, box.nextSibling);
+
+    function sync() {
+      var need = host.scrollHeight > max + 40;
+      btn.style.display = need ? '' : 'none';
+      if (!need) box.classList.add('open');
+    }
+    btn.addEventListener('click', function () {
+      var open = box.classList.toggle('open');
+      btn.classList.toggle('up', open);
+      btn.querySelector('span').textContent = open ? 'Show less' : label;
+      if (!open) {
+        var r = box.getBoundingClientRect();
+        if (r.top < 0) scrollTo({ top: scrollY + r.top - 100, behavior: 'smooth' });
+      }
+    });
+    host.dataset.clamped = '1';
+    sync();
+    new MutationObserver(sync).observe(host, { childList: true, subtree: true });
+  }
+  window.SMKclamp = wrap;
+
+  function go() {
+    var small = matchMedia('(max-width:860px)').matches;
+    wrap(document.getElementById('paperHost'), 'Show every paper', small ? 620 : 900);
+    wrap(document.getElementById('lecLive'),   'Show every topic', small ? 660 : 900);
+    wrap(document.getElementById('sylHost'),   'Show all topics',  small ? 420 : 620);
+  }
+  if (document.readyState === 'loading') addEventListener('DOMContentLoaded', go);
+  else go();
 })();
 </script>
 </body>
