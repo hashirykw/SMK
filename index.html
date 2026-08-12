@@ -1347,10 +1347,9 @@ body.pv-lock{overflow:hidden}
   .ftr img{height:44px;margin-bottom:8px}
   .ftr__brand p{font-size:.8rem;max-width:38ch;margin:0}
   .ftr h4{font-size:.6rem;letter-spacing:.13em;margin-bottom:4px}
-  .ftr a{font-size:.83rem;padding:9px 0;min-height:38px}
+  .ftr__g a:not(.soc a){font-size:.83rem;padding:9px 0;min-height:38px}
   .ftr__l{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
-  .ftr .soc{grid-column:1/-1;display:flex;gap:8px;margin-top:6px}
-  .soc a{width:40px;height:40px;min-height:40px}
+  .ftr .soc{grid-column:1/-1;display:flex;gap:8px;margin-top:8px}
   .ftr__b{margin-top:18px;padding-top:14px;gap:6px;font-size:.72rem;
     flex-direction:column;align-items:flex-start;
     padding-bottom:66px}          /* clear the floating theme and sound buttons */
@@ -1372,8 +1371,11 @@ body.pv-lock{overflow:hidden}
   .dock__ai{width:52px;height:52px}
   /* inline links inside notes, footer columns and the social row */
   .note button,.note a{min-height:40px;display:inline-flex;align-items:center}
-  .ftr__l a,.ftr__c a,.ftr a{min-height:42px;display:flex;align-items:center}
-  .soc a{width:46px;height:46px}
+  .ftr__l a,.ftr__c a,.ftr__g a:not(.soc a){min-height:42px;display:flex;align-items:center}
+  /* the social icons stay a centred grid — the rule above was flattening them */
+  .soc a{display:grid!important;place-items:center;width:44px;height:44px;
+    min-height:44px;padding:0;flex:0 0 44px}
+  .soc svg{width:19px;height:19px;display:block}
   a.chip,.chip--gold[href]{min-height:40px;padding:9px 14px}
   .hp,.hp input{position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important}
 }
@@ -1415,7 +1417,7 @@ body.pv-lock{overflow:hidden}
 /* ---------- who built it ---------- */
 .ftr__b{padding-right:96px}          /* the floating dock lives in this corner */
 @media(max-width:860px){.ftr__b{padding-right:0}}
-.byline{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:99px;
+.byline{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;min-height:40px;border-radius:99px;
   border:1px solid var(--line-soft);color:var(--muted);transition:.3s var(--ease);
   white-space:nowrap;line-height:1}
 .byline:hover{border-color:var(--gold-400);color:var(--text);
@@ -3949,17 +3951,11 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     var s = session();
     /* the player is its own page so it can own the whole screen, keep its
        controls out of this document, and be opened straight from a link */
-    var q = 'lecture.html?id=' + encodeURIComponent(l.id || (lvl + '-' + topicN + '-' + lecN)) +
-            '&lvl=' + encodeURIComponent(lvl) +
-            '&topic=' + encodeURIComponent(topicN) +
-            '&n=' + encodeURIComponent(lecN) +
-            '&t=' + encodeURIComponent(l.t || '') +
-            '&dur=' + encodeURIComponent(l.dur || '') +
-            '&vid=' + encodeURIComponent(l.vid || '') +
-            '&notes=' + encodeURIComponent(l.notes || '') +
-            (s.tier === 'prem' ? '&sid=' + encodeURIComponent(s.sid) +
-                                 '&name=' + encodeURIComponent(s.name || '') : '');
-    window.open(q, 'smkLecture', 'noopener');
+    /* Only the lecture id travels. The player asks the database for the video
+       and gets it only if this browser is allowed it, so the address bar never
+       carries a video link for anyone to read off the screen. */
+    window.open('lecture.html?id=' + encodeURIComponent(l.id ||
+      (lvl + '-' + topicN + '-' + lecN)), 'smkLecture', 'noopener');
   }
 
   document.addEventListener('click', function (e) {
