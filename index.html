@@ -6,10 +6,10 @@
 <title>Sir Mehboob Khan — O/A Level Physics, Karachi &amp; Online</title>
 <meta name="description" content="Cambridge Physics with Sir Mehboob Khan. O Level, IGCSE, AS and A2 — on campus in Karachi at SWK Solution, and live online worldwide. Teaching since 2007.">
 <meta name="view-transition" content="same-origin">
-<link rel="canonical" href="https://physicswithsmk.vercel.app/">
-<meta property="og:url" content="https://physicswithsmk.vercel.app/">
+<link rel="canonical" href="https://physicswithsmk.com/">
+<meta property="og:url" content="https://physicswithsmk.com/">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://physicswithsmk.vercel.app/lockup.png">
+<meta property="og:image" content="https://physicswithsmk.com/lockup.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -71,7 +71,7 @@
 html{-webkit-text-size-adjust:100%;scroll-padding-top:92px}
 body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);
   font-size:16.5px;line-height:1.62;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-body.lock{overflow:hidden;position:fixed;width:100%}
+body.lock{overflow:hidden;position:fixed;width:100%;left:0}
 img{max-width:100%;display:block;height:auto}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
@@ -1072,7 +1072,7 @@ button.plink:hover{border-color:var(--gold-400);color:var(--gold-300);background
 .soc a:hover{border-color:var(--gold-400);color:var(--gold-300);transform:translateY(-3px)}
 .soc svg{width:19px;height:19px}
 
-/* ---------- free portal overlay ---------- */
+/* ---------- full-screen dialog shell ---------- */
 .portalv{position:fixed;inset:0;z-index:850;background:var(--bg);display:none;
   flex-direction:column;overflow-y:auto}
 .portalv.open{display:flex;animation:pop .3s var(--ease)}
@@ -1177,8 +1177,7 @@ body.pv-lock{overflow:hidden}
 }
 
 /* signed in: the two big tier cards collapse to one compact upgrade strip */
-[data-tier="free"] #lecLock .two,[data-tier="prem"] #lecLock .two{display:none}
-[data-tier="free"] #lecLock,[data-tier="prem"] #lecLock{margin-bottom:0}
+[data-tier="prem"] #lecUpsell{display:none}
 .upsell{display:none;align-items:center;gap:14px;flex-wrap:wrap;padding:16px 20px;border-radius:14px;
   border:1px solid var(--gold-500);background:linear-gradient(135deg,rgba(192,138,52,.1),transparent);
   margin-bottom:16px}
@@ -1213,6 +1212,88 @@ body.pv-lock{overflow:hidden}
 }
 .btn--locked{opacity:.72;border-style:dashed}
 .btn--locked:hover{border-color:var(--gold-400);opacity:1}
+
+/* ---------- syllabus popup ---------- */
+.sylv__p{width:min(720px,calc(100vw - 28px));max-height:90svh;overflow-y:auto}
+.sylvrow{width:100%;text-align:left;display:flex;align-items:center;gap:14px;padding:14px 16px;
+  border-radius:12px;border:1px solid var(--line-soft);background:var(--panel);margin-bottom:8px;
+  transition:.3s var(--ease)}
+.sylvrow:hover{border-color:var(--gold-400);transform:translateX(4px)}
+.sylvrow__n{width:34px;height:34px;border-radius:10px;flex:none;display:grid;place-items:center;
+  font-family:var(--display);font-size:.98rem;background:var(--panel-2);color:var(--gold-400);
+  transition:.35s var(--spring)}
+.sylvrow:hover .sylvrow__n,.sylvrow.on .sylvrow__n{
+  background:linear-gradient(135deg,var(--gold-600),var(--gold-300));color:#150F04;
+  transform:rotate(-7deg) scale(1.07)}
+.sylvrow__t{flex:1;min-width:0}
+.sylvrow__t b{display:block;font-size:.94rem}
+.sylvrow__t span{font-family:var(--mono);font-size:.66rem;color:var(--muted);letter-spacing:.05em}
+.sylvrow__c{flex:none;color:var(--muted);transition:transform .35s var(--ease)}
+.sylvrow.on .sylvrow__c{transform:rotate(180deg);color:var(--gold-400)}
+.sylvlecs{display:none;padding:2px 0 12px 12px;border-left:1px solid var(--line-soft);margin:0 0 10px 22px}
+.sylvlecs.on{display:block}
+
+/* ---------- lecture rows: locked state is visible, not hidden ---------- */
+.lec2{cursor:pointer}
+.lec2--open .lec2__p{background:rgba(66,176,124,.16);color:var(--ok)}
+.lec2--shut{opacity:.66}
+.lec2--shut:hover{transform:none;border-color:var(--line-soft)}
+.lec2--shut .lec2__p{color:var(--muted)}
+.lec2--soon{opacity:.5;cursor:default;border-style:dashed}
+.lec2--soon:hover{transform:none;border-color:var(--line-soft)}
+.lecflag{flex:none;font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:4px 9px;border-radius:99px;border:1px solid var(--line-soft);color:var(--muted);white-space:nowrap}
+.lecflag--open{border-color:rgba(66,176,124,.42);color:var(--ok)}
+.lecflag--shut{border-color:var(--line);color:var(--gold-400)}
+@media(max-width:520px){.lecflag{display:none}}
+
+/* ---------- introduction video ---------- */
+.introv{position:relative;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line);
+  background:linear-gradient(140deg,var(--navy-800),var(--navy-950));aspect-ratio:16/9;
+  box-shadow:0 40px 90px rgba(0,0,0,.42)}
+[data-theme="light"] .introv{box-shadow:0 30px 70px rgba(8,18,38,.22)}
+.introv video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;display:block}
+.introv::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(circle at 50% 46%,transparent 30%,rgba(3,7,16,.5))}
+.introv.playing::after,.introv.playing .introv__go,.introv.playing .introv__cap{opacity:0;pointer-events:none}
+.introv__go{position:absolute;left:50%;top:50%;translate:-50% -50%;z-index:3;width:96px;height:96px;
+  border-radius:50%;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--gold-600),var(--gold-300));color:#150F04;font-size:30px;
+  box-shadow:0 18px 50px rgba(192,138,52,.5);transition:.35s var(--spring)}
+.introv__go:hover{transform:translate(-50%,-50%) scale(1.09)}
+.introv__tri{margin-left:5px}
+.introv__ring{position:absolute;inset:-10px;border-radius:50%;border:1px solid var(--gold-400);
+  opacity:.5;animation:iring 2.8s ease-out infinite}
+@keyframes iring{0%{transform:scale(1);opacity:.5}100%{transform:scale(1.35);opacity:0}}
+.introv__cap{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:26px 24px 20px;
+  background:linear-gradient(0deg,rgba(3,7,16,.86),transparent);transition:opacity .4s}
+.introv__cap b{display:block;font-family:var(--display);font-size:1.15rem;color:#F3EEE3}
+.introv__cap span{font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--gold-300)}
+@media(max-width:640px){.introv__go{width:70px;height:70px;font-size:22px}
+  .introv__cap{padding:18px 16px 14px}.introv__cap b{font-size:1rem}}
+
+/* ---------- an expanding panel, used under course cards and topic pills ---------- */
+.xp{overflow:hidden;max-height:0;transition:max-height .55s var(--ease);
+  scroll-margin-top:96px}
+.xp.on{max-height:4000px}
+.xp__in{margin-top:16px;padding:clamp(18px,2.4vw,26px);border-radius:var(--r-lg);
+  border:1px solid var(--line);background:var(--panel)}
+.xp__h{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.xp__h h3{margin:0;font-size:1.2rem}
+.xp__x{margin-left:auto;font-family:var(--mono);font-size:.7rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--muted);border:1px solid var(--line-soft);
+  border-radius:99px;padding:7px 14px;transition:.25s var(--ease)}
+.xp__x:hover{border-color:var(--gold-400);color:var(--gold-300)}
+
+/* a topic pill can be pressed */
+.tpill{cursor:pointer;transition:.28s var(--ease)}
+.tpill:hover{border-color:var(--gold-400);transform:translateY(-2px)}
+.tpill.on{border-color:var(--gold-400);background:var(--panel-2)}
+.tpill.on i{background:linear-gradient(135deg,var(--gold-600),var(--gold-300));color:#150F04}
+
+/* the flip card gets a real button on its back */
+.flip__go{margin-top:12px}
 </style>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -1220,6 +1301,34 @@ body.pv-lock{overflow:hidden}
 </script>
 </head>
 <body>
+
+<script>
+/* ==========================================================================
+   SCROLL KEEPER
+   Locking the page uses position:fixed, which by itself throws the reader
+   back to the top the moment a dialog closes. This remembers where they
+   were and puts them back on exactly that line — every dialog, every panel,
+   including any added later.
+   ========================================================================== */
+(function () {
+  var lastY = 0, locked = false;
+  addEventListener('scroll', function () {
+    if (!locked) lastY = window.scrollY || document.documentElement.scrollTop || 0;
+  }, { passive: true });
+
+  new MutationObserver(function () {
+    var on = document.body.classList.contains('lock');
+    if (on && !locked) {
+      locked = true;
+      document.body.style.top = (-lastY) + 'px';
+    } else if (!on && locked) {
+      locked = false;
+      document.body.style.top = '';
+      window.scrollTo(0, lastY);
+    }
+  }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+})();
+</script>
 
 <div id="pre"><div class="pl">
   <div class="pl__sys">
@@ -1244,17 +1353,17 @@ body.pv-lock{overflow:hidden}
     </a>
     <nav class="nav">
       <a href="#courses">Courses</a>
-      <a href="#syllabus">Syllabus</a>
+      <a href="#syllabus" data-open-syllabus>Syllabus</a>
       <a href="#papers">Past Papers</a>
       <a href="#notes">Notes</a>
       <a href="#affiliations">Campuses</a>
       <a href="#method">Method</a>
       <a href="#results">Results</a>
-      <a href="#demo">Demo</a>
+      <a href="#intro">Introduction</a>
       <a href="#faq">FAQ</a>
     </nav>
     <div class="hdr__cta">
-      <a class="btn btn--line btn--sm" href="#portal" data-open-auth="free">Student Login</a>
+      <a class="btn btn--line btn--sm" href="#portal" data-open-auth="prem">Student Login</a>
       <a class="btn btn--gold btn--sm" href="#register" data-mag>Register</a>
     </div>
     <button class="burger" aria-label="Open menu" aria-expanded="false"><i></i><i></i><i></i></button>
@@ -1263,17 +1372,17 @@ body.pv-lock{overflow:hidden}
 
 <nav class="mob" aria-label="Mobile menu">
   <a href="#courses">Courses <span>3 LEVELS</span></a>
-  <a href="#syllabus">Syllabus <span>PDF</span></a>
+  <a href="#syllabus" data-open-syllabus>Syllabus <span>ALL TOPICS</span></a>
   <a href="#papers">Past Papers <span>10 YEARS</span></a>
   <a href="#affiliations">Campuses <span>KARACHI</span></a>
   <a href="#method">Method</a>
   <a href="#how">How it works</a>
   <a href="#results">Results</a>
-  <a href="#demo">Demo lessons</a>
+  <a href="#intro">Introduction <span>WATCH FIRST</span></a>
   <a href="#faq">FAQ</a>
   <div class="mob__sep"></div>
   <div class="mob__row">
-    <a class="btn btn--line btn--sm" href="#portal" data-open-auth="free">Student Login</a>
+    <a class="btn btn--line btn--sm" href="#portal" data-open-auth="prem">Student Login</a>
     <a class="btn btn--gold btn--sm" href="#register">Register</a>
   </div>
 </nav>
@@ -1292,7 +1401,7 @@ body.pv-lock{overflow:hidden}
     <p class="lede">Cambridge Physics for O Level, IGCSE, AS and A2 &mdash; on campus across Karachi and live online worldwide. Nineteen years of knowing exactly where students get stuck.</p>
     <div class="hero__cta">
       <a class="btn btn--gold" href="#register" data-mag>Register now</a>
-      <a class="btn btn--line" href="#demo">Watch a demo lesson</a>
+      <a class="btn btn--line" href="#intro">Watch the introduction</a>
     </div>
     <div class="hero__m">
       <div><b><span data-count="19">0</span></b><span>Years teaching</span></div>
@@ -1301,6 +1410,30 @@ body.pv-lock{overflow:hidden}
     </div>
   </div>
   <div class="cue"><span>Scroll</span><i></i></div>
+</section>
+
+<!-- ================= INTRODUCTION ================= -->
+<section class="sec" id="intro" style="padding-block:clamp(44px,6vw,80px)">
+  <div class="wrap">
+    <div class="eyebrow">Start here</div>
+    <h2 data-rv>The whole course, explained by Sir Mehboob</h2>
+    <p class="lede" data-rv style="--d:1;margin-bottom:34px">
+      One walkthrough covering all three syllabuses &mdash; how the course runs, what each level
+      demands, how the lectures, notes and papers fit together, and what the year actually
+      looks like. Worth the time before you decide anything.</p>
+
+    <div class="introv" id="introv" data-rv style="--d:2">
+      <video id="introVid" playsinline preload="none" poster="intro-poster.jpg"></video>
+      <button class="introv__go" id="introGo" aria-label="Play the introduction">
+        <span class="introv__ring"></span>
+        <span class="introv__tri">&#9654;</span>
+      </button>
+      <div class="introv__cap">
+        <b>Course introduction</b>
+        <span>O Level &middot; AS &middot; A2 &mdash; all in one</span>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ================= AFFILIATIONS ================= -->
@@ -1359,7 +1492,7 @@ body.pv-lock{overflow:hidden}
               <li>Motion, forces and energy</li><li>Thermal physics</li><li>Waves</li>
               <li>Electricity and magnetism</li><li>Nuclear physics</li><li>Space physics</li>
             </ul>
-            <a class="btn btn--gold btn--wide" style="margin-top:14px" href="#register">Register</a>
+            <button class="btn btn--gold btn--wide flip__go" data-course="O">See every lecture</button>
           </div>
         </div>
       </div>
@@ -1385,7 +1518,7 @@ body.pv-lock{overflow:hidden}
               <li>Deformation of solids</li><li>Waves</li><li>Superposition</li>
               <li>Electricity</li><li>D.C. circuits</li><li>Particle physics</li>
             </ul>
-            <a class="btn btn--gold btn--wide" style="margin-top:14px" href="#register">Register</a>
+            <button class="btn btn--gold btn--wide flip__go" data-course="AS">See every lecture</button>
           </div>
         </div>
       </div>
@@ -1412,11 +1545,17 @@ body.pv-lock{overflow:hidden}
               <li>Alternating currents</li><li>Quantum physics</li><li>Nuclear physics</li>
               <li>Medical physics</li><li>Astronomy &amp; cosmology</li>
             </ul>
-            <a class="btn btn--gold btn--wide" style="margin-top:14px" href="#register">Register</a>
+            <button class="btn btn--gold btn--wide flip__go" data-course="A2">See every lecture</button>
           </div>
         </div>
       </div>
     </div>
+
+    <div class="xp" id="coursePanel"><div class="xp__in">
+      <div class="xp__h"><h3 id="coursePanelT">Lectures</h3>
+        <button class="xp__x" data-xp-close="coursePanel">Close</button></div>
+      <div id="coursePanelB"></div>
+    </div></div>
 
     <div class="strip" style="margin-top:44px" data-rv>
       <div><b><span data-count="19">0</span></b><span>Years teaching</span></div>
@@ -1440,6 +1579,15 @@ body.pv-lock{overflow:hidden}
       <button data-syl="A2">A2 Level &mdash; 12 chapters</button>
     </div>
     <div id="sylHost" style="margin-top:16px"></div>
+    <div class="xp" id="sylPanel"><div class="xp__in">
+      <div class="xp__h"><h3 id="sylPanelT">Topic</h3>
+        <button class="xp__x" data-xp-close="sylPanel">Close</button></div>
+      <div id="sylPanelB"></div>
+    </div></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
+      <button class="btn btn--gold" data-open-syllabus>Open the full syllabus</button>
+      <a class="btn btn--line" href="#papers">Topical papers for these topics</a>
+    </div>
   </div>
 </section>
 
@@ -1448,7 +1596,7 @@ body.pv-lock{overflow:hidden}
   <div class="wrap">
     <div class="eyebrow">Past papers</div>
     <h2 data-rv>Every paper, 2002 to 2024</h2>
-    <p class="lede" data-rv style="--d:1">Question papers open to everyone, straight in the browser. Mark schemes need a free account.</p>
+    <p class="lede" data-rv style="--d:1">Every question paper and every mark scheme opens in the browser &mdash; no sign-in. Saving a copy to your device is for enrolled students.</p>
 
     <div class="strip" style="margin:22px 0 18px" data-rv>
       <div><b><span data-count="46">46</span></b><span>Topical books</span></div>
@@ -1457,24 +1605,13 @@ body.pv-lock{overflow:hidden}
       <div><b><span data-count="23">23</span></b><span>Years</span></div>
     </div>
 
-    <div class="lockwrap" id="papersLock" data-locked>
-      <div class="lockbody">
-        <div class="tabs2" role="tablist">
-          <button class="on" data-lvl="O">O Level</button>
-          <button data-lvl="AS">AS Level</button>
-          <button data-lvl="A2">A2 Level</button>
-          <button data-lvl="YR">By year</button>
-        </div>
-        <div id="paperHost" style="margin-top:18px"></div>
-      </div>
-      <div class="lockbar">
-        <span class="lockicon">&#128274;</span>
-        <b>See all 1,426 papers and every mark scheme
-          <span>A free account opens the full archive. No payment, no card.</span></b>
-        <button class="btn btn--gold btn--sm" data-open-auth="free">Create a free account</button>
-        <button class="btn btn--line btn--sm" data-open-auth="free-in">Already have one</button>
-      </div>
+    <div class="tabs2" role="tablist">
+      <button class="on" data-lvl="O">O Level</button>
+      <button data-lvl="AS">AS Level</button>
+      <button data-lvl="A2">A2 Level</button>
+      <button data-lvl="YR">By year</button>
     </div>
+    <div id="paperHost" style="margin-top:18px"></div>
   </div>
 </section>
 
@@ -1501,7 +1638,7 @@ body.pv-lock{overflow:hidden}
         <p class="muted" style="font-size:.9rem;margin:0">The places examiners take marks off are called out where they occur, not left to a summary at the end.</p></div>
       </div>
     </div>
-    <div class="note" style="margin-top:22px">Notes come with a course. Free accounts get the notes for the first lecture of each topic.</div>
+    <div class="note" style="margin-top:22px">Notes come with the course. Every lecture you unlock brings its written set with it.</div>
   </div>
 </section>
 
@@ -1606,67 +1743,25 @@ body.pv-lock{overflow:hidden}
 </section>
 
 <!-- ================= DEMO ================= -->
-<section class="sec" id="demo">
-  <div class="wrap">
-    <div class="eyebrow">See a lesson first</div>
-    <h2 data-rv>Watch before you decide anything</h2>
-    <p class="lede" data-rv style="--d:1;margin-bottom:40px">A full lesson per level — not a trailer.</p>
-    <div class="bento">
-      <button class="demo3 c4" data-rv data-tilt style="--d:0" data-modal="O Level / IGCSE demo lesson" data-modal-body="Full lesson, taught end to end. Also on the YouTube channel.">
-        <div class="demo3__t"><img src="mark.png" alt=""><span class="chip chip--gold demo3__badge">5054 / 0625</span><div class="demo3__p">&#9654;</div></div>
-        <div class="demo3__b"><h4>O Level / IGCSE</h4><p class="muted" style="font-size:.88rem;margin:0">A full topic taught end to end, so you can judge the pace before enrolling.</p></div>
-      </button>
-      <button class="demo3 c4" data-rv data-tilt style="--d:1" data-modal="AS Level demo lesson" data-modal-body="Full lesson, taught end to end. Also on the YouTube channel.">
-        <div class="demo3__t"><img src="mark.png" alt=""><span class="chip chip--gold demo3__badge">9702 (AS)</span><div class="demo3__p">&#9654;</div></div>
-        <div class="demo3__b"><h4>AS Level</h4><p class="muted" style="font-size:.88rem;margin:0">Shows the working-out standard AS expects — the thing most students underestimate.</p></div>
-      </button>
-      <button class="demo3 c4" data-rv data-tilt style="--d:2" data-modal="A2 Level demo lesson" data-modal-body="Full lesson, taught end to end. Also on the YouTube channel.">
-        <div class="demo3__t"><img src="mark.png" alt=""><span class="chip chip--gold demo3__badge">9702 (A2)</span><div class="demo3__p">&#9654;</div></div>
-        <div class="demo3__b"><h4>A2 Level</h4><p class="muted" style="font-size:.88rem;margin:0">A Paper 5 walkthrough — the paper that rewards method over knowledge.</p></div>
-      </button>
-    </div>
-  </div>
-</section>
-
 <!-- ================= PORTAL ================= -->
 <section class="sec" id="portal">
   <div class="wrap">
     <div class="eyebrow">Lectures</div>
     <h2 data-rv>Recorded after every class</h2>
-    <p class="lede" data-rv style="--d:1;margin-bottom:22px">A free account opens the first lecture of every topic. The full course opens all of them, with written notes.</p>
+    <p class="lede" data-rv style="--d:1;margin-bottom:22px">The opening lecture of the first four topics is open to everyone. Signing in with your student ID unlocks every lecture in your level.</p>
 
-    <div class="lockwrap" id="lecLock" data-locked>
-      <div class="lockbody">
-        <div class="two">
-          <div class="two__c">
-            <span class="chip">Free</span>
-            <b>First lecture of every topic</b>
-            <p>One opening lecture per topic in your syllabus &mdash; enough to judge the teaching before paying anything.</p>
-            <ul><li>Every topic, your level</li><li>Mark schemes for every paper</li></ul>
-          </div>
-          <div class="two__c two__c--gold">
-            <span class="chip chip--gold">PKR 7,000 / month</span>
-            <b>The full course</b>
-            <p>Every lecture, recorded after each class, with the written notes that go with it.</p>
-            <ul><li>All lectures for your level</li><li>Written notes per topic</li><li>Downloadable papers</li><li>Sign in on 2 devices</li></ul>
-          </div>
-        </div>
-      </div>
-      <div class="lockbar">
-        <span class="lockicon">&#9654;</span>
-        <b>Open your lectures
-          <span>Free account for the first of each topic &mdash; or the full course for all of them.</span></b>
-        <button class="btn btn--gold btn--sm" data-open-auth="free">Free account</button>
-        <button class="btn btn--line btn--sm" data-open-auth="prem">I have a premium ID</button>
-      </div>
-    </div>
-
-    <div class="upsell">
+    <div class="upsell" id="lecUpsell">
       <span class="upsell__p">PKR 7,000</span>
       <b>Unlock every lecture<span>All lectures for your level, written notes, and downloadable papers.</span></b>
-      <a class="btn btn--gold btn--sm" href="#register">Upgrade</a>
+      <button class="btn btn--gold btn--sm" data-open-auth="prem">Sign in</button>
     </div>
-    <div id="lecLive" style="display:none;margin-top:6px"></div>
+
+    <div class="tabs2" role="tablist" id="lecTabs" style="margin-top:20px">
+      <button class="on" data-lec="O">O Level</button>
+      <button data-lec="AS">AS Level</button>
+      <button data-lec="A2">A2 Level</button>
+    </div>
+    <div id="lecLive" style="margin-top:16px"></div>
   </div>
 </section>
 
@@ -1769,89 +1864,7 @@ body.pv-lock{overflow:hidden}
 </section>
 
 <!-- ================= FOOTER ================= -->
-<div class="portalv" id="portalv" role="dialog" aria-modal="true" aria-label="Free student portal">
-  <div class="portalv__bar">
-    <div class="portalv__t"><img src="mark.png" alt="" style="height:24px"><b id="pvTitle">Free Portal</b></div>
-    <button class="btn btn--line btn--sm" id="pvClose">Close &amp; keep browsing</button>
-  </div>
-  <div class="portalv__body">
-    <div class="wrap" style="max-width:760px;padding-block:34px 60px">
-
-      <section id="pvAuth">
-        <div class="auth">
-          <img src="logo.png" alt="SMK">
-          <div class="switch">
-            <button class="on" data-pvmode="up">Create account</button>
-            <button data-pvmode="in">Sign in</button>
-          </div>
-
-          <div id="pvUp">
-            <h2 style="font-size:1.35rem;text-align:center;margin-bottom:4px">Free account</h2>
-            <p class="muted" style="text-align:center;font-size:.85rem;margin-bottom:20px">
-              First lecture of every topic, plus mark schemes for every past paper &mdash; unlocked
-              across the whole site as soon as you sign up.</p>
-            <form id="pvSignup" novalidate>
-              <div class="fld"><label for="pvName">Full name <span class="rq">*</span></label>
-                <input id="pvName" data-check="name" autocomplete="name"></div>
-              <div class="fld"><label for="pvEmail">Email <span class="rq">*</span></label>
-                <input id="pvEmail" type="email" data-check="email" autocomplete="email"></div>
-              <div class="fld"><label for="pvPhone">Phone / WhatsApp <span class="rq">*</span></label>
-                <input id="pvPhone" type="tel" data-check="phone" placeholder="03XX XXXXXXX" autocomplete="tel"></div>
-              <div class="fld"><label for="pvLevel">Syllabus <span class="rq">*</span></label>
-                <select id="pvLevel" data-check="required">
-                  <option value="">Choose your syllabus&hellip;</option>
-                  <option value="O">O Level / IGCSE</option>
-                  <option value="AS">AS Level</option>
-                  <option value="A2">A2 Level</option>
-                </select></div>
-              <div class="hp"><input type="text" tabindex="-1" aria-hidden="true"></div>
-              <button class="btn btn--gold btn--wide" type="submit">Create my free account</button>
-              <p class="muted" style="font-size:.72rem;margin-top:10px;text-align:center">No payment. About twenty seconds.</p>
-            </form>
-            <div class="msg msg--bad" id="pvUpErr" style="display:none;margin-top:12px"></div>
-          </div>
-
-          <div id="pvIn" style="display:none">
-            <h2 style="font-size:1.35rem;text-align:center;margin-bottom:4px">Welcome back</h2>
-            <p class="muted" style="text-align:center;font-size:.85rem;margin-bottom:20px">Sign in with the email you registered with.</p>
-            <form id="pvSignin" novalidate>
-              <div class="fld"><label for="pvInEmail">Email</label>
-                <input id="pvInEmail" type="email" data-check="email" autocomplete="email"></div>
-              <button class="btn btn--gold btn--wide" type="submit">Sign in</button>
-            </form>
-            <div class="msg msg--bad" id="pvInErr" style="display:none;margin-top:12px"></div>
-          </div>
-        </div>
-      </section>
-
-      <section id="pvHome" style="display:none">
-        <div class="eyebrow">Free account</div>
-        <h1 style="font-size:clamp(1.6rem,4vw,2.3rem)">Welcome, <span id="pvName2">student</span></h1>
-        <p class="lede" id="pvLead"></p>
-
-        <div class="bento" style="margin:22px 0 26px">
-          <div class="tile c4"><div class="tile__n" id="pvTopics">0</div><span class="tile__k">Topics unlocked</span></div>
-          <div class="tile c4"><div class="tile__n" id="pvFree">0</div><span class="tile__k">Free lectures</span></div>
-          <div class="tile c4"><div class="tile__n">46</div><span class="tile__k">Topical books + MS</span></div>
-        </div>
-
-        <div class="note" style="margin-bottom:22px">
-          <b>Mark schemes are unlocked</b> everywhere on this site, including
-          <a href="#papers" style="color:var(--gold-300)">past papers</a>. Enrolled students
-          get every lecture &mdash; <a href="premium.html" style="color:var(--gold-300)">PKR 7,000/month</a>.
-        </div>
-
-        <h2 style="font-size:1.2rem">Your lectures</h2>
-        <div class="topics" id="pvTopicHost" style="margin-top:14px"></div>
-
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:28px">
-          <a class="btn btn--line" href="#papers">Past papers &amp; mark schemes</a>
-          <button class="btn btn--line" id="pvSignOut">Sign out</button>
-        </div>
-      </section>
-    </div>
-  </div>
-</div>
+<!-- syllabus popup lives further down, next to the other dialogs -->
 
 <footer class="ftr">
   <div class="wrap">
@@ -1923,7 +1936,7 @@ body.pv-lock{overflow:hidden}
 {"@context":"https://schema.org","@type":"EducationalOrganization",
 "name":"Sir Mehboob Khan — O/A Level Physics",
 "description":"Cambridge Physics tuition for O Level, IGCSE, AS and A2. On campus in Karachi and live online worldwide.",
-"areaServed":"Worldwide","founder":{"@type":"Person","name":"Sir Mehboob Khan"},
+"url":"https://physicswithsmk.com/","areaServed":"Worldwide","founder":{"@type":"Person","name":"Sir Mehboob Khan"},
 "address":{"@type":"PostalAddress","addressLocality":"Karachi","addressCountry":"PK"},
 "sameAs":["https://instagram.com/sir_mehboob_khan","https://youtube.com/@mehboobkhan7260"]}
 </script>
@@ -2959,14 +2972,15 @@ window.NAG_CONFIG = {
   if (!C.mobile && matchMedia('(max-width: 860px)').matches) return;
 
   var NAGS = [
-    { side: 'left', title: 'Free account',
-      lead: 'Email, phone and your syllabus. No payment, no card.',
-      points: ['First lecture of <b>every topic</b>', 'Mark schemes for every paper', 'All 46 topical books'],
-      cta: 'Create a free account', href: 'portal.html', kind: 'line' },
+    { side: 'left', title: 'Start with a preview',
+      lead: 'The opening lecture of the first four topics plays right now.',
+      points: ['Watch before you decide anything', 'Every past paper and mark scheme',
+               'All 46 topical books'],
+      cta: 'Open the syllabus', href: '#syllabus', kind: 'line' },
     { side: 'right', title: 'Enrolled students get more',
-      lead: 'Everything free, plus the parts that actually move a grade.',
+      lead: 'Every lecture in your level, not just the openers.',
       points: ['Every lecture, after each class', 'Lecture notes for every topic',
-               'Mark schemes and examiner reports'],
+               'Downloadable papers and mark schemes'],
       cta: 'See what is included', href: '#access', kind: 'gold' }
   ];
 
@@ -3062,8 +3076,8 @@ window.NAG_CONFIG = {
      notes   optional PDF filename or URL for that lecture's notes
      date    optional, shown as "recorded on"
 
-   ANY lecture with n:1 is visible to free accounts.
-   Everything else needs a premium account. Nothing else to configure.
+   Lecture n:1 of the first four topics previews without an account.
+   Everything else needs a signed-in student. Nothing else to configure.
    ========================================================================== */
 
 const TOPICS = {
@@ -3145,17 +3159,19 @@ const LECTURES = [
   var LABEL = { O: 'O Level / IGCSE', AS: 'AS Level', A2: 'A2 Level' };
   function draw(lvl) {
     host.innerHTML = '<div class="tlist">' + TOPICS[lvl].map(function (t) {
-      return '<span class="tpill"><i>' + t.n + '</i>' + t.name + '</span>';
+      return '<button class="tpill" data-syl-topic="' + t.n + '" data-syl-lvl="' + lvl + '">' +
+             '<i>' + t.n + '</i>' + t.name + '</button>';
     }).join('') + '</div>' +
     '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">' +
-      '<a class="btn btn--line btn--sm" href="#papers">Topical papers for these topics</a>' +
-      '<a class="btn btn--gold btn--sm" href="#portal" data-open-auth="free">Free account &mdash; lecture 1 of each</a>' +
+      '<button class="btn btn--gold btn--sm" data-open-syllabus>See the lectures for each topic</button>' +
     '</div>';
   }
   document.querySelectorAll('[data-syl]').forEach(function (b) {
-    b.addEventListener('click', function () {
+    b.addEventListener('click', function (ev) {
+      ev.stopPropagation();
       document.querySelectorAll('[data-syl]').forEach(function (x) { x.classList.remove('on'); });
       b.classList.add('on'); draw(b.dataset.syl);
+      if (window.SMKcloseXp) window.SMKcloseXp('sylPanel');
     });
   });
   draw('O');
@@ -3188,8 +3204,8 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
      notes   optional PDF filename or URL for that lecture's notes
      date    optional, shown as "recorded on"
 
-   ANY lecture with n:1 is visible to free accounts.
-   Everything else needs a premium account. Nothing else to configure.
+   Lecture n:1 of the first four topics previews without an account.
+   Everything else needs a signed-in student. Nothing else to configure.
    ========================================================================== */
 
 
@@ -3203,32 +3219,30 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
 <script>
 /* ==========================================================================
    PAST PAPERS — rendered from papers.js, which is generated from the repo.
-   Question papers are open. Mark schemes need a free account.
+   Question papers and mark schemes are open to everyone. Downloads need an account.
    ========================================================================== */
 (function () {
   var host = document.getElementById('paperHost');
   if (!host || typeof TOPICAL === 'undefined') return;
 
-  // a free account is recorded here after signup; until then mark schemes lock
-  var signedIn = function(){return !!localStorage.getItem('smk_free_account') || !!localStorage.getItem('smk_premium');};
+  // every paper and mark scheme opens for everyone; only saving needs an account
+  var enrolled = function () { return !!localStorage.getItem('smk_premium'); };
 
   var LEVEL = { O: 'O Level & IGCSE', AS: 'AS Level', A2: 'A2 Level' };
 
   function lockNote() {
-    if (document.getElementById('papersLock')) return '';   // the lock bar says it better
-    return signedIn() ? '' :
+    return enrolled() ? '' :
       '<div class="note" style="margin-bottom:18px">' +
-      '<b>Mark schemes are locked.</b> Create a free account — name, email, phone and your ' +
-      'syllabus — and every mark scheme on this page opens. No payment, no card.' +
-      ' <a href="#portal" data-open-auth="free" style="color:var(--gold-300)">Create a free account →</a></div>';
+      '<b>Everything here opens.</b> Question papers and mark schemes both read in the browser, ' +
+      'no sign-in. Saving a copy and comparing a paper against its mark scheme side by side ' +
+      'come with the course. ' +
+      '<button data-open-auth="prem" style="color:var(--gold-300);text-decoration:underline">Sign in →</button></div>';
   }
 
   function link(url, label, ms, pair) {
     if (!url) return '';
     var abs = function (u) { return (!u || u.indexOf('http') === 0) ? u : (typeof PBASE !== 'undefined' ? PBASE : '') + u; };
     url = abs(url); pair = abs(pair);
-    if (ms && !signedIn())
-      return '<button class="plink plink--ms" data-open-auth="free" title="Free account unlocks mark schemes">' + label + '</button>';
     var t = (label + ' — ' + (window.__paperTitle || 'Paper')).replace(/"/g, '');
     return '<button class="plink' + (ms ? ' plink--ms open' : '') + '" data-pdf="' + url +
            '" data-t="' + t + '"' + (pair ? ' data-pair="' + pair + '"' : '') + '>' + label + '</button>';
@@ -3305,7 +3319,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       if (b.dataset.bound) return;
       b.dataset.bound = '1';
       b.addEventListener('click', function () {
-        var premium = !!localStorage.getItem('smk_premium');
+        var premium = enrolled();
         var pair = b.dataset.pair || null;
         // side-by-side comparison is a paid feature
         window.__hasPair = !!pair;
@@ -3316,13 +3330,18 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     });
   }
 
-  Array.prototype.forEach.call(document.querySelectorAll('.tabs2 button'), function (b) {
-    b.addEventListener('click', function () {
-      document.querySelectorAll('.tabs2 button').forEach(function (x) { x.classList.remove('on'); });
-      b.classList.add('on');
-      if (b.dataset.lvl === 'YR') years(); else level(b.dataset.lvl);
+  /* only this section's own tabs — a global .tabs2 selector also caught the
+     syllabus and lecture tabs, and clicking those wiped the paper list */
+  var papersTabs = document.querySelector('#papers .tabs2');
+  if (papersTabs) {
+    Array.prototype.forEach.call(papersTabs.querySelectorAll('button'), function (b) {
+      b.addEventListener('click', function () {
+        papersTabs.querySelectorAll('button').forEach(function (x) { x.classList.remove('on'); });
+        b.classList.add('on');
+        if (b.dataset.lvl === 'YR') years(); else level(b.dataset.lvl);
+      });
     });
-  });
+  }
 
   window.renderPapers = function () { level('O'); };
   level('O');
@@ -3331,48 +3350,44 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
 
 
 
+<!-- ================= SYLLABUS POPUP ================= -->
+<div class="auth2 sylv" id="sylv" role="dialog" aria-modal="true" aria-label="Course syllabus">
+  <div class="auth2__bg"></div>
+  <div class="auth2__p sylv__p">
+    <button class="auth2__x" aria-label="Close">&times;</button>
+    <div class="eyebrow">Full syllabus</div>
+    <h3 style="font-size:1.4rem;margin-bottom:6px">Every topic, in teaching order</h3>
+    <p class="muted" style="font-size:.86rem;margin-bottom:18px">
+      Tap a topic to see its lectures. The opening lecture of the first four topics is open to
+      everyone &mdash; the rest come with the course.</p>
+    <div class="tabs2" id="sylvTabs" style="margin-bottom:18px">
+      <button class="on" data-sylv="O">O Level</button>
+      <button data-sylv="AS">AS Level</button>
+      <button data-sylv="A2">A2 Level</button>
+    </div>
+    <div id="sylvHost"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
+      <button class="btn btn--gold btn--sm" id="sylvDl">Download syllabus (PDF)</button>
+      <a class="btn btn--line btn--sm" href="#papers" data-sylv-close>Topical papers</a>
+    </div>
+  </div>
+</div>
+
 <!-- ================= SIGN IN ================= -->
 <div class="auth2" id="auth2" role="dialog" aria-label="Sign in">
   <div class="auth2__bg"></div>
   <div class="auth2__p">
     <button class="auth2__x" aria-label="Close">&times;</button>
     <img src="logo.png" alt="SMK" style="height:56px;margin:0 auto 16px;display:block">
-    <div class="switch" id="authTabs">
-      <button class="on" data-tab="free">Free account</button>
-      <button data-tab="prem">Premium</button>
+    <h3 style="font-size:1.3rem;text-align:center;margin-bottom:4px" id="authH">Student sign in</h3>
+    <p class="muted" style="text-align:center;font-size:.85rem;margin-bottom:20px" id="authP">
+      Use the student ID and password sent to you on WhatsApp.</p>
+    <div class="tabs2" id="authTabs" style="margin-bottom:18px">
+      <button class="on" data-atab="in">Sign in</button>
+      <button data-atab="ask">Request access</button>
     </div>
-    <div data-pane="free">
-      <div class="switch switch--sm">
-        <button class="on" data-sub="up">Create</button>
-        <button data-sub="in">Already have one</button>
-      </div>
-      <form id="fUp" novalidate>
-        <div class="fld"><label for="aName">Name <span class="rq">*</span></label>
-          <input id="aName" data-check="name" autocomplete="name"></div>
-        <div class="fld"><label for="aEmail">Email <span class="rq">*</span></label>
-          <input id="aEmail" type="email" data-check="email" autocomplete="email"></div>
-        <div class="fld"><label for="aPhone">Phone <span class="rq">*</span></label>
-          <input id="aPhone" type="tel" data-check="phone" placeholder="03XX XXXXXXX" autocomplete="tel"></div>
-        <div class="fld"><label for="aLevel">Syllabus <span class="rq">*</span></label>
-          <select id="aLevel" data-check="required">
-            <option value="">Choose…</option>
-            <option value="O">O Level / IGCSE</option>
-            <option value="AS">AS Level</option>
-            <option value="A2">A2 Level</option>
-          </select></div>
-        <div class="hp"><input type="text" tabindex="-1" aria-hidden="true"></div>
-        <button class="btn btn--gold btn--wide" type="submit">Create free account</button>
-        <p class="muted" style="font-size:.76rem;text-align:center;margin:10px 0 0">
-          Unlocks mark schemes and the first lecture of every topic. No payment.</p>
-      </form>
-      <form id="fIn" novalidate style="display:none">
-        <div class="fld"><label for="aInEmail">Email</label>
-          <input id="aInEmail" type="email" data-check="email" autocomplete="email"></div>
-        <button class="btn btn--gold btn--wide" type="submit">Sign in</button>
-        <div class="msg msg--bad" id="fInErr" style="display:none;margin-top:12px"></div>
-      </form>
-    </div>
-    <div data-pane="prem" style="display:none">
+
+    <div data-apane="in">
       <form id="pIn" novalidate>
         <div class="fld"><label for="aSid">Student ID</label>
           <input id="aSid" placeholder="SMK-O26-0147" spellcheck="false" autocomplete="username"></div>
@@ -3381,13 +3396,44 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
         <button class="btn btn--gold btn--wide" type="submit">Sign in</button>
         <div class="msg msg--bad" id="pInErr" style="display:none;margin-top:12px"></div>
       </form>
-      <div class="note" style="margin-top:16px;font-size:.84rem">
-        <b>No student ID yet?</b> Fill the registration form below. We reply on WhatsApp within
-        2–3 hours, arrange payment, and send your ID and password.
-        <a href="#register" class="auth2__close-go" style="color:var(--gold-300)">Register &rarr;</a>
-      </div>
-      <p class="muted" style="font-size:.76rem;text-align:center;margin-top:12px">
-        You can sign in on up to <b>2 devices</b> with the same ID.</p>
+      <p class="muted" style="font-size:.76rem;text-align:center;margin-top:14px">
+        You stay signed in on up to <b>2 devices</b> until you sign out.</p>
+    </div>
+
+    <div data-apane="ask" style="display:none">
+      <p class="muted" style="font-size:.85rem;margin-bottom:16px">
+        We reply on WhatsApp within 2&ndash;3 hours, arrange the fee, and send your
+        student ID and password.</p>
+      <form id="pAsk" novalidate>
+        <div class="fld"><label for="qName">Full name <span class="rq">*</span></label>
+          <input id="qName" data-check="name" autocomplete="name"></div>
+        <div class="fld"><label for="qPhone">Phone / WhatsApp <span class="rq">*</span></label>
+          <input id="qPhone" type="tel" data-check="phone" placeholder="03XX XXXXXXX" autocomplete="tel"></div>
+        <div class="fld"><label for="qEmail">Email <span class="rq">*</span></label>
+          <input id="qEmail" type="email" data-check="email" autocomplete="email"></div>
+        <div class="fld"><label for="qLevel">Syllabus <span class="rq">*</span></label>
+          <select id="qLevel" data-check="required">
+            <option value="">Choose&hellip;</option>
+            <option value="O Level / IGCSE">O Level / IGCSE</option>
+            <option value="AS Level">AS Level</option>
+            <option value="A2 Level">A2 Level</option>
+          </select></div>
+        <div class="fld"><label for="qSchool">School or college</label>
+          <input id="qSchool" autocomplete="organization"></div>
+        <div class="fld"><label for="qMode">Class</label>
+          <select id="qMode">
+            <option>On campus &mdash; Karachi</option>
+            <option>Live online</option>
+            <option>Recorded lectures only</option>
+          </select></div>
+        <div class="hp"><input type="text" tabindex="-1" aria-hidden="true"></div>
+        <button class="btn btn--gold btn--wide" type="submit">Send my details</button>
+        <div class="msg msg--bad" id="pAskErr" style="display:none;margin-top:12px"></div>
+        <div class="msg msg--ok" id="pAskOk" style="display:none;margin-top:12px"></div>
+      </form>
+      <p class="muted" style="font-size:.74rem;text-align:center;margin-top:12px">
+        Or message <a href="https://wa.me/923028056789" target="_blank" rel="noopener"
+        style="color:var(--gold-300)">0302 8056789</a> directly.</p>
     </div>
   </div>
 </div>
@@ -3470,18 +3516,25 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
 
 <script>
 /* ==========================================================================
-   TIER STATE
-   none  → question papers only
-   free  → mark schemes, full archive, lecture 1 of every topic
-   prem  → everything, plus downloads and notes (lectures live in premium.html)
-   Sessions persist until the student signs out.
+   ACCESS STATE
+   none  → syllabus, all past papers and mark schemes (view only),
+           plus the opening lecture of the first four topics
+   prem  → every lecture in the student's level, notes, and downloads
+   One account type. One sign-in. Sessions persist until sign-out.
    ========================================================================== */
 (function () {
-  var $ = function (q, c) { return (c || document).querySelector(q); };
+  var $  = function (q, c) { return (c || document).querySelector(q); };
   var $$ = function (q, c) { return Array.prototype.slice.call((c || document).querySelectorAll(q)); };
-  var FREE = 'smk_free', PREM = 'smk_premium';
+  var PREM = 'smk_premium';
 
-  /* no hardcoded students — the database checks the password */
+  /* how many topics, counted from the top of each level, give away lecture 1 */
+  var OPEN_TOPICS = 4;
+
+  var LEVELNAME = { O: 'O Level / IGCSE', AS: 'AS Level', A2: 'A2 Level' };
+  var lecLevel = 'O';        // which level the lecture list is showing
+  var sylvLevel = 'O';       // which level the syllabus popup is showing
+
+  /* the database checks the password — nothing is hardcoded here */
   function deviceKey() {
     var k = localStorage.getItem('smk_device_key');
     if (!k) { k = 'd-' + Math.random().toString(36).slice(2, 11); localStorage.setItem('smk_device_key', k); }
@@ -3491,169 +3544,456 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   function session() {
     try {
       var p = JSON.parse(localStorage.getItem(PREM));
-      if (p) return { tier: 'prem', name: p.name, lvl: p.lvl, sid: p.sid };
-    } catch (e) { }
-    try {
-      var f = JSON.parse(localStorage.getItem(FREE));
-      if (f) return { tier: 'free', name: f.name, lvl: f.level };
+      if (p && p.sid) return { tier: 'prem', name: p.name, lvl: p.lvl, sid: p.sid };
     } catch (e) { }
     return { tier: 'none' };
   }
+  window.SMKsession = session;
 
-  /* ---------- apply the tier across the page ---------- */
-  function apply() {
+  /* ---------- what a visitor can open ---------- */
+  function openTopicNumbers(lvl) {
+    var list = (typeof TOPICS !== 'undefined' && TOPICS[lvl]) ? TOPICS[lvl] : [];
+    return list.slice(0, OPEN_TOPICS).map(function (t) { return t.n; });
+  }
+  function canOpen(lvl, topicN, lecN) {
     var s = session();
-    document.documentElement.setAttribute('data-tier', s.tier);
+    if (s.tier === 'prem' && s.lvl === lvl) return true;
+    return lecN === 1 && openTopicNumbers(lvl).indexOf(topicN) !== -1;
+  }
+  window.SMKcanOpen = canOpen;
 
-    // papers open at free and above; lectures need a tier too
-    setLock('#papersLock', s.tier !== 'none');
-    setLock('#lecLock', s.tier !== 'none');
-
-    // header
-    var cta = $('.hdr__cta');
-    if (cta) {
-      cta.innerHTML = s.tier === 'none'
-        ? '<button class="btn btn--line btn--sm" data-open-auth="free-in">Sign in</button>' +
-          '<a class="btn btn--gold btn--sm" href="#register" data-mag>Register</a>'
-        : '<span class="who"><i></i>' + (s.name || 'Student').split(' ')[0] +
-            (s.tier === 'prem' ? ' <span class="badge-prem">Premium</span>' : '') + '</span>' +
-          (s.tier === 'prem'
-            ? '<a class="btn btn--gold btn--sm" href="premium.html">My Course</a>'
-            : '<a class="btn btn--gold btn--sm" href="#portal">Upgrade</a>') +
-          '<button class="btn btn--line btn--sm" id="signOutBtn">Sign out</button>';
-      var so = $('#signOutBtn');
-      if (so) so.addEventListener('click', function () {
-        localStorage.removeItem(FREE); localStorage.removeItem(PREM); location.reload();
+  /* ---------- lectures for a level: database first, bundled file as fallback ---------- */
+  function lecturesFor(lvl) {
+    var s = session(), out = [];
+    if (s.tier === 'prem' && s.lvl === lvl) {
+      var course = {};
+      try { course = JSON.parse(localStorage.getItem('smk_course')) || {}; } catch (e) { }
+      out = (course.lectures || []).map(function (l) {
+        return { id: l.id, lvl: l.lvl || lvl, topic: l.topic, n: l.n, t: l.title || l.t,
+                 dur: l.duration || l.dur || '', vid: l.video_url || l.vid || '',
+                 notes: l.notes_url || l.notes || '', date: l.recorded || l.date || '' };
       });
     }
-
-    if (typeof renderPapers === 'function') renderPapers();
-    renderLectures(s);
-  }
-
-  function setLock(sel, unlocked) {
-    var el = $(sel); if (!el) return;
-    if (unlocked) el.removeAttribute('data-locked'); else el.setAttribute('data-locked', '');
-  }
-
-  /* ---------- lectures shown inline once signed in ---------- */
-  function renderLectures(s) {
-    var host = $('#lecLive');
-    if (!host || s.tier === 'none' || typeof TOPICS === 'undefined') { if (host) host.style.display = 'none'; return; }
-    var lvl = s.lvl || 'O';
-    var course = {};
-    try { course = JSON.parse(localStorage.getItem('smk_course')) || {}; } catch (e) { }
-    var tops = (course.topics && course.topics.length) ? course.topics : (TOPICS[lvl] || []);
-    var lecs = (course.lectures || []).map(function (l) {
-      return { lvl: l.lvl, topic: l.topic, n: l.n, t: l.title, dur: l.duration || '',
-               vid: l.video_url || '', notes: l.notes_url || '' };
-    });
-    if (!lecs.length && typeof LECTURES !== 'undefined') {
-      lecs = LECTURES.filter(function (l) { return l.lvl === lvl; });
+    if (!out.length && typeof PUBLIC_LECTURES !== 'undefined') {
+      out = PUBLIC_LECTURES.filter(function (l) { return l.lvl === lvl; });
     }
-    var groups = tops.map(function (t) {
-      var ls = lecs.filter(function (l) { return l.topic === t.n; })
-                   .sort(function (a, b) { return a.n - b.n; });
-      return { t: t, all: ls, show: s.tier === 'prem' ? ls : ls.filter(function (l) { return l.n === 1; }) };
-    }).filter(function (g) { return g.show.length; });
+    if (!out.length && typeof LECTURES !== 'undefined') {
+      out = LECTURES.filter(function (l) { return l.lvl === lvl; });
+    }
+    return out;
+  }
 
-    if (!groups.length) { host.style.display = 'none'; return; }
-    host.style.display = '';
-    host.innerHTML =
-      '<div class="note" style="margin-bottom:14px">' +
-        (s.tier === 'prem'
-          ? '<b>Premium.</b> Every lecture for ' + lvl + ' is below. New ones appear after each class.'
-          : '<b>Free account.</b> The first lecture of each topic is below. ' +
-            '<a href="#register" style="color:var(--gold-300)">Upgrade</a> for all of them plus notes.') +
-      '</div><div class="topics">' +
-      groups.map(function (g, i) {
-        var locked = g.all.length - g.show.length;
-        return '<div class="topic' + (i === 0 ? ' open' : '') + '">' +
-          '<button class="topic__h"><span class="topic__n">' + g.t.n + '</span>' +
-          '<span class="topic__t"><b>' + g.t.name + '</b><span>' + g.show.length + ' available' +
-          (locked > 0 ? ' · ' + locked + ' with a course' : '') + '</span></span>' +
-          '<span class="topic__c">&#9662;</span></button><div class="topic__b"><div>' +
-          g.show.map(function (l) {
-            return '<a class="lec2' + (l.n === 1 ? ' lec2--free' : '') + '" href="premium.html">' +
-              '<span class="lec2__p">&#9654;</span><span class="lec2__t"><b>' + l.t + '</b>' +
-              '<span>Lecture ' + l.n + ' · ' + l.dur + (l.n === 1 ? ' · free' : '') + '</span></span></a>';
-          }).join('') +
-          (locked > 0 ? '<div class="lec2 lec2--lock"><span class="lec2__p">&#128274;</span>' +
-            '<span class="lec2__t"><b>' + locked + ' more in this topic</b>' +
-            '<span>PKR 7,000/month</span></span></div>' : '') +
-          '</div></div></div>';
-      }).join('') + '</div>';
+  function topicsFor(lvl) {
+    var s = session();
+    if (s.tier === 'prem' && s.lvl === lvl) {
+      var course = {};
+      try { course = JSON.parse(localStorage.getItem('smk_course')) || {}; } catch (e) { }
+      if (course.topics && course.topics.length) return course.topics;
+    }
+    return (typeof TOPICS !== 'undefined' && TOPICS[lvl]) ? TOPICS[lvl] : [];
+  }
+
+  /* ---------- one lecture row, locked or not ---------- */
+  /* a lecture that is planned but not recorded yet — shown so the student can
+     see the shape of the course before it has been taught. `planned` is an
+     optional integer on the topics table; without it nothing is invented. */
+  function soonRow(n) {
+    return '<div class="lec2 lec2--soon">' +
+      '<span class="lec2__p">&#8226;</span>' +
+      '<span class="lec2__t"><b>Lecture ' + n + '</b><span>recorded after class</span></span>' +
+      '<span class="lecflag">Coming</span></div>';
+  }
+  function soonRows(t, have) {
+    var planned = +(t.planned || 0);
+    if (!planned || planned <= have) return '';
+    var out = '';
+    for (var i = have + 1; i <= planned; i++) out += soonRow(i);
+    return out;
+  }
+
+  function lecRow(lvl, l) {
+    var open = canOpen(lvl, l.topic, l.n);
+    var meta = 'Lecture ' + l.n + (l.dur ? ' \u00b7 ' + l.dur : '') + (l.notes ? ' \u00b7 notes' : '');
+    return '<button class="lec2 ' + (open ? 'lec2--open' : 'lec2--shut') + '" ' +
+      'data-lec-id="' + (l.id || '') + '" data-lec-lvl="' + lvl + '" ' +
+      'data-lec-topic="' + l.topic + '" data-lec-n="' + l.n + '">' +
+      '<span class="lec2__p">' + (open ? '&#9654;' : '&#128274;') + '</span>' +
+      '<span class="lec2__t"><b>' + l.t + '</b><span>' + meta + '</span></span>' +
+      '<span class="lecflag ' + (open ? 'lecflag--open">Open' : 'lecflag--shut">Locked') + '</span>' +
+      '</button>';
+  }
+
+  /* ---------- the lecture list on the page ---------- */
+  function renderLectures() {
+    var host = $('#lecLive');
+    if (!host) return;
+    var lvl = lecLevel, s = session();
+    var tops = topicsFor(lvl), lecs = lecturesFor(lvl);
+
+    var groups = tops.map(function (t) {
+      return { t: t, lecs: lecs.filter(function (l) { return l.topic === t.n; })
+                                .sort(function (a, b) { return a.n - b.n; }) };
+    });
+    /* every topic shows, recorded or not, so the page reads as the whole course */
+
+    var head = s.tier === 'prem'
+      ? (s.lvl === lvl
+          ? '<div class="note" style="margin-bottom:16px"><b>Signed in.</b> Every lecture for ' +
+            LEVELNAME[lvl] + ' is open below. New ones appear after each class.</div>'
+          : '<div class="note" style="margin-bottom:16px"><b>You are enrolled in ' + LEVELNAME[s.lvl] +
+            '.</b> You can browse ' + LEVELNAME[lvl] + ' here, but only your own level plays.</div>')
+      : '<div class="note" style="margin-bottom:16px"><b>Preview.</b> The opening lecture of the first ' +
+        OPEN_TOPICS + ' topics plays without signing in. Everything else is listed so you can see ' +
+        'exactly what the course covers. <button data-open-auth="prem" style="color:var(--gold-300);' +
+        'text-decoration:underline">Sign in to unlock everything</button>.</div>';
+
+    if (!groups.length) {
+      host.innerHTML = head + '<div class="gate"><p class="muted" style="margin:0">' +
+        'The ' + LEVELNAME[lvl] + ' topic list is loading.</p></div>';
+      return;
+    }
+
+    /* open the first topic that actually has something to watch */
+    var firstReal = 0;
+    for (var gi = 0; gi < groups.length; gi++) {
+      if (groups[gi].lecs.length) { firstReal = gi; break; }
+    }
+
+    host.innerHTML = head + '<div class="topics">' + groups.map(function (g, i) {
+      var openCount = g.lecs.filter(function (l) { return canOpen(lvl, g.t.n, l.n); }).length;
+      var shut = g.lecs.length - openCount;
+      var pl = +(g.t.planned || 0);
+      var sub = g.lecs.length
+        ? g.lecs.length + ' lecture' + (g.lecs.length !== 1 ? 's' : '') +
+          (shut > 0 ? ' \u00b7 ' + shut + ' locked' : '')
+        : (pl ? pl + ' lecture' + (pl !== 1 ? 's' : '') + ' \u00b7 taught later'
+              : 'recorded after class');
+      var soon = soonRows(g.t, g.lecs.length);
+      var body = (g.lecs.length || soon)
+        ? g.lecs.map(function (l) { return lecRow(lvl, l); }).join('') + soon
+        : '<p class="muted" style="font-size:.85rem;margin:0">' +
+          'This topic is taught later in the year. Its lectures appear here after each class.</p>';
+      return '<div class="topic' + (i === firstReal ? ' open' : '') +
+        (g.lecs.length ? '' : ' topic--soon') + '">' +
+        '<button class="topic__h"><span class="topic__n">' + g.t.n + '</span>' +
+        '<span class="topic__t"><b>' + g.t.name + '</b><span>' + sub + '</span></span>' +
+        '<span class="topic__c">&#9662;</span></button>' +
+        '<div class="topic__b"><div>' + body + '</div></div></div>';
+    }).join('') + '</div>';
+
     $$('.topic__h', host).forEach(function (h) {
       h.addEventListener('click', function () { h.parentElement.classList.toggle('open'); });
     });
   }
 
-  /* ---------- the modal ---------- */
-  var box = $('#auth2');
-  function open(which) {
-    box.classList.add('open'); document.body.classList.add('lock');
-    tab(which === 'prem' ? 'prem' : 'free');
-    if (which === 'free-in') sub('in');
-    if (which === 'free') sub('up');
+  /* ---------- syllabus popup ---------- */
+  function renderSylv() {
+    var host = $('#sylvHost');
+    if (!host) return;
+    var lvl = sylvLevel, tops = topicsFor(lvl), lecs = lecturesFor(lvl);
+
+    host.innerHTML = tops.map(function (t) {
+      var mine = lecs.filter(function (l) { return l.topic === t.n; })
+                     .sort(function (a, b) { return a.n - b.n; });
+      var shut = mine.filter(function (l) { return !canOpen(lvl, t.n, l.n); }).length;
+      return '<button class="sylvrow" data-sylv-topic="' + t.n + '">' +
+          '<span class="sylvrow__n">' + t.n + '</span>' +
+          '<span class="sylvrow__t"><b>' + t.name + '</b><span>' +
+            (mine.length ? mine.length + ' lecture' + (mine.length !== 1 ? 's' : '') +
+              (shut ? ' \u00b7 ' + shut + ' locked' : '') : 'lectures coming') +
+          '</span></span>' +
+          '<span class="sylvrow__c">&#9662;</span>' +
+        '</button>' +
+        '<div class="sylvlecs" data-sylv-for="' + t.n + '">' +
+          (mine.length ? mine.map(function (l) { return lecRow(lvl, l); }).join('')
+            : '<p class="muted" style="font-size:.84rem;margin:0 0 10px">' +
+              'Lectures for this topic are added after each class.</p>') +
+        '</div>';
+    }).join('');
+
+    $$('[data-sylv-topic]', host).forEach(function (b) {
+      b.addEventListener('click', function () {
+        var n = b.dataset.sylvTopic;
+        var box = $('.sylvlecs[data-sylv-for="' + n + '"]', host);
+        var wasOn = box.classList.contains('on');
+        $$('.sylvlecs', host).forEach(function (x) { x.classList.remove('on'); });
+        $$('[data-sylv-topic]', host).forEach(function (x) { x.classList.remove('on'); });
+        if (!wasOn) { box.classList.add('on'); b.classList.add('on'); }
+      });
+    });
   }
-  function close() {
-    var m = document.getElementById('auth2');
-    if (m) m.classList.remove('open');
-    document.body.classList.remove('lock');
+
+  function openSylv() { $('#sylv').classList.add('open'); document.body.classList.add('lock'); renderSylv(); }
+  function closeSylv() { $('#sylv').classList.remove('open'); document.body.classList.remove('lock'); }
+  window.SMKopenSyllabus = openSylv;
+
+  $$('#sylvTabs button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      $$('#sylvTabs button').forEach(function (x) { x.classList.remove('on'); });
+      b.classList.add('on'); sylvLevel = b.dataset.sylv; renderSylv();
+    });
+  });
+
+  /* the syllabus PDF is the one thing in this dialog that needs an account */
+  $('#sylvDl').addEventListener('click', function () {
+    if (session().tier !== 'prem') { closeSylv(); openAuth('prem'); return; }
+    /* BACKEND: point this at the syllabus PDF for sylvLevel, e.g. a row in a
+       `syllabus_files` table or a file in Supabase Storage. */
+    var url = (window.SYLLABUS_PDF || {})[sylvLevel];
+    if (url) window.open(url, '_blank', 'noopener');
+    else alert('The ' + LEVELNAME[sylvLevel] + ' syllabus PDF has not been linked yet.');
+  });
+
+  /* ---------- opening a lecture ---------- */
+  function playLecture(lvl, topicN, lecN, id) {
+    if (!canOpen(lvl, topicN, lecN)) { openAuth('prem'); return; }
+    var l = lecturesFor(lvl).filter(function (x) {
+      return x.topic === +topicN && x.n === +lecN;
+    })[0];
+    if (!l) return;
+    var s = session();
+    /* the player is its own page so it can own the whole screen, keep its
+       controls out of this document, and be opened straight from a link */
+    var q = 'lecture.html?id=' + encodeURIComponent(l.id || (lvl + '-' + topicN + '-' + lecN)) +
+            '&lvl=' + encodeURIComponent(lvl) +
+            '&topic=' + encodeURIComponent(topicN) +
+            '&n=' + encodeURIComponent(lecN) +
+            '&t=' + encodeURIComponent(l.t || '') +
+            '&dur=' + encodeURIComponent(l.dur || '') +
+            '&vid=' + encodeURIComponent(l.vid || '') +
+            '&notes=' + encodeURIComponent(l.notes || '') +
+            (s.tier === 'prem' ? '&sid=' + encodeURIComponent(s.sid) +
+                                 '&name=' + encodeURIComponent(s.name || '') : '');
+    window.open(q, 'smkLecture', 'noopener');
   }
-  function tab(t) {
-    $$('#authTabs button').forEach(function (b) { b.classList.toggle('on', b.dataset.tab === t); });
-    $$('[data-pane]').forEach(function (p) { p.style.display = p.dataset.pane === t ? '' : 'none'; });
-  }
-  function sub(v) {
-    $$('[data-sub]').forEach(function (b) { b.classList.toggle('on', b.dataset.sub === v); });
-    $('#fUp').style.display = v === 'up' ? '' : 'none';
-    $('#fIn').style.display = v === 'in' ? '' : 'none';
-  }
+
   document.addEventListener('click', function (e) {
-    var t = e.target.closest('[data-open-auth]');
-    if (t) { e.preventDefault(); open(t.dataset.openAuth); return; }
-    if (e.target.closest('.auth2__x') || e.target.classList.contains('auth2__bg')) close();
-    if (e.target.closest('.auth2__close-go')) close();
-    var tb = e.target.closest('#authTabs button'); if (tb) tab(tb.dataset.tab);
-    var sb = e.target.closest('[data-sub]'); if (sb) sub(sb.dataset.sub);
-  });
-  addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
-
-  /* ---------- free signup ---------- */
-  $('#fUp').addEventListener('submit', async function (e) {
+    var b = e.target.closest('[data-lec-id]');
+    if (!b) return;
     e.preventDefault();
-    if ($('.hp input', this).value) return;
-    if (!SMKcheckForm(this)) return;
-    var sess = { name: $('#aName').value.trim(), email: $('#aEmail').value.trim().toLowerCase(),
-                 phone: $('#aPhone').value.trim(), level: $('#aLevel').value };
-    localStorage.setItem(FREE, JSON.stringify(sess));
-    localStorage.setItem('smk_free_account', '1');
-    close(); apply();                     // don't leave the modal up while saving
-    try {
-      await SMKsave({ name: sess.name, email: sess.email, phone: sess.phone,
-        level: { O: 'O Level / IGCSE', AS: 'AS Level', A2: 'A2 Level' }[sess.level],
-        mode: 'Free account', session: '', message: '', source: '/index.html' });
-    } catch (err) { }
-    close();
-    apply();
-    var el = $('#papers'); if (el) el.scrollIntoView({ behavior: 'smooth' });
+    playLecture(b.dataset.lecLvl, b.dataset.lecTopic, b.dataset.lecN, b.dataset.lecId);
   });
 
-  /* ---------- free sign in ---------- */
-  $('#fIn').addEventListener('submit', function (e) {
-    e.preventDefault();
-    if (!SMKcheckForm(this)) return;
-    var saved = null;
-    try { saved = JSON.parse(localStorage.getItem(FREE)); } catch (er) { }
-    if (saved && saved.email === $('#aInEmail').value.trim().toLowerCase()) {
-      localStorage.setItem('smk_free_account', '1'); close(); apply(); return;
+  /* ---------- level tabs under the lecture list ---------- */
+  $$('#lecTabs button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      $$('#lecTabs button').forEach(function (x) { x.classList.remove('on'); });
+      b.classList.add('on'); lecLevel = b.dataset.lec; renderLectures();
+    });
+  });
+
+  /* ---------- apply across the page ---------- */
+  function apply() {
+    var s = session();
+    document.documentElement.setAttribute('data-tier', s.tier);
+
+    var cta = $('.hdr__cta');
+    if (cta) {
+      cta.innerHTML = s.tier === 'none'
+        ? '<button class="btn btn--line btn--sm" data-open-auth="prem">Student Login</button>' +
+          '<a class="btn btn--gold btn--sm" href="#register" data-mag>Register</a>'
+        : '<span class="who"><i></i>' + (s.name || 'Student').split(' ')[0] + '</span>' +
+          '<a class="btn btn--gold btn--sm" href="#portal">My lectures</a>' +
+          '<button class="btn btn--line btn--sm" id="signOutBtn">Sign out</button>';
+      var so = $('#signOutBtn');
+      if (so) so.addEventListener('click', function () {
+        var sid = localStorage.getItem('smk_premium_id');
+        var C = window.SMK_CONFIG || {};
+        if (sid && C.SUPABASE_URL) {
+          fetch(C.SUPABASE_URL + '/rest/v1/rpc/release_device', {
+            method: 'POST',
+            headers: { apikey: C.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY,
+                       'Content-Type': 'application/json' },
+            body: JSON.stringify({ p_id: sid, p_device: localStorage.getItem('smk_device_key') })
+          }).catch(function () { });
+        }
+        ['smk_premium', 'smk_premium_id', 'smk_course'].forEach(function (k) { localStorage.removeItem(k); });
+        location.reload();
+      });
     }
-    var m = $('#fInErr'); m.style.display = 'block';
-    m.textContent = 'No free account on this device with that email. Create one — it takes twenty seconds.';
+
+    /* the upsell strip is pointless once they are in */
+    var up = $('#lecUpsell');
+    if (up) up.style.display = s.tier === 'prem' ? 'none' : '';
+
+    /* a signed-in student lands on their own level first */
+    if (s.tier === 'prem' && s.lvl && TOPICS && TOPICS[s.lvl]) {
+      lecLevel = s.lvl; sylvLevel = s.lvl;
+      $$('#lecTabs button').forEach(function (x) { x.classList.toggle('on', x.dataset.lec === s.lvl); });
+      $$('#sylvTabs button').forEach(function (x) { x.classList.toggle('on', x.dataset.sylv === s.lvl); });
+    }
+
+    if (typeof renderPapers === 'function') renderPapers();
+    renderLectures();
+    if ($('#sylv').classList.contains('open')) renderSylv();
+  }
+
+  /* ----------------------------------------------------------------------
+     EXPANDING PANELS
+     A course card or a topic pill opens a panel in place, under the thing
+     you pressed. Closing it leaves the page exactly where it was — nothing
+     jumps back to the top.
+     ---------------------------------------------------------------------- */
+  function closeXp(id) {
+    var el = $('#' + id);
+    if (el) el.classList.remove('on');
+  }
+  window.SMKcloseXp = closeXp;
+
+  function openXp(id, title, html, anchorEl) {
+    var el = $('#' + id);
+    if (!el) return;
+    $('#' + id + 'T').textContent = title;
+    $('#' + id + 'B').innerHTML = html;
+    el.classList.add('on');
+    /* bring it into view only if it opened off-screen, and never past the top */
+    requestAnimationFrame(function () {
+      var r = el.getBoundingClientRect();
+      if (r.top > innerHeight - 120) {
+        var y = scrollY + r.top - Math.max(120, innerHeight * 0.32);
+        scrollTo({ top: y, behavior: 'smooth' });
+      }
+    });
+  }
+
+  /* the whole of one level: every topic, every lecture */
+  function levelHtml(lvl) {
+    var tops = topicsFor(lvl), lecs = lecturesFor(lvl);
+    if (!tops.length) return '<p class="muted" style="margin:0">Topic list loading.</p>';
+    var total = lecs.length;
+    var lead = '<p class="muted" style="font-size:.88rem;margin:0 0 16px">' +
+      tops.length + ' topics' + (total ? ' \u00b7 ' + total + ' lecture' + (total !== 1 ? 's' : '') +
+      ' recorded so far' : '') + '. The opening lecture of the first ' + OPEN_TOPICS +
+      ' topics plays without signing in.</p>';
+    return lead + '<div class="topics">' + tops.map(function (t) {
+      var mine = lecs.filter(function (l) { return l.topic === t.n; })
+                     .sort(function (a, b) { return a.n - b.n; });
+      var shut = mine.filter(function (l) { return !canOpen(lvl, t.n, l.n); }).length;
+      var pl2 = +(t.planned || 0);
+      var sub = mine.length
+        ? mine.length + ' lecture' + (mine.length !== 1 ? 's' : '') +
+          (shut ? ' \u00b7 ' + shut + ' locked' : '')
+        : (pl2 ? pl2 + ' lecture' + (pl2 !== 1 ? 's' : '') + ' \u00b7 taught later'
+               : 'recorded after class');
+      var soon2 = soonRows(t, mine.length);
+      var body = (mine.length || soon2)
+        ? mine.map(function (l) { return lecRow(lvl, l); }).join('') + soon2
+        : '<p class="muted" style="font-size:.85rem;margin:0">' +
+          'This topic is taught later in the year.</p>';
+      return '<div class="topic">' +
+        '<button class="topic__h"><span class="topic__n">' + t.n + '</span>' +
+        '<span class="topic__t"><b>' + t.name + '</b><span>' + sub + '</span></span>' +
+        '<span class="topic__c">&#9662;</span></button>' +
+        '<div class="topic__b"><div>' + body + '</div></div></div>';
+    }).join('') + '</div>';
+  }
+
+  /* one topic on its own */
+  function topicHtml(lvl, n) {
+    var lecs = lecturesFor(lvl).filter(function (l) { return l.topic === +n; })
+                               .sort(function (a, b) { return a.n - b.n; });
+    var tObj = (topicsFor(lvl) || []).filter(function (t) { return t.n === +n; })[0] || {};
+    var soon3 = soonRows(tObj, lecs.length);
+    if (!lecs.length && soon3) {
+      return '<p class="muted" style="font-size:.88rem;margin:0 0 14px">' +
+        tObj.planned + ' lectures planned \u00b7 taught later in the year</p>' + soon3;
+    }
+    if (!lecs.length) {
+      return '<p class="muted" style="margin:0">This topic is taught later in the year. Its ' +
+        'lectures appear here after each class \u2014 the topical paper book for it is ready now.</p>' +
+        '<a class="btn btn--line btn--sm" style="margin-top:14px" href="#papers">Topical papers</a>';
+    }
+    var shut = lecs.filter(function (l) { return !canOpen(lvl, +n, l.n); }).length;
+    return '<p class="muted" style="font-size:.88rem;margin:0 0 14px">' + lecs.length +
+      ' lecture' + (lecs.length !== 1 ? 's' : '') +
+      (shut ? ' \u00b7 ' + shut + ' need a signed-in student ID' : ' \u00b7 all open') + '</p>' +
+      lecs.map(function (l) { return lecRow(lvl, l); }).join('') + soon3;
+  }
+
+  /* card back → that level's lectures */
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-course]');
+    if (!b) return;
+    e.preventDefault();
+    var lvl = b.dataset.course;
+    openXp('coursePanel', LEVELNAME[lvl] + ' \u2014 every lecture', levelHtml(lvl));
   });
 
-  /* ---------- premium sign in ---------- */
+  /* topic pill → that topic's lectures */
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-syl-topic]');
+    if (!b) return;
+    e.preventDefault();
+    var lvl = b.dataset.sylLvl, n = b.dataset.sylTopic;
+    var already = b.classList.contains('on');
+    document.querySelectorAll('.tpill').forEach(function (x) { x.classList.remove('on'); });
+    if (already) { closeXp('sylPanel'); return; }
+    b.classList.add('on');
+    var tp = (topicsFor(lvl) || []).filter(function (t) { return t.n === +n; })[0];
+    openXp('sylPanel', n + '. ' + (tp ? tp.name : 'Topic'), topicHtml(lvl, n));
+  });
+
+  /* closing a panel must not move the page */
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-xp-close]');
+    if (!b) return;
+    e.preventDefault();
+    closeXp(b.dataset.xpClose);
+    if (b.dataset.xpClose === 'sylPanel') {
+      document.querySelectorAll('.tpill').forEach(function (x) { x.classList.remove('on'); });
+    }
+  });
+
+  /* accordions inside the panels */
+  document.addEventListener('click', function (e) {
+    var h = e.target.closest('.xp .topic__h');
+    if (h) h.parentElement.classList.toggle('open');
+  });
+
+  /* ---------- the introduction video ---------- */
+  (function () {
+    var box = $('#introv'), v = $('#introVid'), go = $('#introGo');
+    if (!box || !v) return;
+    /* BACKEND: the course introduction, uploaded to the same repo the papers use */
+    var SRC = window.INTRO_VIDEO ||
+      'https://raw.githubusercontent.com/hashirykw/SMK/main/introduction.mp4';
+    go.addEventListener('click', function () {
+      if (!v.src) { v.src = SRC; v.load(); }
+      v.controls = true;
+      box.classList.add('playing');
+      v.play().catch(function () { });
+    });
+    v.addEventListener('pause', function () {
+      if (v.currentTime === 0 || v.ended) box.classList.remove('playing');
+    });
+  })();
+
+  /* ---------- the sign-in dialog ---------- */
+  var box = $('#auth2');
+  function openAuth(which) {
+    box.classList.add('open'); document.body.classList.add('lock');
+    if (window.SMKauthTab) window.SMKauthTab(which === 'ask' ? 'ask' : 'in');
+  }
+  function closeAuth() { box.classList.remove('open'); document.body.classList.remove('lock'); }
+
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('[data-open-syllabus]')) { e.preventDefault(); openSylv(); return; }
+    if (e.target.closest('[data-sylv-close]')) { closeSylv(); return; }
+    if (e.target.closest('#sylv .auth2__x') || (e.target.classList.contains('auth2__bg') &&
+        e.target.closest('#sylv'))) { closeSylv(); return; }
+
+    var t = e.target.closest('[data-open-auth]');
+    if (t) { e.preventDefault(); openAuth(t.dataset.openAuth); return; }
+    if (e.target.closest('#auth2 .auth2__x') || (e.target.classList.contains('auth2__bg') &&
+        e.target.closest('#auth2'))) closeAuth();
+    if (e.target.closest('.auth2__close-go')) closeAuth();
+  });
+  addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    closeAuth(); closeSylv();
+  });
+
+  /* ---------- sign in ---------- */
   $('#pIn').addEventListener('submit', function (e) {
     e.preventDefault();
     var id = $('#aSid').value.trim(), pin = $('#aPin').value.trim();
@@ -3680,35 +4020,96 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       }
       localStorage.setItem(PREM, JSON.stringify({ sid: r.student_id, name: r.name, lvl: r.level }));
       localStorage.setItem('smk_premium_id', r.student_id.toLowerCase());
-      localStorage.setItem('smk_free_account', '1');
       localStorage.setItem('smk_course', JSON.stringify({ lectures: r.lectures || [], topics: r.topics || [] }));
-      m.style.display = 'none'; close(); apply();
+      m.style.display = 'none'; closeAuth(); apply();
       var el = $('#portal'); if (el) el.scrollIntoView({ behavior: 'smooth' });
     }).catch(function () {
       m.style.display = 'block'; m.textContent = 'Could not reach the server. Check your connection.';
     }).finally(function () { btn.disabled = false; btn.textContent = label; });
   });
 
-  /* a free account sees lecture 1 of every topic, read live from the database */
-  async function loadFree() {
+  /* ---------- sign in / request access tabs ---------- */
+  function atab(v) {
+    $$('#authTabs button').forEach(function (b) { b.classList.toggle('on', b.dataset.atab === v); });
+    $$('[data-apane]').forEach(function (p2) { p2.style.display = p2.dataset.apane === v ? '' : 'none'; });
+    $('#authH').textContent = v === 'ask' ? 'Request an account' : 'Student sign in';
+    $('#authP').textContent = v === 'ask'
+      ? 'Accounts are set up by hand, so the details go to Sir Mehboob directly.'
+      : 'Use the student ID and password sent to you on WhatsApp.';
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('#authTabs button');
+    if (b) atab(b.dataset.atab);
+  });
+  window.SMKauthTab = atab;
+
+  /* ---------- request an account ----------
+     This does not create anything. It drops the details in the same table the
+     registration form writes to, so Sir Mehboob can issue the ID and password
+     by hand and send them on WhatsApp.
+     ---------------------------------------------------------------------- */
+  $('#pAsk').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    if (this.querySelector('.hp input').value) return;              // honeypot
+    if (!window.SMKcheckForm(this)) return;
+    var err = $('#pAskErr'), ok = $('#pAskOk');
+    var btn = this.querySelector('button[type=submit]'), label = btn.textContent;
+    err.style.display = 'none'; ok.style.display = 'none';
+    btn.disabled = true; btn.textContent = 'Sending…';
+    var row = {
+      name: $('#qName').value.trim(),
+      phone: $('#qPhone').value.trim(),
+      email: $('#qEmail').value.trim().toLowerCase(),
+      level: $('#qLevel').value,
+      mode: $('#qMode').value,
+      session: '',
+      message: 'ACCOUNT REQUEST' + ($('#qSchool').value.trim()
+        ? ' — school: ' + $('#qSchool').value.trim() : ''),
+      source: '/index.html#access-request'
+    };
+    var r = await window.SMKsave(row);
+    btn.disabled = false; btn.textContent = label;
+    if (r && r.ok) {
+      this.reset();
+      ok.style.display = 'block';
+      ok.textContent = 'Sent. We will message you on WhatsApp with your student ID and password.';
+      if (window.SMKsfx) window.SMKsfx.ok && window.SMKsfx.ok();
+    } else {
+      err.style.display = 'block';
+      err.innerHTML = 'Could not send that. Message us on WhatsApp instead — ' +
+        '<a href="https://wa.me/923028056789" target="_blank" rel="noopener" ' +
+        'style="color:var(--gold-300)">0302 8056789</a>.';
+    }
+  });
+
+  /* ----------------------------------------------------------------------
+     BACKEND: the preview lectures shown to visitors who are not signed in.
+     Reads a public view that only ever exposes lecture 1 of the first few
+     topics — so nothing paid is ever sent to an anonymous browser.
+     Falls back silently to whatever is bundled in this file.
+     ---------------------------------------------------------------------- */
+  window.PUBLIC_LECTURES = window.PUBLIC_LECTURES || [];
+  async function loadPreview() {
     var C = window.SMK_CONFIG || {};
     if (!C.SUPABASE_URL) return;
     try {
       var h = { apikey: C.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY };
-      var lv = (session().lvl) || 'O';
-      var r1 = await fetch(C.SUPABASE_URL + '/rest/v1/free_lectures?lvl=eq.' + lv + '&order=topic,n', { headers: h });
-      var r2 = await fetch(C.SUPABASE_URL + '/rest/v1/topics?lvl=eq.' + lv + '&order=n', { headers: h });
-      if (!r1.ok || !r2.ok) return;
-      var lectures = await r1.json(), topics = await r2.json();
-      if (!lectures.length) return;
-      localStorage.setItem('smk_course', JSON.stringify({ lectures: lectures, topics: topics }));
-      apply();
-    } catch (e) { /* falls back to whatever is bundled */ }
+      var r = await fetch(C.SUPABASE_URL + '/rest/v1/preview_lectures?order=lvl,topic,n', { headers: h });
+      if (!r.ok) return;
+      var rows = await r.json();
+      if (!rows.length) return;
+      window.PUBLIC_LECTURES = rows.map(function (l) {
+        return { id: l.id, lvl: l.lvl, topic: l.topic, n: l.n, t: l.title,
+                 dur: l.duration || '', vid: l.video_url || '', notes: l.notes_url || '' };
+      });
+      renderLectures();
+      if ($('#sylv').classList.contains('open')) renderSylv();
+    } catch (e) { /* bundled list stays */ }
   }
 
   window.SMKapplyTier = apply;
   apply();
-  if (session().tier === 'free') loadFree();
+  loadPreview();
 })();
 </script>
 <script>
@@ -3820,7 +4221,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       sp.style.display = ''; sp.textContent = pairLabel || 'Compare';
       sp.classList.remove('btn--locked'); sp.disabled = false;
     } else if (!isPrem && window.__hasPair) {
-      // paid feature — show it locked so free students know it exists
+      // paid feature — shown locked so everyone can see it exists
       sp.style.display = ''; sp.textContent = '🔒 Compare with mark scheme';
       sp.classList.add('btn--locked'); sp.disabled = false;
     } else {
@@ -3833,11 +4234,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     if (!current.pair) {
       // locked: send them to the upgrade path instead of doing nothing
       var a = document.getElementById('auth2');
-      if (a) { a.classList.add('open'); document.body.classList.add('lock');
-        document.querySelectorAll('#authTabs button').forEach(function (b) {
-          b.classList.toggle('on', b.dataset.tab === 'prem'); });
-        document.querySelectorAll('[data-pane]').forEach(function (p) {
-          p.style.display = p.dataset.pane === 'prem' ? '' : 'none'; }); }
+      if (a) { a.classList.add('open'); document.body.classList.add('lock'); }
       return;
     }
     V.classList.add('split');
@@ -3867,7 +4264,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   <p><b>Every lecture, every topic.</b> Recorded after each class, with written notes and
      downloadable papers.</p>
   <div class="promo__b">
-    <button class="btn btn--gold btn--sm" data-open-auth="prem">I have an ID</button>
+    <button class="btn btn--gold btn--sm" data-open-auth="prem">Sign in</button>
     <a class="btn btn--line btn--sm" href="#register">Join the course</a>
   </div>
 </div>
@@ -3903,23 +4300,6 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   });
   timer = setTimeout(show, FIRST);
 
-  /* free-account nudge for visitors with no account at all */
-  var seen = false;
-  addEventListener('scroll', function () {
-    if (seen || tier() !== 'none') return;
-    if (scrollY < document.body.scrollHeight * 0.18) return;
-    seen = true;
-    setTimeout(function () {
-      if (tier() !== 'none') return;
-      if (document.querySelector('#auth2.open') || document.querySelector('#pdfv.open')) return;
-      var b = document.querySelector('[data-open-auth="free"]');
-      if (b) {
-        el.hidden = true;
-        document.getElementById('auth2').classList.add('open');
-        document.body.classList.add('lock');
-      }
-    }, 1200);
-  }, { passive: true });
 })();
 </script>
 
@@ -3962,7 +4342,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   if (!sid || !C.SUPABASE_URL) return;
 
   function signOut(reason) {
-    ['smk_premium', 'smk_premium_id', 'smk_course', 'smk_free_account'].forEach(function (k) {
+    ['smk_premium', 'smk_premium_id', 'smk_course'].forEach(function (k) {
       localStorage.removeItem(k);
     });
     try { sessionStorage.setItem('smk_signout_reason', reason || ''); } catch (e) { }
@@ -3975,7 +4355,13 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
                'Content-Type': 'application/json' },
     body: JSON.stringify({ p_id: sid, p_device: localStorage.getItem('smk_device_key') })
   }).then(function (r) { return r.json(); }).then(function (r) {
-    if (!r || r.ok !== true) { signOut((r && r.reason) || 'revoked'); return; }
+    /* Only an explicit no from the database ends a session. A network blip, a
+       CORS problem or a server hiccup must not sign a paying student out on
+       reload — they stay in until the database actually says otherwise. */
+    var REVOKE = ['no_student', 'paused', 'device_removed'];
+    if (r && r.ok === true) { /* fall through and refresh their lectures */ }
+    else if (r && REVOKE.indexOf(r.reason) !== -1) { signOut(r.reason); return; }
+    else return;
     // still valid — take the fresh lecture list
     localStorage.setItem('smk_course', JSON.stringify({
       lectures: r.lectures || [], topics: r.topics || [] }));
