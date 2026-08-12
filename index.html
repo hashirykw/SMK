@@ -1240,6 +1240,18 @@ body.pv-lock{overflow:hidden}
 .lec2--shut:hover{transform:none;border-color:var(--line-soft)}
 .lec2--shut .lec2__p{color:var(--muted)}
 .lec2--soon{opacity:.5;cursor:default;border-style:dashed}
+.lecwrap{display:flex;align-items:stretch;gap:8px}
+.lecwrap .lec2{flex:1;min-width:0}
+.lecnotes{flex:none;display:flex;align-items:center;gap:7px;padding:0 15px;border-radius:11px;
+  border:1px solid var(--line-soft);background:var(--panel);font-family:var(--mono);
+  font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+  transition:.25s var(--ease);white-space:nowrap}
+.lecnotes:hover{border-color:var(--gold-400);color:var(--gold-300);transform:translateY(-2px)}
+.lecnotes span{font-size:.95rem}
+.lecnotes--shut{opacity:.45;cursor:default}
+.lecnotes--shut:hover{transform:none;border-color:var(--line-soft);color:var(--muted)}
+@media(max-width:560px){.lecnotes{padding:0 11px;font-size:0;gap:0}
+  .lecnotes span{font-size:1.05rem}}
 .lec2--soon:hover{transform:none;border-color:var(--line-soft)}
 .lecflag{flex:none;font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;
   padding:4px 9px;border-radius:99px;border:1px solid var(--line-soft);color:var(--muted);white-space:nowrap}
@@ -1638,7 +1650,9 @@ body.pv-lock{overflow:hidden}
         <p class="muted" style="font-size:.9rem;margin:0">The places examiners take marks off are called out where they occur, not left to a summary at the end.</p></div>
       </div>
     </div>
-    <div class="note" style="margin-top:22px">Notes come with the course. Every lecture you unlock brings its written set with it.</div>
+    <div class="note" style="margin-top:22px">Notes come with the course. Every lecture you unlock
+      brings its written set with it &mdash; open a topic below and the notes sit beside each lecture.
+      <button data-open-syllabus style="color:var(--gold-300);text-decoration:underline">Browse the topics &rarr;</button></div>
   </div>
 </section>
 
@@ -3613,15 +3627,46 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
 
   function lecRow(lvl, l) {
     var open = canOpen(lvl, l.topic, l.n);
-    var meta = 'Lecture ' + l.n + (l.dur ? ' \u00b7 ' + l.dur : '') + (l.notes ? ' \u00b7 notes' : '');
-    return '<button class="lec2 ' + (open ? 'lec2--open' : 'lec2--shut') + '" ' +
+    var meta = 'Lecture ' + l.n + (l.dur ? ' \u00b7 ' + l.dur : '');
+    var row = '<button class="lec2 ' + (open ? 'lec2--open' : 'lec2--shut') + '" ' +
       'data-lec-id="' + (l.id || '') + '" data-lec-lvl="' + lvl + '" ' +
       'data-lec-topic="' + l.topic + '" data-lec-n="' + l.n + '">' +
       '<span class="lec2__p">' + (open ? '&#9654;' : '&#128274;') + '</span>' +
       '<span class="lec2__t"><b>' + l.t + '</b><span>' + meta + '</span></span>' +
       '<span class="lecflag ' + (open ? 'lecflag--open">Open' : 'lecflag--shut">Locked') + '</span>' +
       '</button>';
+
+    /* The written notes for this lecture, straight from notes_url on the row.
+       A lecture with no notes yet simply shows nothing — nothing is invented. */
+    var notes = '';
+    if (l.notes) {
+      notes = open
+        ? '<button class="lecnotes" data-notes="' + esc(l.notes) + '" ' +
+          'data-notes-t="' + esc(l.t) + '" title="Written notes for this lecture">' +
+          '<span>&#128196;</span> Notes</button>'
+        : '<span class="lecnotes lecnotes--shut" title="Notes come with the lecture">' +
+          '<span>&#128274;</span> Notes</span>';
+    }
+    return '<div class="lecwrap">' + row + notes + '</div>';
   }
+
+  function esc(v) {
+    return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+      .replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  /* notes open in the same reader the past papers use, so a student never
+     leaves the site and the file is not handed over as a download */
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-notes]');
+    if (!b) return;
+    e.preventDefault(); e.stopPropagation();
+    var url = b.dataset.notes;
+    if (!/^https?:/i.test(url)) url = (typeof PBASE !== 'undefined' ? PBASE : '') + url;
+    var isPrem = session().tier === 'prem';
+    window.SMKopenPdf(url, b.dataset.notesT + ' \u2014 notes',
+      isPrem ? 'Download available' : 'Viewing only', isPrem, null, null);
+  });
 
   /* ---------- the lecture list on the page ---------- */
   function renderLectures() {
