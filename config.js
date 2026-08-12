@@ -17,8 +17,8 @@
    ============================================================================ */
 
 window.SMK_CONFIG = {
-  SUPABASE_URL:      'https://YOUR-PROJECT-REF.supabase.co',
-  SUPABASE_ANON_KEY: 'YOUR-ANON-KEY',
+  SUPABASE_URL:      'https://njqoghncbvwlifkvalrk.supabase.co',
+  SUPABASE_ANON_KEY: 'sb_publishable_UeenWTUPFDaisGOlxiTDUw__ZRGiGxS',
 
   /* the table the sign-up and request-access forms write to */
   TABLE: 'registrations',
