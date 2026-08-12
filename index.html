@@ -1343,7 +1343,12 @@ body.pv-lock{overflow:hidden}
   /* ---------- the footer was taking most of a screen on its own ---------- */
   .ftr{padding-block:32px 16px;margin-top:26px}
   .ftr__g{grid-template-columns:1fr 1fr;gap:8px 18px}
+  /* grid children default to min-width:auto, so a long email or a wide logo
+     stretches the whole grid past the screen. This lets them shrink. */
+  .ftr__g > *{min-width:0}
+  .ftr__g a{word-break:break-word;overflow-wrap:anywhere}
   .ftr__brand{grid-column:1/-1;margin-bottom:4px}
+  .ftr img{max-width:100%;width:auto}
   .ftr img{height:44px;margin-bottom:8px}
   .ftr__brand p{font-size:.8rem;max-width:38ch;margin:0}
   .ftr h4{font-size:.6rem;letter-spacing:.13em;margin-bottom:4px}
@@ -1354,30 +1359,42 @@ body.pv-lock{overflow:hidden}
     flex-direction:column;align-items:flex-start;
     padding-bottom:66px}          /* clear the floating theme and sound buttons */
   .ftr__mid{opacity:.75}
-  .byline{margin-top:4px;padding:8px 12px;align-self:flex-end;margin-right:2px}
-  .tile__n{font-size:clamp(1.8rem,8vw,2.4rem)}
-  h2{margin-bottom:.35em}
-  .lede{margin-bottom:18px!important}
-  .strip{margin-top:26px!important}
-  /* the floating controls all sat on the right edge, over the chevrons and
-     the Notes buttons. The assistant stays right where people expect it;
-     theme and sound move to the opposite corner. */
-  .dock{right:14px;bottom:14px;flex-direction:row;align-items:center;gap:0;
-    pointer-events:none}
-  .dock > *{pointer-events:auto}
-  .dock__b{position:fixed;bottom:16px;width:42px;height:42px}
-  .dock__b[data-theme-btn]{left:14px}
-  .dock__b--snd{left:64px}
-  .dock__ai{width:52px;height:52px}
-  /* inline links inside notes, footer columns and the social row */
+  .nx{margin-top:6px;align-self:flex-end}
+
+  /* ---------- touch targets ----------
+     Most students are on a phone. Anything tappable clears 40px there,
+     which is the size a thumb actually hits. */
+  .tpill{padding:12px 15px;font-size:.9rem;min-height:44px}
+  .xp__x{padding:12px 18px;min-height:44px}
+  .lecnotes{min-height:44px}
+  .lec2{min-height:56px}
+  .tabs2{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;gap:2px}
+  .tabs2::-webkit-scrollbar{display:none}
+  .tabs2 button{padding:13px 15px;min-height:46px;flex:0 0 auto;white-space:nowrap;font-size:.85rem}
+  .switch button,.pick__m button{min-height:44px}
+  .plink{min-height:42px;padding:10px 14px;display:inline-flex;align-items:center}
+  .btn--sm{padding:.72em 1.15em;min-height:42px}
+  .modal__x,.auth2__x,.pdfv__acts .btn{min-width:44px;min-height:44px}
+  .auth2__x{display:grid;place-items:center;top:8px;right:10px}
+  .fld input,.fld select,.fld textarea{min-height:46px;font-size:16px}  /* 16px stops iOS zooming */
+  .topic__h{min-height:60px}
+  .seek{height:26px}
   .note button,.note a{min-height:40px;display:inline-flex;align-items:center}
   .ftr__l a,.ftr__c a,.ftr__g a:not(.soc a){min-height:42px;display:flex;align-items:center}
-  /* the social icons stay a centred grid — the rule above was flattening them */
+  /* the social icons stay a centred grid — a blanket flex rule was flattening them */
   .soc a{display:grid!important;place-items:center;width:44px;height:44px;
     min-height:44px;padding:0;flex:0 0 44px}
   .soc svg{width:19px;height:19px;display:block}
-  a.chip,.chip--gold[href]{min-height:40px;padding:9px 14px}
-  .hp,.hp input{position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important}
+  a.chip,.chip--gold[href],.chip[href]{min-height:42px;padding:11px 15px;
+    display:inline-flex;align-items:center}
+  #socialList{display:flex;gap:8px;flex-wrap:wrap}
+  .hp,.hp input{position:absolute!important;left:-9999px!important;
+    width:1px!important;height:1px!important}
+  }
+@media (max-width:380px){
+  .ftr__g{grid-template-columns:1fr}
+  .ftr .soc{margin-top:4px}
 }
 @media (max-width:420px){
   .tlist{display:grid;grid-template-columns:1fr 1fr;gap:7px}
@@ -1415,22 +1432,80 @@ body.pv-lock{overflow:hidden}
 .moreb.up i{transform:rotate(180deg)}
 
 /* ---------- who built it ---------- */
-.ftr__b{padding-right:96px}          /* the floating dock lives in this corner */
+
+/* ---------- one topic, in its own dialog ---------- */
+.tv__head{display:flex;align-items:center;gap:14px}
+.tv__n{width:52px;height:52px;flex:none;border-radius:15px;display:grid;place-items:center;
+  font-family:var(--display);font-weight:600;font-size:1.5rem;color:#150F04;
+  background:linear-gradient(135deg,var(--gold-600),var(--gold-300));
+  box-shadow:0 10px 26px rgba(192,138,52,.35)}
+.tvsec{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--gold-400);margin:22px 0 12px;display:flex;align-items:center;gap:10px}
+.tvsec::after{content:"";flex:1;height:1px;background:var(--line-soft)}
+.bookrow{display:flex;align-items:center;gap:12px;padding:13px 15px;border-radius:12px;
+  border:1px solid var(--line-soft);background:var(--panel);margin-bottom:9px;flex-wrap:wrap}
+.bookrow__i{width:34px;height:34px;flex:none;border-radius:9px;display:grid;place-items:center;
+  background:var(--panel-2);color:var(--gold-400);font-size:15px}
+.bookrow__m{flex:1;min-width:150px}
+.bookrow__m b{display:block;font-size:.9rem}
+.bookrow__m span{font-family:var(--mono);font-size:.66rem;color:var(--muted)}
+.bookrow__a{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+
+/* the pressed topic pill lifts out of the row */
+.tpill{cursor:pointer;transition:.3s var(--ease)}
+.tpill:hover{border-color:var(--gold-400);transform:translateY(-2px)}
+.tpill.on{border-color:var(--gold-400);background:var(--panel-2);
+  box-shadow:0 10px 30px rgba(192,138,52,.28);transform:translateY(-3px) scale(1.03)}
+.tpill.on i{background:linear-gradient(135deg,var(--gold-600),var(--gold-300));color:#150F04}
+.tlist.dim .tpill:not(.on){opacity:.42}
+
+/* ---------- who built it ---------- */
+.ftr__b{padding-right:96px}
 @media(max-width:860px){.ftr__b{padding-right:0}}
-.byline{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;min-height:40px;border-radius:99px;
-  border:1px solid var(--line-soft);color:var(--muted);transition:.3s var(--ease);
-  white-space:nowrap;line-height:1}
-.byline:hover{border-color:var(--gold-400);color:var(--text);
-  background:color-mix(in srgb,var(--gold-500) 8%,transparent)}
-.byline img{height:15px!important;width:auto;margin:0!important;opacity:.85;
-  transition:opacity .3s var(--ease)}
-.byline:hover img{opacity:1}
-.byline__k{font-size:.72rem;opacity:.75}
-.byline__n{font-family:var(--mono);font-weight:700;font-size:.74rem;letter-spacing:.13em;
-  background:linear-gradient(100deg,var(--gold-300),var(--gold-100),var(--gold-400));
-  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.byline__a{width:11px;height:11px;flex:none;opacity:.5;transition:.3s var(--ease)}
-.byline:hover .byline__a{opacity:1;transform:translate(2px,-2px);color:var(--gold-300)}
+/* .ftr a{display:block} outranks a bare .nx, which turned this pill into a
+   block and let the arrow SVG scale to the full footer width. Every rule here
+   is scoped to .ftr so it wins, and the icons carry fixed pixel sizes. */
+.ftr a.nx,.nx{position:relative;display:inline-flex;align-items:center;gap:11px;
+  padding:11px 16px;border-radius:14px;text-decoration:none;line-height:1;overflow:hidden;
+  isolation:isolate;border:1px solid var(--line-soft);background:var(--panel);width:auto;
+  transition:border-color .4s var(--ease),transform .4s var(--ease),box-shadow .4s var(--ease)}
+.nx::before{content:"";position:absolute;inset:0;z-index:-1;opacity:0;
+  background:linear-gradient(115deg,rgba(224,169,76,.16),rgba(127,168,232,.13) 55%,transparent);
+  transition:opacity .45s var(--ease)}
+/* a slow sheen crosses the pill on hover */
+.nx::after{content:"";position:absolute;top:0;bottom:0;width:38%;left:-45%;z-index:-1;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.42),transparent);
+  transform:skewX(-18deg);opacity:0}
+.nx:hover{border-color:var(--gold-400);transform:translateY(-2px);
+  box-shadow:0 14px 34px rgba(192,138,52,.2)}
+.nx:hover::before{opacity:1}
+.nx:hover::after{opacity:1;animation:nxsheen 1.05s var(--ease)}
+@keyframes nxsheen{to{left:115%}}
+.ftr .nx__k,.nx__k{font-size:.7rem;color:var(--muted);letter-spacing:.02em;transition:color .4s var(--ease)}
+.nx:hover .nx__k{color:var(--text)}
+.ftr .nx__lk,.nx__lk{display:inline-flex;align-items:center;gap:7px;flex:none}
+.ftr .nx__mark,.nx__mark{width:19px;height:19px;min-width:19px;flex:0 0 19px;display:grid;
+  place-items:center;color:var(--gold-300);
+  transition:transform .55s var(--spring),color .4s var(--ease)}
+.nx__mark svg{width:19px;height:19px;display:block}
+.nx:hover .nx__mark{transform:rotate(-8deg) scale(1.14);color:var(--gold-100)}
+.ftr .nx__n,.nx__n{font-family:var(--mono);font-weight:700;font-size:.8rem;white-space:nowrap;letter-spacing:.19em;
+  background:linear-gradient(96deg,var(--gold-400),var(--gold-100) 42%,var(--ice) 78%,var(--gold-300));
+  background-size:220% 100%;background-position:0% 50%;
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  transition:background-position .8s var(--ease)}
+.nx:hover .nx__n{background-position:100% 50%}
+.ftr .nx__go,.nx__go{width:13px;height:13px;min-width:13px;flex:0 0 13px;display:grid;
+  place-items:center;color:var(--muted);opacity:.55;transition:.4s var(--ease)}
+.nx__go svg{width:13px;height:13px;display:block}
+.nx:hover .nx__go{opacity:1;color:var(--gold-300);transform:translate(2px,-2px)}
+[data-theme="focus"] .nx::after{display:none}
+@media(prefers-reduced-motion:reduce){
+  .nx,.nx__mark,.nx__n,.nx__go{transition:none}
+  .nx:hover{transform:none}
+  .nx:hover::after{animation:none;opacity:0}
+}
+@media(max-width:860px){.nx{padding:11px 14px;gap:9px}.nx__k{font-size:.66rem}.nx__n{font-size:.74rem}}
 </style>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -1618,13 +1693,13 @@ body.pv-lock{overflow:hidden}
             <h3 style="margin:14px 0 10px">O Level &amp; IGCSE Physics</h3>
             <p class="muted" style="font-size:.92rem">Built from first principles, then drilled against real papers until the awkward questions stop being awkward.</p>
             <div class="flip__chips">
-              <span class="chip">6 sections</span><span class="chip">Live + recorded</span>
+              <span class="chip">9 topics</span><span class="chip">Live + recorded</span>
             </div>
             <div class="flip__hint"><i></i> See the syllabus</div>
           </div>
           <div class="flip__f flip__f--b">
             <span class="chip chip--gold">Syllabus</span>
-            <h3 style="margin:12px 0 2px;font-size:1.22rem">Six sections</h3>
+            <h3 style="margin:12px 0 2px;font-size:1.22rem">Nine topics</h3>
             <ul class="flip__list">
               <li>Motion, forces and energy</li><li>Thermal physics</li><li>Waves</li>
               <li>Electricity and magnetism</li><li>Nuclear physics</li><li>Space physics</li>
@@ -1642,13 +1717,13 @@ body.pv-lock{overflow:hidden}
             <h3 style="margin:14px 0 10px">AS Level Physics</h3>
             <p class="muted" style="font-size:.92rem">The real step up. Working-out earns marks here, so exam technique starts in week one — not in the last month.</p>
             <div class="flip__chips">
-              <span class="chip">Topics 1&ndash;11</span><span class="chip">Live + recorded</span>
+              <span class="chip">9 topics</span><span class="chip">Live + recorded</span>
             </div>
             <div class="flip__hint"><i></i> See the syllabus</div>
           </div>
           <div class="flip__f flip__f--b">
             <span class="chip chip--gold">Syllabus</span>
-            <h3 style="margin:12px 0 2px;font-size:1.22rem">Topics 1&ndash;11</h3>
+            <h3 style="margin:12px 0 2px;font-size:1.22rem">Nine topics</h3>
             <ul class="flip__list flip__list--2col">
               <li>Physical quantities &amp; units</li><li>Kinematics</li><li>Dynamics</li>
               <li>Forces, density, pressure</li><li>Work, energy &amp; power</li>
@@ -1668,13 +1743,13 @@ body.pv-lock{overflow:hidden}
             <h3 style="margin:14px 0 10px">A2 Level Physics</h3>
             <p class="muted" style="font-size:.92rem">Fields, quantum and nuclear — plus the Paper 5 method that rewards a repeatable approach over raw knowledge.</p>
             <div class="flip__chips">
-              <span class="chip">Topics 12&ndash;25</span><span class="chip chip--gold">Paper 5 track</span>
+              <span class="chip">13 topics</span><span class="chip chip--gold">Paper 5 track</span>
             </div>
             <div class="flip__hint"><i></i> See the syllabus</div>
           </div>
           <div class="flip__f flip__f--b">
             <span class="chip chip--gold">Syllabus</span>
-            <h3 style="margin:12px 0 2px;font-size:1.22rem">Topics 12&ndash;25</h3>
+            <h3 style="margin:12px 0 2px;font-size:1.22rem">Thirteen topics</h3>
             <ul class="flip__list flip__list--2col">
               <li>Motion in a circle</li><li>Gravitational fields</li><li>Temperature</li>
               <li>Ideal gases</li><li>Thermodynamics</li><li>Oscillations</li>
@@ -1707,13 +1782,13 @@ body.pv-lock{overflow:hidden}
 <section class="sec" id="syllabus">
   <div class="wrap">
     <div class="eyebrow">Syllabus</div>
-    <h2 data-rv>46 topics, taught in order</h2>
+    <h2 data-rv><span id="topicTotal">31</span> topics, taught in order</h2>
     <p class="lede" data-rv style="--d:1;margin-bottom:22px">Each topic has its own lectures, written notes and topical paper book.</p>
 
     <div class="tabs2" role="tablist">
-      <button class="on" data-syl="O"><span class="lg">O Level &mdash; 22 chapters</span><span class="sm">O Level</span></button>
-      <button data-syl="AS"><span class="lg">AS Level &mdash; 12 chapters</span><span class="sm">AS Level</span></button>
-      <button data-syl="A2"><span class="lg">A2 Level &mdash; 12 chapters</span><span class="sm">A2 Level</span></button>
+      <button class="on" data-syl="O"><span class="lg">O Level &mdash; 9 topics</span><span class="sm">O Level</span></button>
+      <button data-syl="AS"><span class="lg">AS Level &mdash; 9 topics</span><span class="sm">AS Level</span></button>
+      <button data-syl="A2"><span class="lg">A2 Level &mdash; 13 topics</span><span class="sm">A2 Level</span></button>
     </div>
     <div id="sylHost" style="margin-top:16px"></div>
     <div class="xp" id="sylPanel"><div class="xp__in">
@@ -2019,11 +2094,11 @@ body.pv-lock{overflow:hidden}
         <a href="#register">Register</a>
       </div>
       <div class="ftr__c">
-        <a href="https://wa.me/923028056789">0302 8056789</a>
-        <a href="tel:+923446267693">0344 6267693</a>
-        <a href="mailto:isamm11979@gmail.com">isamm11979@gmail.com</a>
+        <a href="https://wa.me/923433713772">WhatsApp 0343 3713772</a>
+        <a href="tel:+923433713772">Call 0343 3713772</a>
+        <a href="mailto:physicswithsmk@gmail.com">physicswithsmk@gmail.com</a>
         <div class="soc">
-          <a href="https://wa.me/923028056789" target="_blank" rel="noopener" aria-label="WhatsApp" title="WhatsApp">
+          <a href="https://wa.me/923433713772" target="_blank" rel="noopener" aria-label="WhatsApp" title="WhatsApp">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.9 4.44-9.9 9.9 0 1.75.46 3.45 1.32 4.95L2.05 22l5.28-1.38a9.86 9.86 0 0 0 4.71 1.2h.01c5.46 0 9.9-4.44 9.9-9.9S17.5 2 12.04 2zm5.8 14.06c-.24.68-1.4 1.3-1.94 1.35-.5.05-1.13.07-1.82-.11-.42-.13-.96-.31-1.65-.61-2.9-1.25-4.8-4.17-4.95-4.37-.14-.2-1.18-1.57-1.18-3s.75-2.13 1.02-2.42c.26-.29.58-.36.77-.36l.55.01c.18.01.42-.7.65.5.24.58.82 2 .89 2.14.07.15.12.32.02.51-.09.2-.14.32-.28.49l-.42.49c-.14.14-.28.29-.12.57.16.29.72 1.18 1.54 1.91 1.06.94 1.95 1.23 2.23 1.37.28.15.44.12.6-.07.17-.2.7-.81.88-1.09.19-.29.37-.24.63-.14.25.09 1.62.76 1.9.9.28.15.46.22.53.34.07.12.07.68-.17 1.34z"/></svg>
           </a>
           <a href="https://instagram.com/sir_mehboob_khan" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">
@@ -2038,14 +2113,22 @@ body.pv-lock{overflow:hidden}
     <div class="ftr__b">
       <span>&copy; 2026 Sir Mehboob Khan</span>
       <span class="ftr__mid">Karachi &middot; Online worldwide</span>
-      <a class="byline" href="https://nexlyr.solutions/" target="_blank" rel="noopener"
-         aria-label="Website made by Nexlyr">
-        <span class="byline__k">Made by</span>
-        <img src="nexlyr.svg" alt="" onerror="this.remove()">
-        <span class="byline__n">NEXLYR</span>
-        <svg class="byline__a" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M7 17 17 7M9 7h8v8"/></svg>
+      <a class="nx" href="https://nexlyr.solutions/" target="_blank" rel="noopener"
+         aria-label="Website designed and built by Nexlyr">
+        <span class="nx__k">Designed &amp; built by</span>
+        <span class="nx__lk">
+          <span class="nx__mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+              <path d="M6 24V8l20 16V8" stroke="currentColor" stroke-width="3.4"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="nx__n">NEXLYR</span>
+        </span>
+        <span class="nx__go" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+               stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </span>
       </a>
     </div>
   </div>
@@ -2092,16 +2175,9 @@ body.pv-lock{overflow:hidden}
 "sameAs":["https://instagram.com/sir_mehboob_khan","https://youtube.com/@mehboobkhan7260"]}
 </script>
 
+<!-- Supabase details and contact live in config.js, next to this file -->
+<script src="config.js"></script>
 <script>
-/* ==========================================================================
-   SITE CONFIG
-   ========================================================================== */
-
-window.SMK_CONFIG = {
-  SUPABASE_URL: 'https://bsgaesoufernycsgcpcc.supabase.co',
-  SUPABASE_ANON_KEY: 'sb_publishable_TDJcrkrceR1RVOtg4lvlPg_XR5e7OJo',
-  TABLE: 'registrations'
-};
 
 async function SMKsave(row) {
   var C = window.SMK_CONFIG || {};
@@ -2139,12 +2215,12 @@ const REVIEWS = [
 
 const CHANNEL = 'https://youtube.com/@mehboobkhan7260';
 
+/* the phone and email come from config.js so there is one place to change
+   them; the social links stay here since they rarely move */
 const CONTACT = {
-  wa: '923028056789',
-  wa2: '923446267693',
-  phoneDisplay: '0302 8056789',
-  phone2Display: '0344 6267693',
-  email: 'isamm11979@gmail.com',
+  wa: (window.SMK_CONFIG && window.SMK_CONFIG.wa) || '923433713772',
+  phoneDisplay: (window.SMK_CONFIG && window.SMK_CONFIG.phoneDisplay) || '0343 3713772',
+  email: (window.SMK_CONFIG && window.SMK_CONFIG.email) || 'physicswithsmk@gmail.com',
   instagram: 'https://instagram.com/sir_mehboob_khan',
   youtube: CHANNEL,
   threads: 'https://threads.net/@sir_mehboob_khan'
@@ -2210,7 +2286,7 @@ const KB = [
 {c:'Course',q:'What is the difference between AS and A2?',k:['as vs a2','difference as a2','a2 harder','second year','first year a level','as level a2 level'],
  a:'AS is topics 1–11 of 9702; A2 is topics 12–25 plus Paper 5. A2 isn\'t just harder AS — the shape of the questions changes, so revision has to change with it.'},
 {c:'Course',q:'What topics are in the O Level syllabus?',k:['o level syllabus','olevel syllabus','o level topic','olevel content','olevel topics','5054 syllabus','what is covered o level','chapters o level','motion forces energy','sections','six sections'],
- a:'Six sections: <b>1</b> Motion, forces and energy · <b>2</b> Thermal physics · <b>3</b> Waves · <b>4</b> Electricity and magnetism · <b>5</b> Nuclear physics · <b>6</b> Space physics. You can download the full outline as a PDF from the syllabus section.'},
+ a:'Nine topics: <b>1</b> Physical Quantities, Mass, Weight &amp; Density · <b>2</b> Motion &amp; Forces · <b>3</b> Deformation, Moments &amp; Momentum · <b>4</b> Work, Energy, Power &amp; Pressure · <b>5</b> Thermal Physics · <b>6</b> Waves · <b>7</b> Electricity · <b>8</b> Magnetism · <b>9</b> Nuclear &amp; Space Physics.'},
 {c:'Course',q:'What topics are in the A Level syllabus?',k:['a level syllabus','alevel syllabus','as syllabus','aslevel syllabus','9702 syllabus','a2 syllabus','a level topic','alevel topics','chapters a level','what is covered a level'],
  a:'AS covers topics 1–11 (units, kinematics, dynamics, forces, energy, deformation, waves, superposition, electricity, D.C. circuits, particle physics). A2 covers 12–25 (circular motion, gravitational fields, thermal, ideal gases, thermodynamics, oscillations, electric and magnetic fields, capacitance, a.c., quantum, nuclear, medical physics, astronomy). Download the full PDF from the syllabus section.'},
 {c:'Course',q:'Can I download the syllabus?',k:['download syllabus','syllabus pdf','get syllabus','syllabus copy','topic list','course outline','pdf'],
@@ -2278,7 +2354,7 @@ const KB = [
 
 /* ---------------- misc ---------------- */
 {c:'Contact',q:'How do I contact you?',k:['contact','phone','number','whatsapp','call','email','reach','talk to','speak','get in touch','message'],
- a:'WhatsApp is fastest: <b>0302 8056789</b>. Also on <b>0344 6267693</b>, or email <b>isamm11979@gmail.com</b>.'},
+ a:'WhatsApp is fastest: <b>0343 3713772</b>. You can also call the same number, or email <b>physicswithsmk@gmail.com</b>.'},
 {c:'Contact',q:'Do you have social media?',k:['instagram','youtube','facebook','social','channel','threads','follow','subscribe','videos online'],
  a:'Yes — Instagram <b>@sir_mehboob_khan</b>, YouTube <b>@mehboobkhan7260</b>, and Threads. Links are in the footer.'},
 {c:'Course',q:'Do you teach other subjects?',k:['chemistry','maths','math','mathematics','biology','other subject','other subjects','computer','english','only physics','teach chemistry','teach maths','do you teach bio'],
@@ -2330,15 +2406,15 @@ const SYN = {
     };
     document.getElementById('contactList').innerHTML =
       row('WhatsApp', C.phoneDisplay, 'https://wa.me/' + C.wa) +
-      row('Phone', C.phone2Display, 'tel:+' + C.wa2) +
+      row('Call', C.phoneDisplay, 'tel:+' + C.wa) +
       row('Email', C.email, 'mailto:' + C.email);
     document.getElementById('socialList').innerHTML =
       [['Instagram', C.instagram], ['YouTube', C.youtube], ['Threads', C.threads]]
         .map(function (p) { return '<a class="chip chip--gold" href="' + p[1] + '" target="_blank" rel="noopener">' + p[0] + '</a>'; }).join('');
     var fc = document.getElementById('footContact');
     if (fc) fc.innerHTML =
-      '<a href="https://wa.me/' + C.wa + '">' + C.phoneDisplay + '</a>'
-      + '<a href="tel:+' + C.wa2 + '">' + C.phone2Display + '</a>'
+      '<a href="https://wa.me/' + C.wa + '">WhatsApp ' + C.phoneDisplay + '</a>'
+      + '<a href="tel:+' + C.wa + '">Call ' + C.phoneDisplay + '</a>'
       + '<a href="mailto:' + C.email + '">' + C.email + '</a>'
       + '<a href="' + C.instagram + '" target="_blank" rel="noopener">Instagram</a>'
       + '<a href="' + C.youtube + '" target="_blank" rel="noopener">YouTube</a>';
@@ -2866,8 +2942,8 @@ const SYN = {
     };
     const contactBlock = () =>
       `Here's how to reach the team directly:<br>` +
-      `<b>WhatsApp</b> <a href="https://wa.me/${C.wa || '923028056789'}" target="_blank" rel="noopener">${C.phoneDisplay || '0302 8056789'}</a><br>` +
-      `<b>Phone</b> ${C.phone2Display || '0344 6267693'}<br>` +
+      `<b>WhatsApp</b> <a href="https://wa.me/${C.wa || '923433713772'}" target="_blank" rel="noopener">${C.phoneDisplay || '0343 3713772'}</a><br>` +
+      `<b>Phone</b> ${'0343 3713772'}<br>` +
       `<b>Email</b> ${C.email || ''}`;
 
     const SUGGEST = [
@@ -3232,57 +3308,49 @@ window.NAG_CONFIG = {
    ========================================================================== */
 
 const TOPICS = {
+  /* ------------------------------------------------------------------
+     The syllabus as Sir Mehboob teaches it. `books` lists which topical
+     paper books belong to a topic — the numbering of those books is older
+     and finer-grained than the teaching topics, so several books can sit
+     under one topic. Nothing here is guessed; it is the mapping from the
+     course sheets to the book folder.
+     ------------------------------------------------------------------ */
   O: [
-    { n: 1,  name: 'Physical Quantities, Units & Measurements' },
-    { n: 2,  name: 'Mass, Weight & Density' },
-    { n: 3,  name: 'Motion' },
-    { n: 4,  name: 'Forces' },
-    { n: 5,  name: 'Momentum' },
-    { n: 6,  name: 'Energy, Work & Power' },
-    { n: 7,  name: 'Pressure' },
-    { n: 8,  name: 'Kinetic Particle Model' },
-    { n: 9,  name: 'Thermal Properties' },
-    { n: 10, name: 'Transfer of Thermal Energy' },
-    { n: 11, name: 'General Wave Properties' },
-    { n: 12, name: 'Light' },
-    { n: 13, name: 'Electromagnetic Spectrum' },
-    { n: 14, name: 'Sound' },
-    { n: 15, name: 'Magnetism' },
-    { n: 16, name: 'Static Electricity' },
-    { n: 17, name: 'Current Electricity' },
-    { n: 18, name: 'D.C. Circuits' },
-    { n: 19, name: 'Practical Electricity' },
-    { n: 20, name: 'Electromagnetism' },
-    { n: 21, name: 'Electromagnetic Induction' },
-    { n: 22, name: 'Radioactivity' }
+    { n:1, name:'Physical Quantities, Mass, Weight & Density', books:[1,2] },
+    { n:2, name:'Motion & Forces',                             books:[3,4] },
+    { n:3, name:'Deformation, Moments & Momentum',             books:[6,7] },
+    { n:4, name:'Work, Energy, Power & Pressure',              books:[8,9] },
+    { n:5, name:'Thermal Physics',                             books:[10,11,12] },
+    { n:6, name:'Waves',                                       books:[13,14,15,16] },
+    { n:7, name:'Electricity',                                 books:[17,18] },
+    { n:8, name:'Magnetism',                                   books:[19,20] },
+    { n:9, name:'Nuclear & Space Physics',                     books:[21,22,23] }
   ],
   AS: [
-    { n: 1,  name: 'Physical Quantities & Units' },
-    { n: 2,  name: 'Measurements & Techniques' },
-    { n: 3,  name: 'Kinematics' },
-    { n: 4,  name: 'Dynamics' },
-    { n: 5,  name: 'Forces, Density & Pressure' },
-    { n: 6,  name: 'Work, Energy & Power' },
-    { n: 7,  name: 'Deformation of Solids' },
-    { n: 8,  name: 'Waves' },
-    { n: 9,  name: 'Superposition' },
-    { n: 10, name: 'Electricity' },
-    { n: 11, name: 'D.C. Circuits' },
-    { n: 12, name: 'Particle Physics' }
+    { n:1, name:'Physical Quantities & Units',                 books:[1,2] },
+    { n:2, name:'Kinematics',                                  books:[3] },
+    { n:3, name:'Dynamics',                                    books:[4] },
+    { n:4, name:'Forces, Density & Pressure',                  books:[5] },
+    { n:5, name:'Deformation of Solids',                       books:[7] },
+    { n:6, name:'Work, Energy and Power',                      books:[6] },
+    { n:7, name:'Wave Motion & Superposition of Waves',        books:[8,9] },
+    { n:8, name:'Electricity & D.C. Circuits',                 books:[10,11] },
+    { n:9, name:'Particle Physics',                            books:[12] }
   ],
   A2: [
-    { n: 1,  name: 'Circular Motion' },
-    { n: 2,  name: 'Gravitational Fields' },
-    { n: 3,  name: 'Electric Fields' },
-    { n: 4,  name: 'Capacitance' },
-    { n: 5,  name: 'Temperature' },
-    { n: 6,  name: 'Ideal Gases' },
-    { n: 7,  name: 'Thermodynamics' },
-    { n: 8,  name: 'Oscillations' },
-    { n: 9,  name: 'Magnetic Fields' },
-    { n: 10, name: 'Alternating Currents' },
-    { n: 11, name: 'Quantum Physics' },
-    { n: 12, name: 'Space Physics' }
+    { n:1,  name:'Circular Motion',            books:[1] },
+    { n:2,  name:'Gravitational Field',        books:[2] },
+    { n:3,  name:'Electric Field',             books:[3] },
+    { n:4,  name:'Oscillation',                books:[8] },
+    { n:5,  name:'Capacitance',                books:[4] },
+    { n:6,  name:'Thermal Physics',            books:[5,6,7] },
+    { n:7,  name:'Magnetic Field',             books:[9] },
+    { n:8,  name:'Electromagnetic Induction',  books:[9] },
+    { n:9,  name:'Alternating Current',        books:[10] },
+    { n:10, name:'Quantum Physics',            books:[11] },
+    { n:11, name:'Nuclear Physics',            books:[] },
+    { n:12, name:'Medical Physics',            books:[] },
+    { n:13, name:'Astronomy & Cosmology',      books:[12] }
   ]
 };
 
@@ -3516,6 +3584,24 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
 
 
 
+<!-- ================= ONE TOPIC ================= -->
+<div class="auth2 sylv" id="topicv" role="dialog" aria-modal="true" aria-label="Topic">
+  <div class="auth2__bg"></div>
+  <div class="auth2__p sylv__p">
+    <button class="auth2__x" aria-label="Close">&times;</button>
+    <div class="tv__head">
+      <span class="tv__n" id="tvN">1</span>
+      <div>
+        <div class="eyebrow" id="tvLvl" style="margin-bottom:6px">O Level</div>
+        <h3 style="font-size:1.35rem;margin:0" id="tvName">Topic</h3>
+      </div>
+    </div>
+    <p class="muted" style="font-size:.85rem;margin:12px 0 18px" id="tvSub"></p>
+    <div id="tvLecs"></div>
+    <div id="tvBooks"></div>
+  </div>
+</div>
+
 <!-- ================= SYLLABUS POPUP ================= -->
 <div class="auth2 sylv" id="sylv" role="dialog" aria-modal="true" aria-label="Course syllabus">
   <div class="auth2__bg"></div>
@@ -3598,8 +3684,8 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
         <div class="msg msg--ok" id="pAskOk" style="display:none;margin-top:12px"></div>
       </form>
       <p class="muted" style="font-size:.74rem;text-align:center;margin-top:12px">
-        Or message <a href="https://wa.me/923028056789" target="_blank" rel="noopener"
-        style="color:var(--gold-300)">0302 8056789</a> directly.</p>
+        Or message <a href="https://wa.me/923433713772" target="_blank" rel="noopener"
+        style="color:var(--gold-300)">0343 3713772</a> directly.</p>
     </div>
   </div>
 </div>
@@ -3893,7 +3979,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       var mine = lecs.filter(function (l) { return l.topic === t.n; })
                      .sort(function (a, b) { return a.n - b.n; });
       var shut = mine.filter(function (l) { return !canOpen(lvl, t.n, l.n); }).length;
-      return '<button class="sylvrow" data-sylv-topic="' + t.n + '">' +
+      return '<button class="sylvrow" data-topic-open="' + t.n + '" data-topic-lvl="' + lvl + '">' +
           '<span class="sylvrow__n">' + t.n + '</span>' +
           '<span class="sylvrow__t"><b>' + t.name + '</b><span>' +
             (mine.length ? mine.length + ' lecture' + (mine.length !== 1 ? 's' : '') +
@@ -3901,21 +3987,13 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
           '</span></span>' +
           '<span class="sylvrow__c">&#9662;</span>' +
         '</button>' +
-        '<div class="sylvlecs" data-sylv-for="' + t.n + '">' +
-          (mine.length ? mine.map(function (l) { return lecRow(lvl, l); }).join('')
-            : '<p class="muted" style="font-size:.84rem;margin:0 0 10px">' +
-              'Lectures for this topic are added after each class.</p>') +
-        '</div>';
+'';
     }).join('');
 
-    $$('[data-sylv-topic]', host).forEach(function (b) {
+    $$('[data-topic-open]', host).forEach(function (b) {
       b.addEventListener('click', function () {
-        var n = b.dataset.sylvTopic;
-        var box = $('.sylvlecs[data-sylv-for="' + n + '"]', host);
-        var wasOn = box.classList.contains('on');
-        $$('.sylvlecs', host).forEach(function (x) { x.classList.remove('on'); });
-        $$('[data-sylv-topic]', host).forEach(function (x) { x.classList.remove('on'); });
-        if (!wasOn) { box.classList.add('on'); b.classList.add('on'); }
+        closeSylv();
+        window.SMKopenTopic(b.dataset.topicLvl, b.dataset.topicOpen);
       });
     });
   }
@@ -4110,19 +4188,93 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     openXp('coursePanel', LEVELNAME[lvl] + ' \u2014 every lecture', levelHtml(lvl));
   });
 
-  /* topic pill → that topic's lectures */
+  /* ---------- one topic, opened in its own dialog ----------
+     Pressing a topic dims the row, lifts the one you chose, and opens a
+     dialog holding every lecture in it plus the topical paper books that
+     belong to it. */
+  function openTopic(lvl, n) {
+    var tp = (topicsFor(lvl) || []).filter(function (t) { return t.n === +n; })[0] || {};
+    var lecs = lecturesFor(lvl).filter(function (l) { return l.topic === +n; })
+                               .sort(function (a, b) { return a.n - b.n; });
+    var shut = lecs.filter(function (l) { return !canOpen(lvl, +n, l.n); }).length;
+
+    $('#tvN').textContent = n;
+    $('#tvLvl').textContent = LEVELNAME[lvl];
+    $('#tvName').textContent = tp.name || 'Topic';
+    $('#tvSub').textContent = lecs.length
+      ? lecs.length + ' lecture' + (lecs.length !== 1 ? 's' : '') +
+        (shut ? ' \u00b7 ' + shut + ' need a signed-in student ID' : ' \u00b7 all open')
+      : 'Taught later in the year \u2014 the paper books for it are ready now.';
+
+    var soon = soonRows(tp, lecs.length);
+    $('#tvLecs').innerHTML = (lecs.length || soon)
+      ? '<div class="tvsec">Lectures</div>' +
+        lecs.map(function (l) { return lecRow(lvl, l); }).join('') + soon
+      : '<div class="tvsec">Lectures</div><p class="muted" style="font-size:.86rem;margin:0">' +
+        'Its lectures appear here after each class.</p>';
+
+    /* the paper books that belong to this topic */
+    var books = (tp.books || []).map(function (bn) {
+      return (typeof TOPICAL !== 'undefined' ? TOPICAL : [])
+        .filter(function (x) { return x.lvl === lvl && x.n === bn; })[0];
+    }).filter(Boolean);
+
+    $('#tvBooks').innerHTML = books.length
+      ? '<div class="tvsec">Topical paper books</div>' + books.map(function (bk) {
+          var links = '';
+          if (bk.paper)     links += pLink(bk.paper,     'Whole book', false);
+          if (bk.mcq)       links += pLink(bk.mcq,       'MCQs', false);
+          if (bk.ms_mcq)    links += pLink(bk.ms_mcq,    'MCQ answers', true);
+          if (bk.theory)    links += pLink(bk.theory,    'Theory', false);
+          if (bk.ms_theory) links += pLink(bk.ms_theory, 'Theory answers', true);
+          return '<div class="bookrow"><span class="bookrow__i">&#128216;</span>' +
+            '<span class="bookrow__m"><b>' + esc(bk.topic) + '</b>' +
+            '<span>Book ' + bk.n + ' \u00b7 every past-paper question on this topic</span></span>' +
+            '<span class="bookrow__a">' + links + '</span></div>';
+        }).join('')
+      : '';
+
+    $('#topicv').classList.add('open');
+    document.body.classList.add('lock');
+  }
+  window.SMKopenTopic = openTopic;
+
+  function pLink(file, label, isMs) {
+    return '<button class="plink' + (isMs ? ' plink--ms open' : '') + '" data-book="' + esc(file) +
+           '" data-book-t="' + esc(label) + '">' + label + '</button>';
+  }
+
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-book]');
+    if (!b) return;
+    e.preventDefault(); e.stopPropagation();
+    var url = (typeof PBASE !== 'undefined' ? PBASE : '') + b.dataset.book;
+    window.SMKopenPdf(url, b.dataset.bookT, 'Topical paper book',
+                      session().tier === 'prem', null, null);
+  });
+
+  function closeTopic() {
+    $('#topicv').classList.remove('open');
+    document.body.classList.remove('lock');
+    document.querySelectorAll('.tpill').forEach(function (x) { x.classList.remove('on'); });
+    document.querySelectorAll('.tlist').forEach(function (x) { x.classList.remove('dim'); });
+  }
+
   document.addEventListener('click', function (e) {
     var b = e.target.closest('[data-syl-topic]');
     if (!b) return;
     e.preventDefault();
-    var lvl = b.dataset.sylLvl, n = b.dataset.sylTopic;
-    var already = b.classList.contains('on');
     document.querySelectorAll('.tpill').forEach(function (x) { x.classList.remove('on'); });
-    if (already) { closeXp('sylPanel'); return; }
     b.classList.add('on');
-    var tp = (topicsFor(lvl) || []).filter(function (t) { return t.n === +n; })[0];
-    openXp('sylPanel', n + '. ' + (tp ? tp.name : 'Topic'), topicHtml(lvl, n));
+    var row = b.closest('.tlist'); if (row) row.classList.add('dim');
+    openTopic(b.dataset.sylLvl, b.dataset.sylTopic);
   });
+
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('#topicv .auth2__x') ||
+        (e.target.classList.contains('auth2__bg') && e.target.closest('#topicv'))) closeTopic();
+  });
+  addEventListener('keydown', function (e) { if (e.key === 'Escape') closeTopic(); });
 
   /* closing a panel must not move the page */
   document.addEventListener('click', function (e) {
@@ -4204,7 +4356,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
         m.textContent = {
           no_student: 'No student found with that ID. Check the message we sent you.',
           bad_password: 'That ID is right but the password is not.',
-          paused: 'This account is paused. Message 0302 8056789.',
+          paused: 'This account is paused. Message 0343 3713772.',
           too_many_devices: 'Already signed in on 2 devices. Sign out on one first.'
         }[(r && r.reason) || ''] || 'Could not sign you in.';
         return;
@@ -4268,8 +4420,8 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     } else {
       err.style.display = 'block';
       err.innerHTML = 'Could not send that. Message us on WhatsApp instead — ' +
-        '<a href="https://wa.me/923028056789" target="_blank" rel="noopener" ' +
-        'style="color:var(--gold-300)">0302 8056789</a>.';
+        '<a href="https://wa.me/923433713772" target="_blank" rel="noopener" ' +
+        'style="color:var(--gold-300)">0343 3713772</a>.';
     }
   });
 
@@ -4513,8 +4665,8 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     if (!why) return;
     try { sessionStorage.removeItem('smk_signout_reason'); } catch (e) { }
     var msg = {
-      no_student: 'Your account has been removed. Please contact Sir Mehboob Khan on 0302 8056789.',
-      paused: 'Your account is paused. Contact 0302 8056789 to reactivate it.',
+      no_student: 'Your account has been removed. Please contact Sir Mehboob Khan on 0343 3713772.',
+      paused: 'Your account is paused. Contact 0343 3713772 to reactivate it.',
       device_removed: 'You were signed out on this device. Sign in again to continue.'
     }[why] || 'You have been signed out. Please sign in again.';
     var d = document.createElement('div');
