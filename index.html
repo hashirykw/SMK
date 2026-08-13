@@ -1259,6 +1259,24 @@ body.pv-lock{overflow:hidden}
 .lecflag{flex:none;font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;
   padding:4px 9px;border-radius:99px;border:1px solid var(--line-soft);color:var(--muted);white-space:nowrap}
 .lecflag--open{border-color:rgba(66,176,124,.42);color:var(--ok)}
+.showall{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:13px;
+  border:1px solid var(--line-soft);background:var(--panel);cursor:pointer;
+  margin-top:18px;transition:.25s var(--ease);min-height:52px}
+.showall:hover{border-color:var(--gold-400)}
+.showall input{position:absolute;opacity:0;width:0;height:0}
+.showall__b{width:40px;height:23px;border-radius:99px;background:var(--panel-2);
+  border:1px solid var(--line-soft);flex:none;position:relative;transition:.3s var(--ease)}
+.showall__b i{position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;
+  background:var(--muted);transition:.3s var(--spring)}
+.showall input:checked + .showall__b{background:rgba(66,176,124,.2);border-color:var(--ok)}
+.showall input:checked + .showall__b i{transform:translateX(17px);background:var(--ok)}
+.showall input:focus-visible + .showall__b{outline:2px solid var(--gold-300);outline-offset:2px}
+.showall__t b{display:block;font-size:.9rem}
+.showall__t span{display:block;font-family:var(--mono);font-size:.64rem;color:var(--muted);
+  letter-spacing:.04em;margin-top:2px}
+.lecflag--soon{border-color:var(--line-soft);color:var(--muted)}
+.lecflag--free{border-color:rgba(66,176,124,.55);color:var(--ok);
+  background:rgba(66,176,124,.1);font-weight:700}
 .lecflag--shut{border-color:var(--line);color:var(--gold-400)}
 @media(max-width:520px){.lecflag{display:none}}
 
@@ -1862,6 +1880,42 @@ body.pv-lock{overflow:hidden}
   .flip--course .flip__t{font-size:.75rem}
   .flip--course .flip__list{gap:0 8px}
 }
+
+/* ==========================================================================
+   COURSE CARDS — half the height
+   The card was sized so the whole topic list fitted on the back, which left
+   the FRONT — the side people actually see first — mostly empty, and a single
+   card filled a phone screen. The card is now sized for the front, and the
+   back's list scrolls inside it. The full list is one tap away in the topic
+   dialog either way.
+   ========================================================================== */
+.flip--course{height:326px}
+.flip--course .flip__f{justify-content:flex-start}
+.flip--course .flip__f p{margin-bottom:12px}
+.flip--course .flip__f .flip__go,.flip--course .flip__f .see{margin-top:auto}
+.flip--course .flip__list{overflow-y:auto;overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;margin-top:8px;
+  mask-image:linear-gradient(180deg,#000 88%,transparent);
+  -webkit-mask-image:linear-gradient(180deg,#000 88%,transparent)}
+.flip--course .flip__t{min-height:38px;padding:4px 0;font-size:.82rem}
+
+@media (max-width:1024px){
+  .flip--course{height:352px}
+  .flip--course .flip__t{min-height:44px}
+}
+@media (max-width:860px){
+  .flip--course{height:360px}
+  .flip--course .flip__f,.flip--course .flip__b{padding:15px 14px}
+  .flip--course .flip__f h3{font-size:1.02rem;margin:8px 0 5px}
+  .flip--course .flip__f p{font-size:.83rem;line-height:1.45;margin-bottom:10px}
+  .flip--course .flip__list{grid-template-columns:1fr 1fr;gap:0 10px}
+  .flip--course .flip__t{min-height:44px;font-size:.77rem}
+  .flip--course .flip__wm{width:84px}
+}
+@media (max-width:520px){
+  .flip--course{height:368px}
+  .flip--course .flip__t{font-size:.75rem}
+}
 </style>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -2312,7 +2366,14 @@ body.pv-lock{overflow:hidden}
       <button class="btn btn--gold btn--sm" data-open-auth="prem">Sign in</button>
     </div>
 
-    <div class="tabs2" role="tablist" id="lecTabs" style="margin-top:20px">
+    <label class="showall" id="showAllWrap">
+      <input type="checkbox" id="showAll">
+      <span class="showall__b" aria-hidden="true"><i></i></span>
+      <span class="showall__t"><b>Show everything</b>
+        <span>including lectures still to be recorded</span></span>
+    </label>
+
+    <div class="tabs2" role="tablist" id="lecTabs" style="margin-top:16px">
       <button class="on" data-lec="O">O Level</button>
       <button data-lec="AS">AS Level</button>
       <button data-lec="A2">A2 Level</button>
@@ -4165,6 +4226,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   var OPEN_TOPICS = 4;
 
   var LEVELNAME = { O: 'O Level / IGCSE', AS: 'AS Level', A2: 'A2 Level' };
+  var showAll = false;       // reveal lectures that have not been recorded yet
   var lecLevel = 'O';        // which level the lecture list is showing
   var sylvLevel = 'O';       // which level the syllabus popup is showing
 
@@ -4189,11 +4251,15 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     var list = (typeof TOPICS !== 'undefined' && TOPICS[lvl]) ? TOPICS[lvl] : [];
     return list.slice(0, OPEN_TOPICS).map(function (t) { return t.n; });
   }
-  function canOpen(lvl, topicN, lecN) {
+  function canOpen(lvl, topicN, lecN, lec) {
     var s = session();
     if (s.tier === 'prem' && s.lvl === lvl) return true;
-    /* Lecture 1 of the first four topics is open to everyone. This is written
-       without depending on the topic list having loaded — if it has not, a
+    /* A lecture ticked open in the admin panel plays for everyone, wherever it
+       sits. This was the missing half: the database honoured the flag but the
+       page did not, so a free lecture still drew a padlock. */
+    if (lec && (lec.is_preview || lec.preview)) return true;
+    /* And lecture 1 of the first four topics is open without any flag. Written
+       so it does not depend on the topic list having loaded — if it has not, a
        preview must still read as open rather than as locked. */
     return +lecN === 1 && +topicN >= 1 && +topicN <= OPEN_TOPICS;
   }
@@ -4208,7 +4274,8 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       out = (course.lectures || []).map(function (l) {
         return { id: l.id, lvl: l.lvl || lvl, topic: l.topic, n: l.n, t: l.title || l.t,
                  dur: l.duration || l.dur || '', vid: l.video_url || l.vid || '',
-                 notes: l.notes_url || l.notes || '', date: l.recorded || l.date || '' };
+                 notes: l.notes_url || l.notes || '', date: l.recorded || l.date || '',
+                 is_preview: !!l.is_preview, published: l.published !== false };
       });
     }
     if (!out.length && typeof PUBLIC_LECTURES !== 'undefined') {
@@ -4237,14 +4304,20 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   /* a lecture that is planned but not recorded yet — shown so the student can
      see the shape of the course before it has been taught. `planned` is an
      optional integer on the topics table; without it nothing is invented. */
-  function soonRow(n) {
+  function soonRow(n, vague) {
     return '<div class="lec2 lec2--soon">' +
       '<span class="lec2__p">&#8226;</span>' +
-      '<span class="lec2__t"><b>Lecture ' + n + '</b><span>recorded after class</span></span>' +
-      '<span class="lecflag">Coming</span></div>';
+      '<span class="lec2__t"><b>' + (vague ? 'Lectures for this topic' : 'Lecture ' + n) +
+      '</b><span>recorded after class</span></span>' +
+      '<span class="lecflag lecflag--soon">Coming</span></div>';
   }
   function soonRows(t, have) {
     var planned = +(t.planned || 0);
+    /* With the switch on, a topic with nothing recorded still shows a row, so
+       a student can see the shape of the course rather than an empty topic.
+       Without a planned count there is nothing honest to promise, so it shows
+       a single "recorded after class" line rather than inventing a number. */
+    if (showAll && !planned && have === 0) return soonRow(1, true);
     if (!planned || planned <= have) return '';
     var out = '';
     for (var i = have + 1; i <= planned; i++) out += soonRow(i);
@@ -4252,14 +4325,16 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   }
 
   function lecRow(lvl, l) {
-    var open = canOpen(lvl, l.topic, l.n);
+    var open = canOpen(lvl, l.topic, l.n, l);
     var meta = 'Lecture ' + l.n + (l.dur ? ' \u00b7 ' + l.dur : '');
     var row = '<button class="lec2 ' + (open ? 'lec2--open' : 'lec2--shut') + '" ' +
       'data-lec-id="' + (l.id || '') + '" data-lec-lvl="' + lvl + '" ' +
       'data-lec-topic="' + l.topic + '" data-lec-n="' + l.n + '">' +
       '<span class="lec2__p">' + (open ? '&#9654;' : '&#128274;') + '</span>' +
       '<span class="lec2__t"><b>' + l.t + '</b><span>' + meta + '</span></span>' +
-      '<span class="lecflag ' + (open ? 'lecflag--open">Open' : 'lecflag--shut">Locked') + '</span>' +
+      '<span class="lecflag ' + (open
+        ? (canOpen(lvl, l.topic, l.n) ? 'lecflag--open">Open' : 'lecflag--free">Free')
+        : 'lecflag--shut">Locked') + '</span>' +
       '</button>';
 
     /* The written notes for this lecture, straight from notes_url on the row.
@@ -4331,7 +4406,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     }
 
     host.innerHTML = head + '<div class="topics">' + groups.map(function (g, i) {
-      var openCount = g.lecs.filter(function (l) { return canOpen(lvl, g.t.n, l.n); }).length;
+      var openCount = g.lecs.filter(function (l) { return canOpen(lvl, g.t.n, l.n, l); }).length;
       var shut = g.lecs.length - openCount;
       var pl = +(g.t.planned || 0);
       var sub = g.lecs.length
@@ -4366,7 +4441,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     host.innerHTML = tops.map(function (t) {
       var mine = lecs.filter(function (l) { return l.topic === t.n; })
                      .sort(function (a, b) { return a.n - b.n; });
-      var shut = mine.filter(function (l) { return !canOpen(lvl, t.n, l.n); }).length;
+      var shut = mine.filter(function (l) { return !canOpen(lvl, t.n, l.n, l); }).length;
       return '<button class="sylvrow" data-topic-open="' + t.n + '" data-topic-lvl="' + lvl + '">' +
           '<span class="sylvrow__n">' + t.n + '</span>' +
           '<span class="sylvrow__t"><b>' + t.name + '</b><span>' +
@@ -4444,6 +4519,19 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     });
   });
 
+  var sa = $('#showAll');
+  if (sa) sa.addEventListener('change', function () {
+    showAll = sa.checked;
+    renderLectures();
+    if ($('#topicv').classList.contains('open')) {
+      var n = $('#tvN').textContent;
+      openTopic(lecLevel, n);
+    }
+    window.SMKtoast && window.SMKtoast(showAll
+      ? 'Showing every lecture, recorded or not'
+      : 'Showing recorded lectures only');
+  });
+
   /* ---------- apply across the page ---------- */
   function apply() {
     var s = session();
@@ -4487,6 +4575,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
 
     fillCourseCards();
     makeTappable();
+    shareBooks();
     if (typeof renderPapers === 'function') renderPapers();
     renderLectures();
     if ($('#sylv').classList.contains('open')) renderSylv();
@@ -4532,7 +4621,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     return lead + '<div class="topics">' + tops.map(function (t) {
       var mine = lecs.filter(function (l) { return l.topic === t.n; })
                      .sort(function (a, b) { return a.n - b.n; });
-      var shut = mine.filter(function (l) { return !canOpen(lvl, t.n, l.n); }).length;
+      var shut = mine.filter(function (l) { return !canOpen(lvl, t.n, l.n, l); }).length;
       var pl2 = +(t.planned || 0);
       var sub = mine.length
         ? mine.length + ' lecture' + (mine.length !== 1 ? 's' : '') +
@@ -4567,7 +4656,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
         'lectures appear here after each class \u2014 the topical paper book for it is ready now.</p>' +
         '<a class="btn btn--line btn--sm" style="margin-top:14px" href="#papers">Topical papers</a>';
     }
-    var shut = lecs.filter(function (l) { return !canOpen(lvl, +n, l.n); }).length;
+    var shut = lecs.filter(function (l) { return !canOpen(lvl, +n, l.n, l); }).length;
     return '<p class="muted" style="font-size:.88rem;margin:0 0 14px">' + lecs.length +
       ' lecture' + (lecs.length !== 1 ? 's' : '') +
       (shut ? ' \u00b7 ' + shut + ' need a signed-in student ID' : ' \u00b7 all open') + '</p>' +
@@ -4655,6 +4744,24 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
 
   /* ---------- the flip cards read the syllabus, so they cannot drift ----------
      Every topic is a button: press one and its lectures open straight away. */
+  /* The lecture player is a separate page with no copy of the book list, so
+     the map from each topic to its paper books is left where it can read it. */
+  function shareBooks() {
+    if (typeof TOPICAL === 'undefined') return;
+    var map = {};
+    ['O', 'AS', 'A2'].forEach(function (lvl) {
+      (TOPICS[lvl] || []).forEach(function (t) {
+        var books = (t.books || []).map(function (bn) {
+          return TOPICAL.filter(function (x) { return x.lvl === lvl && x.n === bn; })[0];
+        }).filter(Boolean).map(function (bk) {
+          return { n: bk.n, topic: bk.topic, paper: bk.paper || '', mcq: bk.mcq || '' };
+        });
+        if (books.length) map[lvl + '-' + t.n] = books;
+      });
+    });
+    try { localStorage.setItem('smk_books', JSON.stringify(map)); } catch (e) { }
+  }
+
   function fillCourseCards() {
     $$('[data-course-list]').forEach(function (ul) {
       var lvl = ul.dataset.courseList;
@@ -4688,7 +4795,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     var tp = (topicsFor(lvl) || []).filter(function (t) { return t.n === +n; })[0] || {};
     var lecs = lecturesFor(lvl).filter(function (l) { return l.topic === +n; })
                                .sort(function (a, b) { return a.n - b.n; });
-    var shut = lecs.filter(function (l) { return !canOpen(lvl, +n, l.n); }).length;
+    var shut = lecs.filter(function (l) { return !canOpen(lvl, +n, l.n, l); }).length;
 
     $('#tvN').textContent = n;
     $('#tvLvl').textContent = LEVELNAME[lvl];
@@ -4944,7 +5051,8 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       window.SMK_LOADED = true;
       window.PUBLIC_LECTURES = rows.map(function (l) {
         return { id: l.id, lvl: l.lvl, topic: l.topic, n: l.n, t: l.title,
-                 dur: l.duration || '', vid: l.video_url || '', notes: l.notes_url || '' };
+                 dur: l.duration || '', vid: l.video_url || '', notes: l.notes_url || '',
+                 is_preview: true };   /* everything in this view is open to all */
       });
       renderLectures();
       if ($('#sylv').classList.contains('open')) renderSylv();
@@ -5270,4 +5378,3 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
 </script>
 </body>
 </html>
-
