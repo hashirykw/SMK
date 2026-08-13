@@ -1800,6 +1800,68 @@ body.pv-lock{overflow:hidden}
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .ftr a.nxb__id,.nxb__id{opacity:.92}
 .nxb__id:hover{opacity:1}
+
+/* ==========================================================================
+   HEADER CLEARANCE
+   The header is position:fixed, so it takes no space in the flow and the hero
+   was sliding underneath it — the eyebrow ran straight into the menu button.
+   The hero starts below the bar instead of behind it.
+   ========================================================================== */
+.hero{padding-top:104px}
+@media (max-width:860px){ .hero{padding-top:86px} }
+@media (max-width:400px){ .hero{padding-top:80px} }
+
+/* the eyebrow is a long line on a phone; keep it clear of the menu button */
+.hero .eyebrow{max-width:calc(100% - 60px);margin-inline:auto;flex-wrap:wrap;
+  justify-content:center;row-gap:2px}
+@media (max-width:520px){
+  .hero .eyebrow{font-size:.58rem;letter-spacing:.1em;max-width:100%}
+}
+
+/* ==========================================================================
+   SHORTER
+   The course cards were the tallest thing on the page and the page itself ran
+   long. Rows are tighter, type is a shade smaller, and the sections that only
+   restate what is above them are folded away on a phone.
+   ========================================================================== */
+.flip--course{height:452px}
+.flip--course .flip__t{padding:3px 0;font-size:.82rem;line-height:1.25}
+.flip--course .flip__list{margin-top:8px;padding-bottom:2px}
+.flip--course .flip__f h3,.flip--course .flip__b h3{margin:10px 0 6px;font-size:1.08rem}
+.flip--course .flip__f p{font-size:.86rem;line-height:1.5}
+
+@media (max-width:1024px){
+  .flip--course{height:512px}
+  .flip--course .flip__list{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+  .flip--course .flip__t{min-height:42px;padding:7px 0;font-size:.8rem;line-height:1.2}
+}
+@media (max-width:860px){
+  /* thirteen topics, thumb-sized rows and a short card only coexist in two
+     columns — so the list goes two-up on a phone. */
+  .flip--course{height:486px}
+  .flip--course .flip__f,.flip--course .flip__b{padding:16px 14px}
+  .flip--course .flip__list{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+  .flip--course .flip__t{min-height:42px;font-size:.78rem;line-height:1.2;padding:6px 0}
+  .flip--course .flip__list li::before{width:3px;height:3px}
+  .flip--course .flip__wm{width:100px}
+
+  /* tighter through the whole page */
+  .sec{padding-block:30px}
+  .hero__m{margin-top:18px;gap:14px}
+  .hero__cta{margin-top:20px}
+  .introv__cap{padding:12px 12px 10px}
+  .note{margin-bottom:12px}
+  .strip{margin-top:16px!important}
+  .bento{gap:10px}
+  .tile{padding:14px 13px}
+  h2{margin-bottom:.3em}
+  .lede{margin-bottom:14px!important}
+}
+@media (max-width:520px){
+  .flip--course{height:502px}
+  .flip--course .flip__t{font-size:.75rem}
+  .flip--course .flip__list{gap:0 8px}
+}
 </style>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -4130,7 +4192,10 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   function canOpen(lvl, topicN, lecN) {
     var s = session();
     if (s.tier === 'prem' && s.lvl === lvl) return true;
-    return lecN === 1 && openTopicNumbers(lvl).indexOf(topicN) !== -1;
+    /* Lecture 1 of the first four topics is open to everyone. This is written
+       without depending on the topic list having loaded — if it has not, a
+       preview must still read as open rather than as locked. */
+    return +lecN === 1 && +topicN >= 1 && +topicN <= OPEN_TOPICS;
   }
   window.SMKcanOpen = canOpen;
 
@@ -4344,10 +4409,15 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
 
   /* ---------- opening a lecture ---------- */
   function playLecture(lvl, topicN, lecN, id) {
-    if (!canOpen(lvl, topicN, lecN)) { openAuth('prem'); return; }
+    /* No gate here. The browser used to decide whether a lecture could open,
+       and if it guessed wrong a free preview met a sign-in box — which is the
+       one thing that must never happen. The player asks the database, and the
+       database is the only thing that decides. A paid lecture opens the player
+       and is told there why it is locked; a preview simply plays. */
     var l = lecturesFor(lvl).filter(function (x) {
       return x.topic === +topicN && x.n === +lecN;
     })[0];
+    if (!l && id) l = { id: id, topic: +topicN, n: +lecN };
     if (!l) return;
     var s = session();
     /* the player is its own page so it can own the whole screen, keep its
@@ -4363,9 +4433,6 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     var b = e.target.closest('[data-lec-id]');
     if (!b) return;
     e.preventDefault();
-    if (b.classList.contains('lec2--shut')) {
-      b.classList.remove('nope'); void b.offsetWidth; b.classList.add('nope');
-    }
     playLecture(b.dataset.lecLvl, b.dataset.lecTopic, b.dataset.lecN, b.dataset.lecId);
   });
 
@@ -5203,3 +5270,4 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
 </script>
 </body>
 </html>
+
