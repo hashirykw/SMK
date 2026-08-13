@@ -1262,9 +1262,23 @@ body{overflow-x:hidden}
 .stage{position:relative;background:#000;border-radius:var(--r-lg);overflow:hidden;
   border:1px solid var(--line);box-shadow:0 30px 80px rgba(0,0,0,.42);aspect-ratio:16/9}
 .stage.full{border-radius:0;border:0}
-#ytbox{position:absolute;inset:0}
-#ytbox iframe{position:absolute;inset:0;width:100%;height:100%;border:0;
-  pointer-events:none}                       /* every click is ours, not YouTube's */
+/* The YouTube API REPLACES this div with the iframe, so the iframe itself
+   carries the id — "#ytbox iframe" never matched and the video stayed at
+   YouTube's default 640x390 in the corner. Both selectors are covered now. */
+#ytbox,.stage iframe,.stage #ytbox{position:absolute;inset:0;width:100%;height:100%;
+  border:0;display:block;pointer-events:none}   /* every click is ours, not YouTube's */
+
+/* YouTube shows its title and share row across the top when a video is paused
+   or first loaded. The iframe cannot be clicked, but the strip is still
+   visible, so it is masked. */
+.masktop{position:absolute;left:0;right:0;top:0;height:64px;z-index:5;pointer-events:none;
+  background:linear-gradient(180deg,#000 42%,rgba(0,0,0,.7) 72%,transparent);
+  opacity:0;transition:opacity .35s var(--ease)}
+.stage.idle .masktop{opacity:1}
+.maskbot{position:absolute;left:0;right:0;bottom:0;height:52px;z-index:5;pointer-events:none;
+  background:linear-gradient(0deg,#000 45%,transparent);opacity:0;
+  transition:opacity .35s var(--ease)}
+.stage.idle .maskbot{opacity:1}
 .shield{position:absolute;inset:0;z-index:4;background:transparent}
 .ph{position:absolute;inset:0;z-index:5;display:grid;place-items:center;text-align:center;
   padding:26px;background:radial-gradient(circle at 50% 40%,var(--navy-700),var(--navy-950));
@@ -1359,6 +1373,8 @@ body{overflow-x:hidden}
   <main class="lp__body">
     <div class="stage" id="stage">
       <div id="ytbox"></div>
+      <div class="masktop" aria-hidden="true"></div>
+      <div class="maskbot" aria-hidden="true"></div>
       <div class="shield" id="shield"></div>
       <div class="ph" id="ph"><div><div style="font-size:30px">&#9203;</div>
         <b style="font-family:var(--display);font-size:1.1rem;display:block;margin-top:10px">Opening the lecture…</b></div></div>
@@ -1513,6 +1529,10 @@ body{overflow-x:hidden}
   var LEVELNAME = { O: 'O Level / IGCSE', AS: 'AS Level', A2: 'A2 Level' };
   var YT = null, DATA = null, ready = false, tick = null, dur = 0;
 
+  function esc(v) {
+    return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  }
+
   function student() {
     try { var p = JSON.parse(localStorage.getItem('smk_premium')); if (p && p.sid) return p; }
     catch (e) { } return null;
@@ -1531,23 +1551,41 @@ body{overflow-x:hidden}
   /* ---------- ask the database for this lecture ---------- */
   async function load() {
     if (!LEC) { fail('No lecture chosen', 'Open a lecture from the main page.'); return; }
-    var s = student();
+    var s = student(), res;
     try {
-      var r = await fetch(C.SUPABASE_URL + '/rest/v1/rpc/get_lecture', {
+      res = await fetch(C.SUPABASE_URL + '/rest/v1/rpc/get_lecture', {
         method: 'POST',
         headers: { apikey: C.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY,
                    'Content-Type': 'application/json' },
         body: JSON.stringify({ p_lecture: LEC, p_id: s ? s.sid : null, p_device: device() })
       });
-      DATA = await r.json();
+      DATA = await res.json();
     } catch (e) {
       fail('Could not reach the server', 'Check your connection and try again.');
       return;
     }
 
+    /* A missing function comes back as a PostgREST error, not as our own
+       {ok:false}. Saying so plainly beats "cannot open this lecture", which
+       sends you looking in the wrong place. */
+    if (DATA && DATA.code) {
+      var miss = DATA.code === 'PGRST202' ||
+                 /find the function|does not exist/i.test(DATA.message || '');
+      fail(miss ? 'The database is out of date' : 'The server refused that',
+        miss
+          ? 'This site needs the <b>get_lecture</b> function, which is not in the ' +
+            'database yet. Re-run <b>backend.sql</b> in Supabase → SQL Editor, top to ' +
+            'bottom. It is safe to run again.'
+          : 'Supabase said: ' + esc(DATA.message || DATA.code));
+      console.error('[SMK] get_lecture failed:', DATA);
+      return;
+    }
+
     if (!DATA || !DATA.ok) {
       var why = {
-        no_lecture: ['Lecture not found', 'It may have been removed. Go back and pick another.'],
+        no_lecture: ['Lecture not found',
+          'No lecture in the database has this id, or it is unpublished. If you have ' +
+          'just added it, check the id in the admin panel matches.'],
         locked: ['This lecture is locked', 'Sign in with your student ID on the main page to open every lecture in your level.'],
         no_student: ['Signed out', 'Sign in again on the main page.'],
         paused: ['Account paused', 'Message 0343 3713772 to have it reopened.'],
@@ -1606,6 +1644,7 @@ body{overflow-x:hidden}
     $('#bigPlay').classList.remove('hide');
     function go() {
       YT = new window.YT.Player('ytbox', {
+        width: '100%', height: '100%',
         videoId: id,
         host: 'https://www.youtube-nocookie.com',
         playerVars: {
@@ -1613,7 +1652,14 @@ body{overflow-x:hidden}
           fs: 0, disablekb: 1, playsinline: 1, origin: location.origin
         },
         events: {
-          onReady: function () { ready = true; $('#ctl').style.display = ''; wire(); },
+          onReady: function () {
+            ready = true; $('#ctl').style.display = '';
+            $('#stage').classList.add('idle');
+            /* belt and braces: whatever the API sets, the iframe fills the stage */
+            var f = $('#ytbox') || $('.stage iframe');
+            if (f) { f.setAttribute('width', '100%'); f.setAttribute('height', '100%'); }
+            wire();
+          },
           onStateChange: onState,
           onError: function () { fail('This video will not play', 'It may be private or removed. Unlisted is the setting that works.'); }
         }
@@ -1668,6 +1714,9 @@ body{overflow-x:hidden}
     var PAUSE = '<path d="M8 4v16M16 4v16"/>';
     $('#iPlay').innerHTML = e.data === 1 ? PAUSE : PLAY;
     $('#bigPlay').classList.toggle('hide', e.data === 1 || e.data === 3);
+    /* -1 unstarted, 2 paused, 0 ended — the states where YouTube draws its own
+       title bar and end screen over the video */
+    $('#stage').classList.toggle('idle', e.data !== 1 && e.data !== 3);
     if (e.data === 1) {
       dur = YT.getDuration() || 0;
       if (!tick) tick = setInterval(paint, 250);
