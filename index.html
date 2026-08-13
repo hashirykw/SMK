@@ -1759,6 +1759,47 @@ body.pv-lock{overflow:hidden}
   .flip--course{height:612px}
   .flip--course .flip__t{font-size:.84rem}
 }
+
+/* ==========================================================================
+   HEADER — the logo cannot overlap the name whatever mark.png turns out to be
+   ========================================================================== */
+.hdr__in{gap:14px}
+.logo{min-width:0;flex:0 1 auto;gap:9px;align-items:center;min-height:42px}
+.logo img{height:32px;width:auto;max-width:42px;object-fit:contain;flex:0 0 auto;display:block}
+.logo b{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  letter-spacing:.02em}
+.burger{flex:0 0 46px}
+
+@media (max-width:860px){
+  .hdr__in{min-height:62px;gap:10px;padding-inline:16px}
+  .logo img{height:28px;max-width:36px}
+  .logo b{font-size:.86rem}
+  /* the hero must clear the sticky header, not start under it */
+  .hero{padding-top:26px}
+}
+@media (max-width:400px){
+  .logo b{font-size:.78rem}
+  .logo img{height:26px;max-width:32px}
+  .hdr__in{gap:8px;padding-inline:14px}
+}
+@media (max-width:340px){
+  /* at this width the full name cannot sit beside the mark and the menu */
+  .logo b i{display:none}
+  .logo b::after{content:"SMK"}
+  .logo b{font-size:0}
+  .logo b::after{font-size:.82rem;font-family:var(--display);letter-spacing:.06em}
+}
+
+/* ==========================================================================
+   NEXLYR — their card sits in their own black, in every theme
+   ========================================================================== */
+.nxb{background:linear-gradient(140deg,#04070c,#0A1420 60%,#04070c)!important;
+  border:1px solid rgba(0,212,255,.26)!important;
+  box-shadow:0 10px 30px rgba(4,7,12,.22)}
+.nxb__nm{background:linear-gradient(96deg,#00D4FF,#8FEBFF 55%,#00D4FF);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.ftr a.nxb__id,.nxb__id{opacity:.92}
+.nxb__id:hover{opacity:1}
 </style>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -4108,7 +4149,10 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     if (!out.length && typeof PUBLIC_LECTURES !== 'undefined') {
       out = PUBLIC_LECTURES.filter(function (l) { return l.lvl === lvl; });
     }
-    if (!out.length && typeof LECTURES !== 'undefined') {
+    /* The bundled LECTURES array is sample data for laying the page out. It is
+       only used when the database has told us nothing at all, so a visitor
+       never sees a lecture that cannot open. */
+    if (!out.length && !window.SMK_LOADED && typeof LECTURES !== 'undefined') {
       out = LECTURES.filter(function (l) { return l.lvl === lvl; });
     }
     return out;
@@ -4819,9 +4863,18 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     try {
       var h = { apikey: C.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY };
       var r = await fetch(C.SUPABASE_URL + '/rest/v1/preview_lectures?order=lvl,topic,n', { headers: h });
-      if (!r.ok) return;
+      if (!r.ok) {
+        console.error('[SMK] preview_lectures could not be read (' + r.status + '). ' +
+          'If this is a 404 the view is missing — re-run backend.sql in Supabase.');
+        return;
+      }
       var rows = await r.json();
-      if (!rows.length) return;
+      if (!rows.length) {
+        console.warn('[SMK] No preview lectures yet. A preview is lecture 1 of topics ' +
+          '1 to 4, published, with a video URL. Add one in the admin panel.');
+        return;
+      }
+      window.SMK_LOADED = true;
       window.PUBLIC_LECTURES = rows.map(function (l) {
         return { id: l.id, lvl: l.lvl, topic: l.topic, n: l.n, t: l.title,
                  dur: l.duration || '', vid: l.video_url || '', notes: l.notes_url || '' };
