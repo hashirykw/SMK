@@ -1359,6 +1359,88 @@ body{overflow-x:hidden}
   .ctime{font-size:.66rem;padding:0 4px}.cb{width:36px;height:36px}.vol{display:none}
   .lp__acts{margin-left:0;width:100%}.big{width:66px;height:66px;font-size:22px}
 }
+
+/* ==========================================================================
+   THE LECTURE PAGE — layout
+   It read as a small video floating in empty space with the title crowded
+   under it and the buttons stranded at the far edge. Now the video, the title
+   and everything below share one column and one left edge.
+   ========================================================================== */
+.lp__body{max-width:940px;padding:clamp(18px,3vw,30px) clamp(16px,4vw,28px) 72px}
+.stage{max-width:100%;margin-inline:auto}
+
+/* title block sits under the video on the same left edge */
+.lp__meta{display:block;margin-top:22px}
+.lp__meta > div{min-width:0}
+.lp__meta h1{font-size:clamp(1.25rem,3.4vw,1.75rem);margin:12px 0 6px;line-height:1.2}
+.lp__meta .chip{margin:0}
+#lecS{font-size:.85rem;color:var(--muted);margin:0}
+
+/* the actions become their own row, left aligned, not pushed to the far side */
+.lp__acts{display:flex;gap:9px;flex-wrap:wrap;margin:16px 0 0}
+.lp__acts .btn{min-height:42px}
+
+.note{margin-top:20px;line-height:1.6}
+
+/* the keyboard hints are reference, not furniture — quieter and evenly spread */
+.kbd{margin-top:22px;padding-top:18px;border-top:1px solid var(--line-soft);
+  grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px 18px}
+.kbd div{font-size:.8rem}
+
+/* the top bar gets the same left edge as the body */
+.lp__bar{padding-inline:clamp(16px,4vw,28px)}
+.lp__bar img{height:30px}
+
+@media (max-width:860px){
+  .lp__body{padding:14px 16px 64px}
+  .lp__bar{padding:10px 16px;gap:11px;min-height:58px}
+  .lp__bar img{height:24px}
+  .lp__id b{font-size:.9rem}
+  .lp__id span{font-size:.62rem}
+  .stage{border-radius:14px;margin-inline:-2px}
+  .lp__meta{margin-top:16px}
+  .lp__meta h1{font-size:1.16rem;margin:10px 0 5px}
+  .lp__acts{margin-top:13px}
+  .lp__acts .btn{flex:1 1 auto;justify-content:center}
+  .note{margin-top:15px;font-size:.85rem;padding:13px 14px}
+  /* the shortcut list is for a keyboard, so it is no use on a phone */
+  .kbd{display:none}
+}
+@media (max-width:520px){
+  .lp__body{padding:12px 14px 60px}
+  .lp__meta h1{font-size:1.08rem}
+}
+
+/* ---------- what comes with the lecture: notes, and the topic's paper books ---------- */
+.mats{margin-top:22px}
+.mats__h{display:flex;align-items:center;gap:10px;margin-bottom:12px;
+  font-family:var(--mono);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--gold-400)}
+.mats__h::after{content:"";flex:1;height:1px;background:var(--line-soft)}
+.strip{display:flex;align-items:center;gap:13px;width:100%;text-align:left;
+  padding:13px 15px;border-radius:13px;border:1px solid var(--line-soft);
+  background:var(--panel);margin-bottom:9px;transition:.25s var(--ease);min-height:60px}
+.strip:hover{border-color:var(--gold-400);transform:translateY(-1px)}
+.strip:active{transform:scale(.995)}
+.strip__i{width:38px;height:38px;flex:none;border-radius:11px;display:grid;place-items:center;
+  background:var(--panel-2);color:var(--gold-400);font-size:17px}
+.strip--notes .strip__i{background:rgba(224,169,76,.14)}
+.strip__t{flex:1;min-width:0}
+.strip__t b{display:block;font-size:.9rem;line-height:1.3}
+.strip__t span{display:block;font-family:var(--mono);font-size:.64rem;color:var(--muted);
+  margin-top:3px;letter-spacing:.03em}
+.strip__go{flex:none;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);border:1px solid var(--line-soft);
+  border-radius:99px;padding:6px 12px;transition:.25s var(--ease)}
+.strip:hover .strip__go{border-color:var(--gold-400);color:var(--gold-300)}
+.strip--shut{opacity:.55}
+.strip--shut:hover{transform:none;border-color:var(--line-soft)}
+@media(max-width:520px){
+  .strip{padding:12px 13px;gap:11px;min-height:58px}
+  .strip__i{width:34px;height:34px;font-size:15px}
+  .strip__t b{font-size:.86rem}
+  .strip__go{display:none}
+}
 </style>
 </head>
 <body class="ready">
@@ -1421,6 +1503,8 @@ body{overflow-x:hidden}
         <a class="btn btn--gold btn--sm" href="index.html#portal">All lectures</a>
       </div>
     </div>
+
+    <div id="matHost"></div>
 
     <div class="note" style="margin-top:20px" id="traceNote"></div>
 
@@ -1648,6 +1732,8 @@ body{overflow-x:hidden}
         'without an account. <a href="index.html#portal" style="color:var(--gold-300)">Sign in</a> ' +
         'to open the rest of ' + LEVELNAME[d.lvl] + '.';
 
+    renderMaterials(d);
+
     if (!d.video_url) {
       fail('Video not linked yet', 'This lecture has no video on it yet. Ask Sir Mehboob to add one.');
       return;
@@ -1655,6 +1741,55 @@ body{overflow-x:hidden}
     watermark(d.student_id ? (d.student_id.toUpperCase() + '  \u00b7  ' + (d.name || ''))
                            : 'PREVIEW \u00b7 PHYSICSWITHSMK.COM');
     startVideo(d.video_url);
+  }
+
+  /* ----------------------------------------------------------------------
+     WHAT COMES WITH THE LECTURE
+     The written notes, and the topical paper books for this topic — the same
+     strip rows the main page uses, so it reads as one site.
+     ---------------------------------------------------------------------- */
+  var PBASE = 'https://raw.githubusercontent.com/hashirykw/SMK/main/';
+
+  /* the main page leaves the topic-to-books map here when it loads */
+  try { window.SMK_BOOKS = JSON.parse(localStorage.getItem('smk_books') || '{}'); }
+  catch (e) { window.SMK_BOOKS = {}; }
+
+  function fileUrl(v) {
+    return /^https?:/i.test(v) ? v : PBASE + v;
+  }
+
+  function strip(icon, title, sub, href, cls) {
+    return '<a class="strip ' + (cls || '') + '" href="' + href + '" target="_blank" ' +
+      'rel="noopener"><span class="strip__i">' + icon + '</span>' +
+      '<span class="strip__t"><b>' + esc(title) + '</b><span>' + esc(sub) + '</span></span>' +
+      '<span class="strip__go">Open</span></a>';
+  }
+
+  function renderMaterials(d) {
+    var out = '';
+
+    if (d.notes_url) {
+      out += '<div class="mats__h">Written notes</div>' +
+        strip('&#128196;', 'Notes for this lecture',
+              'PDF \u00b7 opens in a new tab', fileUrl(d.notes_url), 'strip--notes');
+    } else if (!d.free) {
+      out += '<div class="mats__h">Written notes</div>' +
+        '<div class="strip strip--shut"><span class="strip__i">&#128196;</span>' +
+        '<span class="strip__t"><b>Notes not attached yet</b>' +
+        '<span>they appear here once uploaded</span></span></div>';
+    }
+
+    /* the paper books for this topic, if the main page has told us about them */
+    var books = (window.SMK_BOOKS && window.SMK_BOOKS[d.lvl + '-' + d.topic]) || [];
+    if (books.length) {
+      out += '<div class="mats__h">Topical paper books</div>' +
+        books.map(function (bk) {
+          return strip('&#128216;', bk.topic, 'Book ' + bk.n +
+            ' \u00b7 every past-paper question on this topic', fileUrl(bk.paper || bk.mcq || ''));
+        }).join('');
+    }
+
+    $('#matHost').innerHTML = out ? '<div class="mats">' + out + '</div>' : '';
   }
 
   /* ---------- a YouTube id, however it was pasted in ---------- */
