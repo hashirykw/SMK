@@ -1425,14 +1425,12 @@ body.pv-lock{overflow:hidden}
   .xp__x{margin-left:0}
 }
 
-/* ---------- a year opens its files in place, inside the grid ---------- */
-.yrdrop{grid-column:1/-1;max-height:0;overflow:hidden;transition:max-height .5s var(--ease)}
-.yrdrop.on{max-height:3200px}
-.yrdrop__in{margin:10px 0 6px;padding:16px;border-radius:16px;
-  border:1px solid var(--line);background:var(--panel)}
-.yrdrop__h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px}
-.yrdrop__h b{font-family:var(--display);font-weight:500;font-size:1.02rem}
-.yrdrop__h span{font-size:.68rem;color:var(--muted);letter-spacing:.08em}
+/* ---------- every session opens its files in a dialog, not inline ---------- */
+.yrsec{margin-bottom:24px}
+.yrsec:last-child{margin-bottom:0}
+.yrsec__h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.yrsec__h b{font-family:var(--display);font-weight:500;font-size:1.05rem}
+.yrsec__h span{font-family:var(--mono);font-size:.68rem;color:var(--muted);letter-spacing:.08em}
 .yr.on{border-color:var(--gold-400);background:var(--panel-2)}
 .yr.on b{color:var(--gold-300)}
 
@@ -3928,61 +3926,81 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     bindPdf();
   }
 
-  function years() {
-    // 5054 is O Level; 9702 covers AS and A2 — keep them apart
-    var syl = window.__yrSyl || '5054';
-    var list = SESSIONS.map(function (s) {
-      return { session: s.session, year: s.year,
-               files: s.files.filter(function (f) { return f.s === syl; }) };
-    }).filter(function (s) { return s.files.length; });
+  /* every session, grouped by syllabus so both specs sit on screen at once
+     instead of hiding one behind a toggle — 5054 is O Level, 9702 covers AS and A2 */
+  var SYL = [
+    { code: '5054', label: 'O Level \u00b7 5054' },
+    { code: '9702', label: 'AS & A2 \u00b7 9702' }
+  ];
 
-    host.innerHTML = lockNote() +
-      '<div class="tabs2" style="max-width:340px;margin-bottom:18px">' +
-        '<button class="' + (syl === '5054' ? 'on' : '') + '" data-syl2="5054">O Level · 5054</button>' +
-        '<button class="' + (syl === '9702' ? 'on' : '') + '" data-syl2="9702">AS &amp; A2 · 9702</button>' +
-      '</div>' +
-      '<div class="yrgrid">' + list.map(function (s, i) {
-        /* each year carries its own drawer, so the files open right under the
-           row that was pressed instead of at the bottom of the whole grid */
-        return '<button class="yr" data-i="' + i + '"><b>' + s.year + '</b><span>' +
-               s.session + ' · ' + s.files.length + '</span></button>' +
-               '<div class="yrdrop" data-drop="' + i + '"></div>';
-      }).join('') + '</div>';
+  function byYear() {
+    var groups = SYL.map(function (spec) {
+      var list = SESSIONS.map(function (s) {
+        return { session: s.session, year: s.year,
+                 files: s.files.filter(function (f) { return f.s === spec.code; }) };
+      }).filter(function (s) { return s.files.length; });
+      return { code: spec.code, label: spec.label, list: list };
+    }).filter(function (g) { return g.list.length; });
 
-    host.querySelectorAll('[data-syl2]').forEach(function (b) {
-      b.addEventListener('click', function () { window.__yrSyl = b.dataset.syl2; years(); });
-    });
+    host.innerHTML = lockNote() + groups.map(function (g) {
+      return '<div class="yrsec">' +
+        '<div class="yrsec__h"><b>' + g.label.replace(/&/g, '&amp;') + '</b>' +
+        '<span class="mono">' + g.list.length + ' sessions</span></div>' +
+        '<div class="yrgrid">' + g.list.map(function (s, i) {
+          return '<button class="yr" data-syl="' + g.code + '" data-i="' + i + '">' +
+                 '<b>' + s.year + '</b><span>' + s.session + ' \u00b7 ' + s.files.length +
+                 '</span></button>';
+        }).join('') + '</div></div>';
+    }).join('');
+
     host.querySelectorAll('.yr').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        var i = +btn.dataset.i, s = list[i];
-        var drop = host.querySelector('.yrdrop[data-drop="' + i + '"]');
-        var wasOpen = drop.classList.contains('on');
-
-        /* only one year open at a time — otherwise the grid becomes a wall */
-        host.querySelectorAll('.yrdrop').forEach(function (d) { d.classList.remove('on'); d.innerHTML = ''; });
-        host.querySelectorAll('.yr').forEach(function (y) { y.classList.remove('on'); });
-        if (wasOpen) return;
-
-        window.__paperTitle = s.session + ' ' + s.year;
-        btn.classList.add('on');
-        drop.innerHTML = '<div class="yrdrop__in">' +
-          '<div class="yrdrop__h"><b>' + (syl === '5054' ? 'O Level 5054' : 'AS &amp; A2 9702') +
-          ' \u00b7 ' + s.session + ' ' + s.year + '</b>' +
-          '<span class="mono">' + s.files.length + ' files</span></div>' +
-          '<div class="plist">' +
-          s.files.map(function (f) {
-            return '<div class="prow"><div class="prow__n">' + (f.m ? 'MS' : '&#128196;') + '</div>' +
-              '<div><div class="prow__t" style="font-size:.88rem">' + f.n.replace(/\.pdf$/i, '') + '</div>' +
-              '<div class="prow__s">' + (f.m ? 'Mark scheme' : 'Question paper') + '</div></div>' +
-              '<div class="plinks">' + link(f.u, f.m ? 'Mark scheme' : 'Open paper', !!f.m,
-                 f.m ? null : msFor(f, s.files)) + '</div></div>';
-          }).join('') + '</div></div>';
-        drop.classList.add('on');
-        bindPdf();
+        var g = groups.filter(function (x) { return x.code === btn.dataset.syl; })[0];
+        var s = g.list[+btn.dataset.i];
+        openYearFiles(g, s, btn);
       });
     });
-    bindPdf();
   }
+
+  /* a session's files now open in their own dialog instead of a drawer
+     stacked into the grid — that drawer was a full-width grid item sitting
+     between every card, which is what forced the whole grid down to a
+     single column no matter how wide the screen was */
+  function openYearFiles(g, s, btn) {
+    window.__paperTitle = s.session + ' ' + s.year;
+    host.querySelectorAll('.yr').forEach(function (y) { y.classList.remove('on'); });
+    if (btn) btn.classList.add('on');
+
+    document.getElementById('yrvEyebrow').textContent = g.label;
+    document.getElementById('yrvTitle').textContent = s.session + ' ' + s.year;
+    document.getElementById('yrvBody').innerHTML =
+      '<div class="muted mono" style="font-size:.7rem;letter-spacing:.05em;margin-bottom:14px">' +
+      s.files.length + ' files</div>' +
+      '<div class="plist">' + s.files.map(function (f) {
+        return '<div class="prow"><div class="prow__n">' + (f.m ? 'MS' : '&#128196;') + '</div>' +
+          '<div><div class="prow__t" style="font-size:.88rem">' + f.n.replace(/\.pdf$/i, '') + '</div>' +
+          '<div class="prow__s">' + (f.m ? 'Mark scheme' : 'Question paper') + '</div></div>' +
+          '<div class="plinks">' + link(f.u, f.m ? 'Mark scheme' : 'Open paper', !!f.m,
+             f.m ? null : msFor(f, s.files)) + '</div></div>';
+      }).join('') + '</div>';
+    bindPdfIn(document.getElementById('yrv'));
+
+    document.getElementById('yrv').classList.add('open');
+    document.body.classList.add('lock');
+  }
+  function closeYearFiles() {
+    document.getElementById('yrv').classList.remove('open');
+    document.body.classList.remove('lock');
+    host.querySelectorAll('.yr').forEach(function (y) { y.classList.remove('on'); });
+  }
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('#yrv .auth2__x') ||
+        (e.target.classList.contains('auth2__bg') && e.target.closest('#yrv'))) closeYearFiles();
+  });
+  addEventListener('keydown', function (e) {
+    var yrv = document.getElementById('yrv');
+    if (e.key === 'Escape' && yrv && yrv.classList.contains('open')) closeYearFiles();
+  });
 
   /* find the mark scheme that belongs to a question paper by filename */
   function msFor(file, all) {
@@ -3991,8 +4009,11 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     return hit ? hit.u : null;
   }
 
-  function bindPdf() {
-    host.querySelectorAll('[data-pdf]').forEach(function (b) {
+  /* shared by the main paper list and the session dialog, so opening a PDF
+     works the same way from either place — each button only gets bound once */
+  function bindPdfIn(root) {
+    if (!root) return;
+    root.querySelectorAll('[data-pdf]').forEach(function (b) {
       if (b.dataset.bound) return;
       b.dataset.bound = '1';
       b.addEventListener('click', function () {
@@ -4006,6 +4027,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       });
     });
   }
+  function bindPdf() { bindPdfIn(host); }
 
   /* only this section's own tabs — a global .tabs2 selector also caught the
      syllabus and lecture tabs, and clicking those wiped the paper list */
@@ -4015,7 +4037,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       b.addEventListener('click', function () {
         papersTabs.querySelectorAll('button').forEach(function (x) { x.classList.remove('on'); });
         b.classList.add('on');
-        if (b.dataset.lvl === 'YR') years(); else level(b.dataset.lvl);
+        if (b.dataset.lvl === 'YR') byYear(); else level(b.dataset.lvl);
       });
     });
   }
@@ -4042,6 +4064,17 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     <p class="muted" style="font-size:.85rem;margin:12px 0 18px" id="tvSub"></p>
     <div id="tvLecs"></div>
     <div id="tvBooks"></div>
+  </div>
+</div>
+
+<!-- ================= PAST PAPERS: ONE SESSION ================= -->
+<div class="auth2 sylv" id="yrv" role="dialog" aria-modal="true" aria-label="Papers for this session">
+  <div class="auth2__bg"></div>
+  <div class="auth2__p sylv__p">
+    <button class="auth2__x" aria-label="Close">&times;</button>
+    <div class="eyebrow" id="yrvEyebrow">Past papers</div>
+    <h3 style="font-size:1.35rem;margin-bottom:14px" id="yrvTitle">Session</h3>
+    <div id="yrvBody"></div>
   </div>
 </div>
 
