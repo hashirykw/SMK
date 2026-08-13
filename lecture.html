@@ -1548,6 +1548,24 @@ body{overflow-x:hidden}
     $('#bigPlay').classList.add('hide');
   }
 
+  /* the free list, readable by anyone, used when get_lecture cannot answer */
+  async function previewFallback() {
+    try {
+      var r = await fetch(C.SUPABASE_URL + '/rest/v1/preview_lectures?id=eq.' +
+        encodeURIComponent(LEC) + '&select=*', {
+        headers: { apikey: C.SUPABASE_ANON_KEY,
+                   Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY }
+      });
+      if (!r.ok) return null;
+      var rows = await r.json();
+      if (!rows || !rows.length) return null;
+      var l = rows[0];
+      return { ok: true, free: true, id: l.id, lvl: l.lvl, topic: l.topic, n: l.n,
+               title: l.title, duration: l.duration,
+               video_url: l.video_url, notes_url: l.notes_url };
+    } catch (e) { return null; }
+  }
+
   /* ---------- ask the database for this lecture ---------- */
   async function load() {
     if (!LEC) { fail('No lecture chosen', 'Open a lecture from the main page.'); return; }
@@ -1568,6 +1586,17 @@ body{overflow-x:hidden}
     /* A missing function comes back as a PostgREST error, not as our own
        {ok:false}. Saying so plainly beats "cannot open this lecture", which
        sends you looking in the wrong place. */
+    /* ------------------------------------------------------------------
+       A preview must play even if the database is a version behind. The
+       preview view has existed since the first release and already carries
+       the video for anything open to everyone, so it is tried whenever
+       get_lecture cannot answer. A free lecture never depends on an upgrade.
+       ------------------------------------------------------------------ */
+    if (!DATA || DATA.code || DATA.ok !== true) {
+      var fb = await previewFallback();
+      if (fb) { DATA = fb; }
+    }
+
     if (DATA && DATA.code) {
       var miss = DATA.code === 'PGRST202' ||
                  /find the function|does not exist/i.test(DATA.message || '');
