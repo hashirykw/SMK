@@ -1590,33 +1590,174 @@ body.pv-lock{overflow:hidden}
    NEXLYR — a quiet studio credit. A mark, a name, one button. Nothing more:
    this is the client's site, not ours.
    ========================================================================== */
-.nxb{--nxb-a:#4DA3FF;--nxb-b:#8B6CFF;
+.nxb{--nxb-a:#00D4FF;--nxb-b:#00A8CC;
   display:flex;align-items:center;gap:12px;flex-wrap:wrap;
   margin-top:16px;padding:9px 12px;border-radius:12px;
   background:rgba(4,7,12,.055);border:1px solid var(--line-soft)}
-[data-theme="dark"] .nxb,[data-theme="focus"] .nxb{background:rgba(77,163,255,.06)}
+[data-theme="dark"] .nxb,[data-theme="focus"] .nxb{background:rgba(0,212,255,.06)}
 .ftr a.nxb__id,.nxb__id{display:inline-flex;align-items:center;gap:8px;padding:6px 4px;
   min-height:40px;text-decoration:none;opacity:.8;transition:opacity .3s var(--ease)}
 .nxb__id:hover{opacity:1}
-.nxb__mk{width:17px;height:17px;min-width:17px;flex:0 0 17px;display:grid;place-items:center;
-  color:var(--nxb-a);transition:transform .5s var(--spring)}
-.nxb__mk svg{width:17px;height:17px;display:block}
-.nxb__id:hover .nxb__mk{transform:rotate(-8deg) scale(1.12)}
+.nxb__mk{width:19px;height:19px;min-width:19px;flex:0 0 19px;display:grid;place-items:center;
+  color:var(--nxb-a);transition:transform .8s var(--ease)}
+.nxb__mk svg{width:19px;height:19px;display:block}
+.nxb__id:hover .nxb__mk{transform:rotate(180deg) scale(1.1)}
+@media(prefers-reduced-motion:reduce){.nxb__id:hover .nxb__mk{transform:none}}
 .nxb__nm{font-family:var(--mono);font-weight:700;font-size:.7rem;letter-spacing:.2em;
-  background:linear-gradient(96deg,var(--nxb-a),var(--nxb-b));
+  background:linear-gradient(96deg,var(--nxb-a),#7FE9FF 55%,var(--nxb-a));
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .ftr a.nxb__go,.nxb__go{display:inline-flex;align-items:center;gap:7px;margin-left:auto;
   padding:9px 15px;min-height:40px;border-radius:9px;text-decoration:none;
   font-size:.74rem;font-weight:600;color:#04070c;
-  background:linear-gradient(120deg,var(--nxb-a),#9FD0FF);
+  background:linear-gradient(120deg,var(--nxb-a),#66E4FF);
   transition:.28s var(--ease)}
-.nxb__go:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(77,163,255,.32)}
+.nxb__go:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,212,255,.34)}
 .ftr .nxb__go svg,.nxb__go svg{width:14px;height:14px;min-width:14px;flex:0 0 14px;display:block}
 @media(max-width:520px){
   .nxb{padding:8px 10px;gap:8px}
   .nxb__nm{font-size:.66rem;letter-spacing:.16em}
   .ftr a.nxb__go,.nxb__go{padding:9px 13px;font-size:.72rem}
 }
+
+/* ==========================================================================
+   MOBILE LAYOUT
+   The phone is the main screen here, so this block is the real layout and the
+   desktop rules above are the variation. Three things drive it: text that sits
+   at a comfortable reading size, controls that never cover what they sit over,
+   and lists that stay dense enough to scan.
+   ========================================================================== */
+
+/* ---------- the floating controls ----------
+   Theme and sound go bottom LEFT. The assistant stays bottom RIGHT, where a
+   thumb expects it. Nothing shares an edge with the chevrons and Notes
+   buttons on the right of every row any more. */
+.dock{position:fixed;left:12px;right:12px;bottom:12px;z-index:600;
+  display:flex;flex-direction:row;align-items:center;justify-content:flex-start;
+  gap:9px;pointer-events:none}
+.dock > *{pointer-events:auto}
+.dock__ai{margin-left:auto}
+
+@media (max-width:860px){
+  .dock{left:10px;right:10px;bottom:10px;gap:8px}
+  .dock__b{width:40px;height:40px}
+  .dock__ai{width:54px;height:54px}
+
+  /* the assistant panel fills the width but clears both docks */
+  .bot{left:10px;right:10px;width:auto;bottom:74px;height:min(560px,68svh);
+    border-radius:18px}
+
+  /* ---------- text ---------- */
+  body{font-size:15.5px;line-height:1.62}
+  h1{font-size:clamp(2rem,8.5vw,2.9rem);line-height:1.06;letter-spacing:-.02em}
+  h2{font-size:clamp(1.5rem,6.2vw,2rem);line-height:1.12;margin-bottom:.4em}
+  h3{font-size:1.05rem}
+  .lede{font-size:.95rem;line-height:1.62;max-width:38ch}
+  p{max-width:40ch}
+  .eyebrow{font-size:.63rem;letter-spacing:.15em;margin-bottom:9px}
+  .note{font-size:.85rem;line-height:1.6;padding:13px 14px}
+
+  /* ---------- rhythm ---------- */
+  .sec{padding-block:34px}
+  .wrap{padding-inline:16px}
+  .strip{margin-top:20px!important}
+  .hero{padding-block:28px 18px}
+  .hero__m{gap:16px;margin-top:22px}
+
+  /* ---------- rows ---------- */
+  .lec2{padding:11px 12px;gap:10px;min-height:54px}
+  .lec2__t b{font-size:.88rem;line-height:1.3}
+  .lec2__t span{font-size:.64rem}
+  .lec2__p{width:30px;height:30px;font-size:11px}
+  .topic__h{padding:13px 14px;gap:11px;min-height:56px}
+  .topic__n{width:31px;height:31px;font-size:.9rem;border-radius:9px}
+  .topic__t b{font-size:.9rem;line-height:1.3}
+  .topic__t span{font-size:.64rem}
+  .topic__b > div{padding:0 12px 12px;gap:6px}
+  .prow{padding:11px 12px;gap:10px}
+  .prow__t{font-size:.85rem}
+  .bookrow{padding:11px 12px;gap:10px}
+  .bookrow__m b{font-size:.86rem}
+
+  /* the topic dialog is the most-used screen on a phone */
+  .sylv__p{padding:18px 15px 22px}
+  .tv__n{width:42px;height:42px;font-size:1.2rem;border-radius:12px}
+  .tvsec{margin:18px 0 10px;font-size:.62rem}
+}
+
+/* ---------- the flip cards ----------
+   The topic list is the whole point of the card back, so it gets the room:
+   tight rows, no bullet gap, and it scrolls inside the card rather than
+   spilling out of it. */
+.flip__list{gap:0;margin-top:10px}
+.flip__list li{align-items:center;gap:8px;padding:0}
+.flip__list li::before{margin-top:0}
+.flip__t{padding:5px 0;line-height:1.3}
+@media (max-width:1024px){
+  .flip__list{font-size:.83rem;gap:0}
+  .flip__t{min-height:42px;padding:8px 0}
+}
+@media (max-width:860px){
+  .flip__list{font-size:.84rem}
+  .flip__list--2col{grid-template-columns:1fr}
+  .flip__t{min-height:42px}
+  .flip__b{padding:16px 15px}
+  .flip__f,.flip__b{border-radius:16px}
+}
+@media (max-width:520px){
+  .flip__list{font-size:.8rem}
+  .flip__list li::before{width:4px;height:4px}
+}
+
+/* ---------- footer ---------- */
+.sico{width:40px;height:40px;flex:none;display:grid;place-items:center;border-radius:11px;
+  border:1px solid var(--line-soft);color:var(--muted);transition:.28s var(--ease)}
+.sico svg{width:18px;height:18px;display:block}
+.sico:hover{border-color:var(--gold-400);color:var(--gold-300);transform:translateY(-2px)}
+.ftr .fmail{word-break:break-word;overflow-wrap:anywhere}
+@media (max-width:860px){
+  .ftr{padding-block:28px 14px;margin-top:22px}
+  .ftr__g{grid-template-columns:1fr 1fr;gap:6px 16px}
+  .ftr__brand{grid-column:1/-1;margin-bottom:2px}
+  .ftr img{height:40px;margin-bottom:6px}
+  .ftr__brand p{font-size:.79rem;line-height:1.55;max-width:34ch;margin:0}
+  .ftr h4{font-size:.58rem;letter-spacing:.12em;margin-bottom:2px}
+  .ftr__g a:not(.sico){font-size:.82rem;padding:8px 0;min-height:38px}
+  .ftr .soc,.ftr #socialList{grid-column:1/-1;display:flex;gap:8px;margin-top:6px}
+  .ftr__b{margin-top:14px;padding-top:12px;padding-bottom:60px;gap:4px;font-size:.7rem}
+}
+@media (max-width:380px){
+  .ftr__g{grid-template-columns:1fr}
+}
+
+/* ==========================================================================
+   THE COURSE CARDS
+   The back holds the whole topic list and A2 has thirteen, so the rows are
+   tightened until all of them fit rather than letting the card grow — these
+   sit in a grid, and a growing card stretches its neighbours to match.
+   ========================================================================== */
+.flip--course{height:512px}
+.flip--course .flip__b{display:flex;flex-direction:column}
+.flip--course .flip__list{overflow-y:auto;flex:1 1 auto;min-height:0;
+  gap:0;margin-top:10px;padding-bottom:4px;scrollbar-width:thin}
+.flip--course .flip__list li{padding:0;align-items:center;gap:9px;min-height:0}
+.flip--course .flip__t{padding:5px 0;line-height:1.3;min-height:0;font-size:.85rem}
+.flip--course .flip__list li::before{width:4px;height:4px;flex:none}
+.flip--course .flip__go{margin-top:10px;flex:0 0 auto}
+
+@media (max-width:1024px){
+  .flip--course{height:578px}
+  .flip--course .flip__t{min-height:42px;display:flex;align-items:center;padding:7px 0}
+}
+@media (max-width:860px){
+  .flip--course{height:600px}
+  .flip--course .flip__f,.flip--course .flip__b{padding:18px 16px}
+  .flip--course .flip__list--2col{grid-template-columns:1fr}
+  .flip--course .flip__wm{width:120px}
+  .flip--course .flip__t{min-height:42px;font-size:.86rem}
+}
+@media (max-width:520px){
+  .flip--course{height:612px}
+  .flip--course .flip__t{font-size:.84rem}
 }
 </style>
 <script type="importmap">
@@ -2212,9 +2353,19 @@ body.pv-lock{overflow:hidden}
       <a class="nxb__id" href="https://nexlyr.solutions/" target="_blank" rel="noopener"
          aria-label="Nexlyr — the studio that built this site">
         <span class="nxb__mk" aria-hidden="true">
-          <svg viewBox="0 0 32 32" fill="none">
-            <path d="M6 24V8l20 16V8" stroke="currentColor" stroke-width="3.6"
-                  stroke-linecap="round" stroke-linejoin="round"/>
+          <svg viewBox="0 0 32 32" fill="none" stroke="currentColor">
+            <!-- the orbit rings from the Nexlyr mark -->
+            <circle cx="16" cy="16" r="14.2" stroke-width="1" opacity=".5"/>
+            <circle cx="16" cy="16" r="11.4" stroke-width="1" opacity=".38"
+                    stroke-dasharray="3 2.6"/>
+            <!-- the globe -->
+            <circle cx="16" cy="16" r="7.6" fill="currentColor" stroke="none"/>
+            <g stroke="#04070c" stroke-width="1.05" fill="none">
+              <path d="M16 8.4v15.2M8.4 16h15.2"/>
+              <ellipse cx="16" cy="16" rx="3.5" ry="7.6"/>
+              <path d="M9.6 11.9c1.9.9 4 1.4 6.4 1.4s4.5-.5 6.4-1.4"/>
+              <path d="M9.6 20.1c1.9-.9 4-1.4 6.4-1.4s4.5.5 6.4 1.4"/>
+            </g>
           </svg>
         </span>
         <span class="nxb__nm">NEXLYR</span>
@@ -2511,16 +2662,25 @@ const SYN = {
       row('WhatsApp', C.phoneDisplay, 'https://wa.me/' + C.wa) +
       row('Call', C.phoneDisplay, 'tel:+' + C.wa) +
       row('Email', C.email, 'mailto:' + C.email);
+    /* icons only — the names added nothing and made the row wrap on a phone */
+    var ICO = {
+      Instagram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg>',
+      YouTube:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.5 9.5v5l4.2-2.5z" fill="currentColor" stroke="none"/></svg>',
+      Threads:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M16.4 11.6c-.2-3-1.9-4.6-4.5-4.6-2 0-3.4.9-4 2.2"/><path d="M12 21c-4.7 0-7.5-3.2-7.5-9S7.4 3 12 3s7.5 3.3 7.5 9c0 4.3-1.8 6.9-4.4 6.9-1.8 0-3-1.1-3-2.7 0-1.8 1.5-2.9 3.6-2.9 2.6 0 4.3 1.4 4.3 3.6"/></svg>'
+    };
     document.getElementById('socialList').innerHTML =
       [['Instagram', C.instagram], ['YouTube', C.youtube], ['Threads', C.threads]]
-        .map(function (p) { return '<a class="chip chip--gold" href="' + p[1] + '" target="_blank" rel="noopener">' + p[0] + '</a>'; }).join('');
+        .map(function (p) {
+          return '<a class="sico" href="' + p[1] + '" target="_blank" rel="noopener" ' +
+                 'aria-label="' + p[0] + '" title="' + p[0] + '">' + ICO[p[0]] + '</a>';
+        }).join('');
     var fc = document.getElementById('footContact');
+    /* the footer keeps the ways to reach a person; the social icons live
+       in their own row below, so they are not repeated here as words */
     if (fc) fc.innerHTML =
       '<a href="https://wa.me/' + C.wa + '">WhatsApp ' + C.phoneDisplay + '</a>'
       + '<a href="tel:+' + C.wa + '">Call ' + C.phoneDisplay + '</a>'
-      + '<a href="mailto:' + C.email + '">' + C.email + '</a>'
-      + '<a href="' + C.instagram + '" target="_blank" rel="noopener">Instagram</a>'
-      + '<a href="' + C.youtube + '" target="_blank" rel="noopener">YouTube</a>';
+      + '<a class="fmail" href="mailto:' + C.email + '">' + C.email + '</a>';
     var w = document.getElementById('waBtn'); if (w) w.href = 'https://wa.me/' + C.wa;
 
     // reviews render only when real ones exist — never invented placeholders
