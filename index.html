@@ -1434,6 +1434,10 @@ body.pv-lock{overflow:hidden}
 /* ---------- who built it ---------- */
 
 /* ---------- one topic, in its own dialog ---------- */
+.flip__t{text-align:left;width:100%;font:inherit;color:inherit;padding:2px 0;
+  border-bottom:1px solid transparent;transition:.25s var(--ease)}
+@media(max-width:1024px){.flip__t{min-height:42px;display:flex;align-items:center;padding:8px 0}}
+.flip__t:hover{color:var(--gold-300);border-bottom-color:var(--gold-500)}
 .tv__head{display:flex;align-items:center;gap:14px}
 .tv__n{width:52px;height:52px;flex:none;border-radius:15px;display:grid;place-items:center;
   font-family:var(--display);font-weight:600;font-size:1.5rem;color:#150F04;
@@ -1506,6 +1510,114 @@ body.pv-lock{overflow:hidden}
   .nx:hover::after{animation:none;opacity:0}
 }
 @media(max-width:860px){.nx{padding:11px 14px;gap:9px}.nx__k{font-size:.66rem}.nx__n{font-size:.74rem}}
+
+/* ==========================================================================
+   MOBILE POLISH — a phone screen is short, so the rhythm tightens further,
+   and the motion is the kind you notice only if you look for it.
+   ========================================================================== */
+@media (max-width:860px){
+  .sec{padding-block:38px}
+  h2{font-size:clamp(1.55rem,6vw,2.1rem)}
+  .lede{font-size:.95rem}
+  .hero{padding-block:34px 22px}
+  .hero__m{gap:18px;margin-top:26px}
+  .note{padding:14px 15px;font-size:.86rem}
+  .card,.tile{padding:16px 15px}
+  .eyebrow{margin-bottom:10px}
+  .aff__logo img{max-height:34px}
+  .strip{margin-top:22px!important}
+  .introv__cap{padding:14px 14px 12px}
+}
+
+/* the reveal now travels a shorter distance and settles, rather than sliding */
+[data-rv]{transform:translateY(22px) scale(.995)}
+[data-rv].in{transform:none}
+
+/* a topic pill answers the press before the dialog has opened */
+.tpill:active{transform:scale(.97)}
+.lec2:active{transform:scale(.995)}
+.btn:active{transform:scale(.97)}
+
+/* cards lift as a group, so the row feels like one object */
+.bento:hover .tile:not(:hover){opacity:.88;transition:opacity .45s var(--ease)}
+
+/* the gold underline on a live tab slides between tabs */
+.tabs2{position:relative}
+.tabs2 button{position:relative}
+.tabs2 button.on::after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:2px;
+  background:linear-gradient(90deg,var(--gold-600),var(--gold-300));border-radius:2px;
+  animation:tabin .4s var(--ease)}
+@keyframes tabin{from{transform:scaleX(.3);opacity:0}to{transform:none;opacity:1}}
+
+/* the lock badge breathes once when a locked lecture is pressed */
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.lec2--shut.nope{animation:shake .32s var(--ease)}
+
+@media(prefers-reduced-motion:reduce){
+  .tabs2 button.on::after,.lec2--shut.nope{animation:none}
+  .bento:hover .tile:not(:hover){opacity:1}
+}
+
+/* ==========================================================================
+   TAP ANYWHERE
+   A card that stands for one thing should open that thing wherever you press
+   it, not only on the small button inside. Every card below answers the touch
+   before the thing it opens has finished appearing, so a slow connection
+   still feels immediate.
+   ========================================================================== */
+[data-tap]{cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:transform .2s var(--ease),border-color .3s var(--ease),box-shadow .3s var(--ease)}
+[data-tap]:active{transform:scale(.985)}
+[data-tap]:focus-visible{outline:2px solid var(--gold-300);outline-offset:3px}
+@media(hover:hover){
+  [data-tap]:hover{border-color:var(--gold-400)}
+}
+
+/* a ripple from the point of contact, so the finger gets an answer */
+.tapwrap{position:relative;overflow:hidden}
+.rip{position:absolute;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%) scale(0);
+  background:radial-gradient(circle,rgba(224,169,76,.32),transparent 68%);
+  animation:rip .62s var(--ease) forwards;z-index:0}
+@keyframes rip{to{transform:translate(-50%,-50%) scale(1);opacity:0}}
+@media(prefers-reduced-motion:reduce){.rip{display:none}[data-tap]:active{transform:none}}
+
+/* rows that open a paper, a book or a lecture */
+.prow[data-tap],.bookrow[data-tap]{cursor:pointer}
+.prow[data-tap]:active,.bookrow[data-tap]:active{transform:scale(.99)}
+.aff[data-tap]:active{transform:scale(.97)}
+
+/* ==========================================================================
+   NEXLYR — a quiet studio credit. A mark, a name, one button. Nothing more:
+   this is the client's site, not ours.
+   ========================================================================== */
+.nxb{--nxb-a:#4DA3FF;--nxb-b:#8B6CFF;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  margin-top:16px;padding:9px 12px;border-radius:12px;
+  background:rgba(4,7,12,.055);border:1px solid var(--line-soft)}
+[data-theme="dark"] .nxb,[data-theme="focus"] .nxb{background:rgba(77,163,255,.06)}
+.ftr a.nxb__id,.nxb__id{display:inline-flex;align-items:center;gap:8px;padding:6px 4px;
+  min-height:40px;text-decoration:none;opacity:.8;transition:opacity .3s var(--ease)}
+.nxb__id:hover{opacity:1}
+.nxb__mk{width:17px;height:17px;min-width:17px;flex:0 0 17px;display:grid;place-items:center;
+  color:var(--nxb-a);transition:transform .5s var(--spring)}
+.nxb__mk svg{width:17px;height:17px;display:block}
+.nxb__id:hover .nxb__mk{transform:rotate(-8deg) scale(1.12)}
+.nxb__nm{font-family:var(--mono);font-weight:700;font-size:.7rem;letter-spacing:.2em;
+  background:linear-gradient(96deg,var(--nxb-a),var(--nxb-b));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.ftr a.nxb__go,.nxb__go{display:inline-flex;align-items:center;gap:7px;margin-left:auto;
+  padding:9px 15px;min-height:40px;border-radius:9px;text-decoration:none;
+  font-size:.74rem;font-weight:600;color:#04070c;
+  background:linear-gradient(120deg,var(--nxb-a),#9FD0FF);
+  transition:.28s var(--ease)}
+.nxb__go:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(77,163,255,.32)}
+.ftr .nxb__go svg,.nxb__go svg{width:14px;height:14px;min-width:14px;flex:0 0 14px;display:block}
+@media(max-width:520px){
+  .nxb{padding:8px 10px;gap:8px}
+  .nxb__nm{font-size:.66rem;letter-spacing:.16em}
+  .ftr a.nxb__go,.nxb__go{padding:9px 13px;font-size:.72rem}
+}
+}
 </style>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -1699,11 +1811,8 @@ body.pv-lock{overflow:hidden}
           </div>
           <div class="flip__f flip__f--b">
             <span class="chip chip--gold">Syllabus</span>
-            <h3 style="margin:12px 0 2px;font-size:1.22rem">Nine topics</h3>
-            <ul class="flip__list">
-              <li>Motion, forces and energy</li><li>Thermal physics</li><li>Waves</li>
-              <li>Electricity and magnetism</li><li>Nuclear physics</li><li>Space physics</li>
-            </ul>
+            <h3 style="margin:12px 0 2px;font-size:1.22rem" data-course-count="O">9 topics</h3>
+            <ul class="flip__list flip__list--2col" data-course-list="O"></ul>
             <button class="btn btn--gold btn--wide flip__go" data-course="O">See every lecture</button>
           </div>
         </div>
@@ -1723,13 +1832,8 @@ body.pv-lock{overflow:hidden}
           </div>
           <div class="flip__f flip__f--b">
             <span class="chip chip--gold">Syllabus</span>
-            <h3 style="margin:12px 0 2px;font-size:1.22rem">Nine topics</h3>
-            <ul class="flip__list flip__list--2col">
-              <li>Physical quantities &amp; units</li><li>Kinematics</li><li>Dynamics</li>
-              <li>Forces, density, pressure</li><li>Work, energy &amp; power</li>
-              <li>Deformation of solids</li><li>Waves</li><li>Superposition</li>
-              <li>Electricity</li><li>D.C. circuits</li><li>Particle physics</li>
-            </ul>
+            <h3 style="margin:12px 0 2px;font-size:1.22rem" data-course-count="AS">9 topics</h3>
+            <ul class="flip__list flip__list--2col" data-course-list="AS"></ul>
             <button class="btn btn--gold btn--wide flip__go" data-course="AS">See every lecture</button>
           </div>
         </div>
@@ -1749,14 +1853,8 @@ body.pv-lock{overflow:hidden}
           </div>
           <div class="flip__f flip__f--b">
             <span class="chip chip--gold">Syllabus</span>
-            <h3 style="margin:12px 0 2px;font-size:1.22rem">Thirteen topics</h3>
-            <ul class="flip__list flip__list--2col">
-              <li>Motion in a circle</li><li>Gravitational fields</li><li>Temperature</li>
-              <li>Ideal gases</li><li>Thermodynamics</li><li>Oscillations</li>
-              <li>Electric fields</li><li>Capacitance</li><li>Magnetic fields</li>
-              <li>Alternating currents</li><li>Quantum physics</li><li>Nuclear physics</li>
-              <li>Medical physics</li><li>Astronomy &amp; cosmology</li>
-            </ul>
+            <h3 style="margin:12px 0 2px;font-size:1.22rem" data-course-count="A2">13 topics</h3>
+            <ul class="flip__list flip__list--2col" data-course-list="A2"></ul>
             <button class="btn btn--gold btn--wide flip__go" data-course="A2">See every lecture</button>
           </div>
         </div>
@@ -1997,7 +2095,7 @@ body.pv-lock{overflow:hidden}
       <div class="c7">
         <div class="eyebrow">Registration</div>
         <h2>Register at the academy</h2>
-        <p class="lede">Fill this in and the team replies on WhatsApp, usually the same day. A free demo lesson comes first — you decide after.</p>
+        <p class="lede">Fill this in and the team replies on WhatsApp, usually the same day. A trial lesson comes first &mdash; you decide after.</p>
         <form data-form novalidate style="margin-top:28px">
           <div class="bento" style="gap:0 16px">
             <div class="fld c6"><label for="rn">Student name <span class="rq">*</span></label>
@@ -2069,7 +2167,7 @@ body.pv-lock{overflow:hidden}
       <details><summary>What's the difference between O Level and IGCSE Physics?</summary><div class="body">The physics content overlaps heavily. The differences are mainly in paper structure and assessment — 0625 has more paper variants, including separate practical options. Which one you sit is set by your school's entry, not by you.</div></details>
       <details><summary>How does the student portal work?</summary><div class="body">You get a student ID at enrollment. Signing in opens exactly the course you registered for, with lectures grouped by module. Recorded lectures play in place; live sessions open a Zoom link.</div></details>
       <details><summary>Can I join mid-session?</summary><div class="body">Usually yes. Recorded modules cover what you've missed, and a short diagnostic works out what needs catching up first.</div></details>
-      <details><summary>Is there a free demo lesson?</summary><div class="body">Yes — a free demo before you commit, with no payment details needed.</div></details>
+      <details><summary>Can I sit in on a class first?</summary><div class="body">Yes &mdash; a trial lesson before you commit, with no payment details needed.</div></details>
       <details><summary>What if I miss a live class?</summary><div class="body">Every live session is recorded and added to your portal, so a missed class isn't a lost one.</div></details>
       <details><summary>Do you cover the practical papers and Paper 5?</summary><div class="body">Yes. Practical technique is taught explicitly, and A2 Paper 5 gets its own weekly slot because it rewards method more than knowledge.</div></details>
       <details><summary>What if I'm retaking?</summary><div class="body">A retake starts with a past-paper diagnostic, so time goes to the topics where marks were actually lost rather than the whole syllabus again.</div></details>
@@ -2110,26 +2208,29 @@ body.pv-lock{overflow:hidden}
         </div>
       </div>
     </div>
+    <div class="nxb">
+      <a class="nxb__id" href="https://nexlyr.solutions/" target="_blank" rel="noopener"
+         aria-label="Nexlyr — the studio that built this site">
+        <span class="nxb__mk" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M6 24V8l20 16V8" stroke="currentColor" stroke-width="3.6"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="nxb__nm">NEXLYR</span>
+      </a>
+      <a class="nxb__go" target="_blank" rel="noopener"
+         href="https://wa.me/923053687680?text=Hi%20Nexlyr!%20I%20saw%20physicswithsmk.com%20and%20I%27d%20like%20a%20site%20like%20it."
+         aria-label="Connect with Nexlyr on WhatsApp">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.14 6.44 2.14 11.9c0 1.75.46 3.45 1.32 4.95L2.05 22l5.28-1.38a9.86 9.86 0 0 0 4.71 1.2c5.46 0 9.9-4.44 9.9-9.9S17.5 2 12.04 2zm5.8 14.06c-.24.68-1.4 1.3-1.94 1.35-.5.05-1.13.07-1.82-.11-.42-.13-.96-.31-1.65-.61-2.9-1.25-4.8-4.17-4.95-4.37-.14-.2-1.18-1.57-1.18-3s.75-2.13 1.02-2.42c.26-.29.58-.36.77-.36l.55.01c.18.01.42-.7.65.5.24.58.82 2 .89 2.14.07.15.12.32.02.51-.09.2-.14.32-.28.49l-.42.49c-.14.14-.28.29-.12.57.16.29.72 1.18 1.54 1.91 1.06.94 1.95 1.23 2.23 1.37.28.15.44.12.6-.07.17-.2.7-.81.88-1.09.19-.29.37-.24.63-.14.25.09 1.62.76 1.9.9.28.15.46.22.53.34.07.12.07.68-.17 1.34z"/></svg>
+        Connect
+      </a>
+    </div>
+    </div>
+
     <div class="ftr__b">
       <span>&copy; 2026 Sir Mehboob Khan</span>
       <span class="ftr__mid">Karachi &middot; Online worldwide</span>
-      <a class="nx" href="https://nexlyr.solutions/" target="_blank" rel="noopener"
-         aria-label="Website designed and built by Nexlyr">
-        <span class="nx__k">Designed &amp; built by</span>
-        <span class="nx__lk">
-          <span class="nx__mark" aria-hidden="true">
-            <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
-              <path d="M6 24V8l20 16V8" stroke="currentColor" stroke-width="3.4"
-                    stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-          <span class="nx__n">NEXLYR</span>
-        </span>
-        <span class="nx__go" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
-               stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
-        </span>
-      </a>
     </div>
   </div>
 </footer>
@@ -2243,20 +2344,20 @@ const KB = [
  a:'JazzCash, Easypaisa and bank transfer for students in Pakistan. International students can pay by card. Details are shared once you register.'},
 {c:'Fees',q:'Is there a discount?',k:['discount','concession','sibling','scholarship','financial','cheaper','reduce fee','installment','instalment','pay later','partial'],
  a:'Sibling and full-course arrangements can be discussed — ask on WhatsApp and explain your situation. Term-based payment instead of monthly can also be arranged.'},
-{c:'Fees',q:'Do I pay before the demo class?',k:['pay before','advance','upfront','demo fee','trial fee','free trial','pay first'],
- a:'No. The demo lesson is free and needs no payment details. You only pay once you decide to enrol.'},
+{c:'Fees',q:'Do I pay before the demo class?',k:['pay before','advance','upfront','demo fee','trial fee','free trial','pay first','trial cost'],
+ a:'No. The trial lesson costs nothing and needs no payment details. You only pay once you decide to enrol.'},
 {c:'Fees',q:'Can I get a refund?',k:['refund','money back','cancel','stop paying','quit','leave course','withdraw'],
  a:'Fees are charged monthly, so you can stop at the end of any paid month. Recorded material stays available until that month ends.'},
 
 /* ---------------- registration ---------------- */
 {c:'Register',q:'How do I register?',k:['register','registration','enrol','enroll','join','sign up','signup','admission','apply','how to join','get started','start classes','want to join'],
- a:'Fill the registration form on this page, or message on WhatsApp with your level and exam session. You\'ll get a free demo lesson first, then a student ID if you decide to continue.'},
+ a:'Fill the registration form on this page, or message on WhatsApp with your level and exam session. You\'ll get a trial lesson first, then a student ID if you decide to continue.'},
 {c:'Register',q:'When do classes start?',k:['when start','starting date','batch','new batch','session start','commence','begin classes','next batch','intake'],
  a:'New batches open around each Cambridge session. Message on WhatsApp for the exact start date of the batch for your level.'},
 {c:'Register',q:'Can I join mid-session?',k:['mid session','late join','already started','miss start','join late','halfway','after start'],
  a:'Usually yes. Recorded modules cover what you missed, and a short diagnostic works out what to catch up on first.'},
-{c:'Register',q:'Is there a free demo class?',k:['demo','trial','free class','sample class','try before','test class','sit in','free lesson','demo lecture'],
- a:'Yes — a free demo lesson before you commit. No payment details needed. You can also watch the full course introduction on this page.'},
+{c:'Register',q:'Can I try a class before enrolling?',k:['demo','trial','free class','sample class','try before','test class','sit in','free lesson','demo lecture','trial class'],
+ a:'Yes &mdash; a trial lesson before you commit, with no payment details needed. You can also watch the full course introduction on this page.'},
 {c:'Register',q:'What documents do I need?',k:['document','documents','id card','b form','requirement','need to bring','paperwork'],
  a:'Nothing formal to start. Just your name, level, exam session and a contact number.'},
 
@@ -2284,19 +2385,21 @@ const KB = [
 {c:'Course',q:'What is the difference between O Level and IGCSE?',k:['o level vs igcse','difference between o level','igcse difference','5054','0625','which is harder','o level or igcse'],
  a:'The physics content overlaps heavily. The differences sit in paper structure and assessment — 0625 has more paper variants, including separate practical options. Which one you sit is set by your school\'s entry, not by you.'},
 {c:'Course',q:'What is the difference between AS and A2?',k:['as vs a2','difference as a2','a2 harder','second year','first year a level','as level a2 level'],
- a:'AS is topics 1–11 of 9702; A2 is topics 12–25 plus Paper 5. A2 isn\'t just harder AS — the shape of the questions changes, so revision has to change with it.'},
+ a:'AS is the first nine topics of 9702 — units, kinematics, dynamics, forces, deformation, work/energy/power, waves and superposition, electricity and D.C. circuits, particle physics. A2 adds thirteen more and brings Paper 5. A2 isn\'t just harder AS — the shape of the questions changes, so revision has to change with it.'},
 {c:'Course',q:'What topics are in the O Level syllabus?',k:['o level syllabus','olevel syllabus','o level topic','olevel content','olevel topics','5054 syllabus','what is covered o level','chapters o level','motion forces energy','sections','six sections'],
- a:'Nine topics: <b>1</b> Physical Quantities, Mass, Weight &amp; Density · <b>2</b> Motion &amp; Forces · <b>3</b> Deformation, Moments &amp; Momentum · <b>4</b> Work, Energy, Power &amp; Pressure · <b>5</b> Thermal Physics · <b>6</b> Waves · <b>7</b> Electricity · <b>8</b> Magnetism · <b>9</b> Nuclear &amp; Space Physics.'},
+ a:'<b>Nine topics:</b> <b>1</b> Physical Quantities, Mass, Weight &amp; Density · <b>2</b> Motion &amp; Forces · <b>3</b> Deformation, Moments &amp; Momentum · <b>4</b> Work, Energy, Power &amp; Pressure · <b>5</b> Thermal Physics · <b>6</b> Waves · <b>7</b> Electricity · <b>8</b> Magnetism · <b>9</b> Nuclear &amp; Space Physics.<br><br>Tap any topic in the syllabus section to see its lectures and its topical paper book.'},
 {c:'Course',q:'What topics are in the A Level syllabus?',k:['a level syllabus','alevel syllabus','as syllabus','aslevel syllabus','9702 syllabus','a2 syllabus','a level topic','alevel topics','chapters a level','what is covered a level'],
- a:'AS covers topics 1–11 (units, kinematics, dynamics, forces, energy, deformation, waves, superposition, electricity, D.C. circuits, particle physics). A2 covers 12–25 (circular motion, gravitational fields, thermal, ideal gases, thermodynamics, oscillations, electric and magnetic fields, capacitance, a.c., quantum, nuclear, medical physics, astronomy). Download the full PDF from the syllabus section.'},
+ a:'<b>AS — nine topics:</b> Physical Quantities &amp; Units · Kinematics · Dynamics · Forces, Density &amp; Pressure · Deformation of Solids · Work, Energy and Power · Wave Motion &amp; Superposition · Electricity &amp; D.C. Circuits · Particle Physics.<br><br><b>A2 — thirteen topics:</b> Circular Motion · Gravitational Field · Electric Field · Oscillation · Capacitance · Thermal Physics · Magnetic Field · Electromagnetic Induction · Alternating Current · Quantum Physics · Nuclear Physics · Medical Physics · Astronomy &amp; Cosmology.<br><br>Tap any topic in the syllabus section to see its lectures and paper books.'},
 {c:'Course',q:'Can I download the syllabus?',k:['download syllabus','syllabus pdf','get syllabus','syllabus copy','topic list','course outline','pdf'],
- a:'Yes — both the O Level and A Level topic outlines are downloadable as PDFs from the syllabus section of this page.'},
+ a:'You can read the full topic list for all three levels on this page — press <b>Syllabus</b> in the menu. Downloading it as a PDF is for enrolled students.'},
 {c:'Course',q:'Do you cover the practical papers?',k:['practical','paper 3','alternative to practical','atp','lab','experiment','apparatus','practical skills'],
  a:'Yes. Practical technique is taught explicitly rather than assumed — including the alternative-to-practical style questions.'},
+{c:'Course',q:'How is the A2 exam split up?',k:['a2 paper','paper 4','how many marks a2','a2 marks','a2 exam structure','9702 papers','weightage','percentage a2'],
+ a:'<b>Paper 4</b> — 10 theory questions, 2 hours, 100 marks, 38.5% of the A Level. <b>Paper 5</b> — 2 questions, 1 hour 15 minutes, 30 marks, 11.5%. Circular motion, gravitation, electric fields, oscillation and capacitance usually account for 3–4 questions on Paper 4; thermal, magnetic fields, induction and a.c. another 3–4; quantum, nuclear, medical and astronomy about 3.'},
 {c:'Course',q:'Do you cover Paper 5?',k:['paper 5','p5','planning analysis','planning and evaluation','design experiment','a2 paper 5'],
  a:'Yes, and it gets its own weekly slot. Paper 5 rewards a repeatable method more than raw knowledge, which is exactly why leaving it to the last month costs students marks.'},
 {c:'Course',q:'Do you provide notes?',k:['notes','handout','material','study material','resources','worksheet','workbook','summary'],
- a:'Yes — topic notes, worked examples and workbooks. Some are free on the site without an account; the rest come with the course.'},
+ a:'Yes — written notes for every lecture, worked examples and workbooks. The notes open alongside each lecture once you are signed in. The topical paper books are open to everyone to read on the site.'},
 {c:'Course',q:'Do you provide past papers?',k:['past paper','pastpaper','previous paper','past year','marking scheme','mark scheme','solved paper','yearly'],
  a:'Yes. Past papers are worked through under timed conditions and marked against the real Cambridge scheme, not an approximation of it.'},
 {c:'Course',q:'Are there quizzes or tests?',k:['quiz','test','assessment','mock','mock exam','weekly test','check progress','exam practice'],
@@ -2505,7 +2608,23 @@ const SYN = {
     tab:    () => tone(720, .05, 'triangle', .07),
     ok:     () => [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => tone(f, .13, 'sine', .1), i * 85)),
     err:    () => { tone(180, .16, 'sawtooth', .09); setTimeout(() => tone(140, .18, 'sawtooth', .07), 90); },
-    swipe:  () => tone(300, .09, 'sine', .06)
+    swipe:  () => tone(300, .09, 'sine', .06),
+
+    /* ---------- added: one sound per kind of moment ---------- */
+    /* a topic opening — a small rising two-note, warmer than a plain click */
+    topic:  () => { tone(440, .07, 'triangle', .09); setTimeout(() => tone(660, .09, 'triangle', .06), 60); },
+    /* unlocking a lecture you are allowed to watch */
+    unlock: () => [587, 880, 1174].forEach((f, i) => setTimeout(() => tone(f, .11, 'triangle', .09), i * 70)),
+    /* pressing something locked — flat, short, not punishing */
+    locked: () => { tone(220, .1, 'square', .05); setTimeout(() => tone(196, .12, 'square', .04), 80); },
+    /* a paper or a book opening in the reader */
+    paper:  () => { tone(330, .06, 'sine', .06); setTimeout(() => tone(494, .08, 'sine', .05), 50); },
+    /* a panel or accordion folding shut */
+    fold:   () => tone(392, .07, 'sine', .05),
+    /* landing on a new section as you scroll */
+    section:() => tone(294, .1, 'sine', .035),
+    /* the assistant replying */
+    reply:  () => { tone(784, .05, 'sine', .05); setTimeout(() => tone(1046, .07, 'sine', .035), 55); }
   };
   window.SMKsfx = sfx;
   const sBtn = $('[data-sound]');
@@ -4040,6 +4159,9 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     var b = e.target.closest('[data-lec-id]');
     if (!b) return;
     e.preventDefault();
+    if (b.classList.contains('lec2--shut')) {
+      b.classList.remove('nope'); void b.offsetWidth; b.classList.add('nope');
+    }
     playLecture(b.dataset.lecLvl, b.dataset.lecTopic, b.dataset.lecN, b.dataset.lecId);
   });
 
@@ -4092,6 +4214,8 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       $$('#sylvTabs button').forEach(function (x) { x.classList.toggle('on', x.dataset.sylv === s.lvl); });
     }
 
+    fillCourseCards();
+    makeTappable();
     if (typeof renderPapers === 'function') renderPapers();
     renderLectures();
     if ($('#sylv').classList.contains('open')) renderSylv();
@@ -4186,6 +4310,103 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     e.preventDefault();
     var lvl = b.dataset.course;
     openXp('coursePanel', LEVELNAME[lvl] + ' \u2014 every lecture', levelHtml(lvl));
+  });
+
+  /* ----------------------------------------------------------------------
+     TAP ANYWHERE
+     A card that stands for one thing opens that thing wherever you press it.
+     The rule is deliberately conservative: a card only becomes tappable if it
+     holds exactly one obvious action, so nothing surprising happens when a
+     thumb lands somewhere unexpected. Real links inside still win.
+     ---------------------------------------------------------------------- */
+  function makeTappable(root) {
+    var RULES = [
+      ['.prow',    '.plink'],              // a past paper row -> open the paper
+      ['.bookrow', '[data-book]'],         // a topical book row -> open the book
+      ['.paper-row', '[data-view]'],
+      ['.sylvrow', null],                  // already a button
+      ['.aff',     null]                   // a campus card -> the register form
+    ];
+    RULES.forEach(function (r) {
+      $$(r[0], root || document).forEach(function (card) {
+        if (card.dataset.tap) return;
+        var target = r[1] ? card.querySelector(r[1]) : null;
+        if (r[1] && !target) return;
+        card.dataset.tap = '1';
+        card.classList.add('tapwrap');
+        if (!card.hasAttribute('tabindex')) card.tabIndex = 0;
+        card.setAttribute('role', 'button');
+      });
+    });
+  }
+  window.SMKtap = makeTappable;
+
+  /* the ripple starts where the finger landed */
+  function ripple(card, e) {
+    if (matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+    var r = card.getBoundingClientRect();
+    var d = Math.max(r.width, r.height) * 2.2;
+    var el = document.createElement('span');
+    el.className = 'rip';
+    el.style.width = el.style.height = d + 'px';
+    el.style.left = ((e.clientX || r.left + r.width / 2) - r.left) + 'px';
+    el.style.top = ((e.clientY || r.top + r.height / 2) - r.top) + 'px';
+    card.appendChild(el);
+    setTimeout(function () { el.remove(); }, 640);
+  }
+
+  document.addEventListener('click', function (e) {
+    var card = e.target.closest('[data-tap]');
+    if (!card) return;
+    /* a real control inside the card handles its own press */
+    if (e.target.closest('a,button,input,select,summary,[data-pdf],[data-book],[data-notes]')) return;
+
+    ripple(card, e);
+
+    if (card.classList.contains('aff')) { location.hash = '#register'; return; }
+
+    var go = card.querySelector('.plink,[data-book],[data-view],[data-pdf]');
+    if (go) go.click();
+  });
+
+  /* keyboard: a card that behaves like a button must answer Enter and Space */
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    var card = e.target.closest && e.target.closest('[data-tap]');
+    if (!card || card.tagName === 'BUTTON' || card.tagName === 'A') return;
+    e.preventDefault();
+    card.click();
+  });
+
+  /* rows are drawn and redrawn constantly, so keep marking new ones */
+  new MutationObserver(function () { makeTappable(); })
+    .observe(document.body, { childList: true, subtree: true });
+
+  /* ---------- the flip cards read the syllabus, so they cannot drift ----------
+     Every topic is a button: press one and its lectures open straight away. */
+  function fillCourseCards() {
+    $$('[data-course-list]').forEach(function (ul) {
+      var lvl = ul.dataset.courseList;
+      ul.innerHTML = (TOPICS[lvl] || []).map(function (t) {
+        return '<li><button class="flip__t" data-topic-open="' + t.n +
+               '" data-topic-lvl="' + lvl + '">' + esc(t.name) + '</button></li>';
+      }).join('');
+    });
+    $$('[data-course-count]').forEach(function (h) {
+      var n = (TOPICS[h.dataset.courseCount] || []).length;
+      h.textContent = n + ' topic' + (n !== 1 ? 's' : '');
+    });
+    var tot = ['O', 'AS', 'A2'].reduce(function (a, l) { return a + (TOPICS[l] || []).length; }, 0);
+    var el = $('#topicTotal'); if (el) el.textContent = tot;
+  }
+
+  /* any topic anywhere opens that topic */
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-topic-open]');
+    if (!b) return;
+    e.preventDefault(); e.stopPropagation();
+    var d = $('#sylv'); if (d && d.classList.contains('open')) closeSylv();
+    window.SMKopenTopic(b.dataset.topicLvl, b.dataset.topicOpen);
   });
 
   /* ---------- one topic, opened in its own dialog ----------
