@@ -1292,9 +1292,18 @@ body.pv-lock{overflow:hidden}
 .introv__go{position:absolute;left:50%;top:50%;translate:-50% -50%;z-index:3;width:96px;height:96px;
   border-radius:50%;display:grid;place-items:center;
   background:linear-gradient(135deg,var(--gold-600),var(--gold-300));color:#150F04;font-size:30px;
-  box-shadow:0 18px 50px rgba(192,138,52,.5);transition:.35s var(--spring)}
-.introv__go:hover{transform:translate(-50%,-50%) scale(1.09)}
-.introv__tri{margin-left:5px}
+  box-shadow:0 18px 50px rgba(192,138,52,.5);
+  transition:transform .5s var(--spring),box-shadow .5s var(--ease)}
+.introv__go::before{content:"";position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle,rgba(192,138,52,.6),rgba(192,138,52,0) 68%);
+  opacity:0;transform:scale(.6);transition:opacity .6s var(--ease),transform .8s var(--ease)}
+/* submerge: the button sinks and dims instead of popping up, with a ring of
+   light spreading out from underneath it, like something dipping below a
+   surface rather than lifting off it */
+.introv__go:hover{transform:translate(-50%,-50%) scale(.92);
+  box-shadow:0 6px 22px rgba(192,138,52,.32),inset 0 8px 18px rgba(9,4,0,.4)}
+.introv__go:hover::before{opacity:1;transform:scale(2.15)}
+.introv__tri{margin-left:5px;position:relative}
 .introv__ring{position:absolute;inset:-10px;border-radius:50%;border:1px solid var(--gold-400);
   opacity:.5;animation:iring 2.8s ease-out infinite}
 @keyframes iring{0%{transform:scale(1);opacity:.5}100%{transform:scale(1.35);opacity:0}}
@@ -1374,7 +1383,7 @@ body.pv-lock{overflow:hidden}
   .ftr__l{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
   .ftr .soc{grid-column:1/-1;display:flex;gap:8px;margin-top:8px}
   .ftr__b{margin-top:18px;padding-top:14px;gap:6px;font-size:.72rem;
-    flex-direction:column;align-items:flex-start;
+    flex-direction:column;align-items:center;text-align:center;
     padding-bottom:66px}          /* clear the floating theme and sound buttons */
   .ftr__mid{opacity:.75}
   .nx{margin-top:6px;align-self:flex-end}
@@ -1914,6 +1923,54 @@ body.pv-lock{overflow:hidden}
   .flip--course{height:368px}
   .flip--course .flip__t{font-size:.75rem}
 }
+
+/* ==========================================================================
+   BATCH OF FIXES — kept together and placed last / ID-scoped on purpose,
+   so each one reliably wins over the many earlier patches above without
+   having to hunt down and edit every one of them individually.
+   ========================================================================== */
+
+/* ---- hero stats: all three fit on one line, even on a small phone ---- */
+@media (max-width:480px){
+  #hero .hero__m{flex-wrap:nowrap;justify-content:space-between;gap:8px}
+  #hero .hero__m b{font-size:1.32rem}
+  #hero .hero__m > div{flex:1;min-width:0}
+  #hero .hero__m > div > span{font-size:.6rem;letter-spacing:.04em;white-space:normal}
+}
+
+/* ---- course syllabus lists: even columns, no uneven gaps between rows of
+   different heights. Multi-column flow instead of a 2-col grid means each
+   topic only ever takes the room its own text needs, so a two-line topic
+   next to a one-line topic no longer leaves a ragged gap before the next
+   row. Applies to all three cards (O Level, AS, A2) since they share this
+   same markup. ---- */
+#courses .flip--course .flip__list.flip__list--2col{
+  display:block;columns:2;column-gap:16px;gap:0}
+#courses .flip--course .flip__list.flip__list--2col li{
+  break-inside:avoid;-webkit-column-break-inside:avoid;margin:0 0 7px}
+#courses .flip--course .flip__list.flip__list--2col li:last-child{margin-bottom:0}
+
+/* ---- distinctions block: smaller type so the whole section takes less
+   room on a phone, not just smaller numbers ---- */
+@media (max-width:760px){
+  #results .tile__n{font-size:1.5rem}
+  #results h3{font-size:.98rem;margin-top:10px}
+  #results .tile p.muted,#results p.muted{font-size:.82rem;line-height:1.5}
+  #results .tile__k{font-size:.6rem}
+  #results .chip{font-size:.64rem;padding:.4em .8em}
+  #results .tile{padding:14px 13px}
+  #results .bento{gap:8px}
+}
+
+/* ---- hero background image: theme-specific photo behind the hero on
+   desktop/PC, using the same data-theme switch the rest of the site
+   already uses — mobile keeps the existing galaxy graphic untouched ---- */
+@media (min-width:861px){
+  #hero .galaxy img{display:none}
+  #hero .galaxy{background-image:url('darkthemehero.png');
+    background-size:cover;background-position:center}
+  [data-theme="light"] #hero .galaxy{background-image:url('lightthemehero.png')}
+}
 </style>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -2008,7 +2065,7 @@ body.pv-lock{overflow:hidden}
 </nav>
 
 <!-- ================= HERO ================= -->
-<section class="hero">
+<section class="hero" id="hero">
   <div class="galaxy" aria-hidden="true">
     <img src="galaxy.png" alt="">
     <div class="orb"><i></i></div>
