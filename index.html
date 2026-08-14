@@ -3046,7 +3046,7 @@ body.pv-lock{overflow:hidden}
   <div class="wrap">
     <div class="eyebrow">Lectures</div>
     <h2 data-rv>Recorded after every class</h2>
-    <p class="lede" data-rv style="--d:1;margin-bottom:22px">The opening lecture of the first four topics is open to everyone, free and without an account. Signing in with your student ID unlocks every recorded Physics lecture in your level.</p>
+    <p class="lede" data-rv id="freeLede" style="--d:1;margin-bottom:22px">The opening lecture of the first four topics is open to everyone, free and without an account. Signing in with your student ID unlocks every recorded Physics lecture in your level.</p>
 
     <div class="upsell" id="lecUpsell">
       <span class="upsell__p">PKR 7,000</span>
@@ -4362,7 +4362,14 @@ window.NAG_CONFIG = {
 
   var NAGS = [
     { side: 'left', title: 'Start with a preview',
-      lead: 'The opening lecture of the first four topics plays right now.',
+      lead: function () {
+        if (!window.SMKfreeWords) return 'Free lectures are open at the start of the course.';
+        if (window.SMKfreeOff && window.SMKfreeOff('O')) {
+          return 'Sign in with your student ID to open your lectures.';
+        }
+        return window.SMKfreeWords('O') + window.SMKfreeVerb('O', ' plays', ' play') +
+               ' right now.';
+      },
       points: ['Watch before you decide anything', 'Every past paper and mark scheme',
                'All 46 topical books'],
       cta: 'Open the syllabus', href: '#syllabus', kind: 'line' },
@@ -4382,7 +4389,8 @@ window.NAG_CONFIG = {
     el.setAttribute('role', 'complementary');
     el.innerHTML =
       '<button class="nag__x" aria-label="Dismiss">&times;</button>' +
-      '<h4>' + n.title + '</h4><p>' + n.lead + '</p><ul>' +
+      '<h4>' + n.title + '</h4><p>' +
+      (typeof n.lead === 'function' ? n.lead() : n.lead) + '</p><ul>' +
       n.points.map(function (p) { return '<li>' + p + '</li>'; }).join('') +
       '</ul><a class="btn btn--' + n.kind + '" href="' + n.href + '"' +
       (n.href.indexOf('.html') > -1 ? '' : '') + '>' + n.cta + '</a>';
@@ -4458,15 +4466,15 @@ window.NAG_CONFIG = {
      id      unique. Convention: level-topic-number   e.g. 'o-3-04'
      lvl     'O' | 'AS' | 'A2'
      topic   topic number, matches the topics list below
-     n       lecture number inside that topic. n:1 is FREE for everyone.
+     n       lecture number inside that topic
      t       title shown to students
      dur     '48:12'
      vid     video ID or URL from your host (Bunny.net / Vimeo / YouTube)
      notes   optional PDF filename or URL for that lecture's notes
      date    optional, shown as "recorded on"
 
-   Lecture n:1 of the first four topics previews without an account.
-   Everything else needs a signed-in student. Nothing else to configure.
+   How much of this is free is set in the admin panel, not here: Lectures tab
+   → "Free preview". Everything outside it needs a signed-in student.
    ========================================================================== */
 
 const TOPICS = {
@@ -4573,15 +4581,15 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
      id      unique. Convention: level-topic-number   e.g. 'o-3-04'
      lvl     'O' | 'AS' | 'A2'
      topic   topic number, matches the topics list below
-     n       lecture number inside that topic. n:1 is FREE for everyone.
+     n       lecture number inside that topic
      t       title shown to students
      dur     '48:12'
      vid     video ID or URL from your host (Bunny.net / Vimeo / YouTube)
      notes   optional PDF filename or URL for that lecture's notes
      date    optional, shown as "recorded on"
 
-   Lecture n:1 of the first four topics previews without an account.
-   Everything else needs a signed-in student. Nothing else to configure.
+   How much of this is free is set in the admin panel, not here: Lectures tab
+   → "Free preview". Everything outside it needs a signed-in student.
    ========================================================================== */
 
 
@@ -4810,7 +4818,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     <button class="auth2__x" aria-label="Close">&times;</button>
     <div class="eyebrow">Full syllabus</div>
     <h3 style="font-size:1.4rem;margin-bottom:6px">Every topic, in teaching order</h3>
-    <p class="muted" style="font-size:.86rem;margin-bottom:18px">
+    <p class="muted" id="freeSylv" style="font-size:.86rem;margin-bottom:18px">
       Tap a topic to see its lectures. The opening lecture of the first four topics is open to
       everyone &mdash; the rest come with the course.</p>
     <div class="tabs2" id="sylvTabs" style="margin-bottom:18px">
@@ -4971,7 +4979,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
 /* ==========================================================================
    ACCESS STATE
    none  → syllabus, all past papers and mark schemes (view only),
-           plus the opening lecture of the first four topics
+           plus whatever the free preview in the admin panel currently opens
    prem  → every lecture in the student's level, notes, and downloads
    One account type. One sign-in. Sessions persist until sign-out.
    ========================================================================== */
@@ -4980,8 +4988,42 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   var $$ = function (q, c) { return Array.prototype.slice.call((c || document).querySelectorAll(q)); };
   var PREM = 'smk_premium';
 
-  /* how many topics, counted from the top of each level, give away lecture 1 */
-  var OPEN_TOPICS = 4;
+  /* ----------------------------------------------------------------------
+     HOW MUCH IS FREE
+     Two numbers per level: how many topics, counted from the top, and how
+     many lectures inside each of them. They live in the database, in
+     access_rules, and are set in the admin panel — so what this page draws
+     and what the server will actually hand over are the same thing. The
+     numbers below are only what is used in the second before the real
+     answer arrives, and match the database defaults.
+     ---------------------------------------------------------------------- */
+  var FREE = { O:  { topics: 4, per: 1 },
+               AS: { topics: 4, per: 1 },
+               A2: { topics: 4, per: 1 } };
+  function rule(lvl) { return FREE[lvl] || { topics: 0, per: 0 }; }
+  /* which level the page is currently showing, for anything outside this block
+     that needs to describe the free preview in the right level's terms */
+  window.SMKlevelNow = function () { return lecLevel; };
+
+  /* The same sentence everywhere, built from whatever the numbers are now.
+     freeWords is the subject on its own — "The first three lectures of the
+     first two topics" — and freeVerb picks the verb that agrees with it, so
+     changing the numbers never leaves "three lectures plays" on the page. */
+  function numWord(n) {
+    return ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven',
+            'eight', 'nine', 'ten'][n] || n;
+  }
+  function freeOff(lvl) { var r = rule(lvl); return !r.topics || !r.per; }
+  function freeWords(lvl) {
+    var r = rule(lvl);
+    return (r.per === 1 ? 'The opening lecture' : 'The first ' + numWord(r.per) + ' lectures') +
+           ' of ' +
+           (r.topics === 1 ? 'the first topic' : 'the first ' + numWord(r.topics) + ' topics');
+  }
+  function freeVerb(lvl, one, many) { return rule(lvl).per > 1 ? many : one; }
+  window.SMKfreeWords = freeWords;
+  window.SMKfreeVerb  = freeVerb;
+  window.SMKfreeOff   = freeOff;
 
   var LEVELNAME = { O: 'O Level / IGCSE', AS: 'AS Level', A2: 'A2 Level' };
   /* Every lecture is listed by default — locked ones so a visitor can see the
@@ -5011,19 +5053,25 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   /* ---------- what a visitor can open ---------- */
   function openTopicNumbers(lvl) {
     var list = (typeof TOPICS !== 'undefined' && TOPICS[lvl]) ? TOPICS[lvl] : [];
-    return list.slice(0, OPEN_TOPICS).map(function (t) { return t.n; });
+    return list.slice(0, rule(lvl).topics).map(function (t) { return t.n; });
   }
   function canOpen(lvl, topicN, lecN, lec) {
     var s = session();
     if (s.tier === 'prem' && s.lvl === lvl) return true;
-    /* A lecture ticked open in the admin panel plays for everyone, wherever it
-       sits. This was the missing half: the database honoured the flag but the
-       page did not, so a free lecture still drew a padlock. */
-    if (lec && (lec.is_preview || lec.preview)) return true;
-    /* And lecture 1 of the first four topics is open without any flag. Written
-       so it does not depend on the topic list having loaded — if it has not, a
-       preview must still read as open rather than as locked. */
-    return +lecN === 1 && +topicN >= 1 && +topicN <= OPEN_TOPICS;
+    /* The database's own answer, when we have it, always wins. `free` comes
+       from the course outline and `is_preview` from a lecture ticked open in
+       the admin panel — either way it plays for everyone, wherever it sits.
+       This was the missing half: the database honoured the flag but the page
+       did not, so a free lecture still drew a padlock. */
+    if (lec && (lec.free || lec.is_preview || lec.preview)) return true;
+    /* Otherwise, work it out from the numbers you set: the first few lectures
+       of the first few topics. Written so it does not depend on the topic list
+       having loaded — if it has not, a free lecture must still read as open
+       rather than as locked. */
+    var r = rule(lvl);
+    if (!r.topics || !r.per || +lecN > r.per || +topicN < 1) return false;
+    var open = openTopicNumbers(lvl);
+    return open.length ? open.indexOf(+topicN) > -1 : +topicN <= r.topics;
   }
   window.SMKcanOpen = canOpen;
 
@@ -5093,6 +5141,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
 
   function lecRow(lvl, l) {
     var open = canOpen(lvl, l.topic, l.n, l);
+    var mine = session().tier === 'prem' && session().lvl === lvl;
     var meta = 'Lecture ' + l.n + (l.dur ? ' \u00b7 ' + l.dur : '');
     var row = '<button class="lec2 ' + (open ? 'lec2--open' : 'lec2--shut') + '" ' +
       'data-lec-id="' + (l.id || '') + '" data-lec-lvl="' + lvl + '" ' +
@@ -5100,7 +5149,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       '<span class="lec2__p">' + (open ? '&#9654;' : '&#128274;') + '</span>' +
       '<span class="lec2__t"><b>' + l.t + '</b><span>' + meta + '</span></span>' +
       '<span class="lecflag ' + (open
-        ? (canOpen(lvl, l.topic, l.n) ? 'lecflag--open">Open' : 'lecflag--free">Free')
+        ? (mine ? 'lecflag--open">Open' : 'lecflag--free">Free')
         : 'lecflag--shut">Locked') + '</span>' +
       '</button>';
 
@@ -5155,9 +5204,14 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
             LEVELNAME[lvl] + ' is open below. New ones appear after each class.</div>'
           : '<div class="note" style="margin-bottom:16px"><b>You are enrolled in ' + LEVELNAME[s.lvl] +
             '.</b> You can browse ' + LEVELNAME[lvl] + ' here, but only your own level plays.</div>')
-      : '<div class="note" style="margin-bottom:16px"><b>Preview.</b> The opening lecture of the first ' +
-        OPEN_TOPICS + ' topics plays without signing in. Everything else is listed so you can see ' +
-        'exactly what the course covers. <button data-open-auth="prem" style="color:var(--gold-300);' +
+      : '<div class="note" style="margin-bottom:16px">' +
+        (freeOff(lvl)
+          ? '<b>Every lecture needs a student ID.</b> The whole course is listed below, so ' +
+            'you can see exactly what it covers. '
+          : '<b>Preview.</b> ' + freeWords(lvl) + freeVerb(lvl, ' plays', ' play') +
+            ' without signing in. Everything else is listed so you can see ' +
+            'exactly what the course covers. ') +
+        '<button data-open-auth="prem" style="color:var(--gold-300);' +
         'text-decoration:underline">Sign in to unlock everything</button></div>';
 
     if (!groups.length) {
@@ -5235,7 +5289,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   $$('#sylvTabs button').forEach(function (b) {
     b.addEventListener('click', function () {
       $$('#sylvTabs button').forEach(function (x) { x.classList.remove('on'); });
-      b.classList.add('on'); sylvLevel = b.dataset.sylv; renderSylv();
+      b.classList.add('on'); sylvLevel = b.dataset.sylv; renderSylv(); wordsToPage();
     });
   });
 
@@ -5282,7 +5336,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   $$('#lecTabs button').forEach(function (b) {
     b.addEventListener('click', function () {
       $$('#lecTabs button').forEach(function (x) { x.classList.remove('on'); });
-      b.classList.add('on'); lecLevel = b.dataset.lec; renderLectures();
+      b.classList.add('on'); lecLevel = b.dataset.lec; renderLectures(); wordsToPage();
     });
   });
 
@@ -5389,8 +5443,10 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     var total = lecs.length;
     var lead = '<p class="muted" style="font-size:.88rem;margin:0 0 16px">' +
       tops.length + ' topics' + (total ? ' \u00b7 ' + total + ' lecture' + (total !== 1 ? 's' : '') +
-      ' recorded so far' : '') + '. The opening lecture of the first ' + OPEN_TOPICS +
-      ' topics plays without signing in.</p>';
+      ' recorded so far' : '') + '. ' +
+      (freeOff(lvl) ? 'Every one of them needs a signed-in student ID.'
+                    : freeWords(lvl) + freeVerb(lvl, ' plays', ' play') +
+                      ' without signing in.') + '</p>';
     return lead + '<div class="topics">' + tops.map(function (t) {
       var mine = lecs.filter(function (l) { return l.topic === t.n; })
                      .sort(function (a, b) { return a.n - b.n; });
@@ -5710,7 +5766,15 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
         '<span class="acch__t"><b>Not signed in</b>' +
         '<span>sign in to open every lecture</span></span></div>' +
         '<p class="muted" style="font-size:.86rem;margin:0 0 14px">' +
-        'The opening lecture of the first four topics plays without an account. ' +
+        (function () {
+          var lv = window.SMKlevelNow ? window.SMKlevelNow() : 'O';
+          if (!window.SMKfreeWords) return 'Some lectures play without an account.';
+          if (window.SMKfreeOff && window.SMKfreeOff(lv)) {
+            return 'Every lecture needs a student ID.';
+          }
+          return window.SMKfreeWords(lv) +
+                 window.SMKfreeVerb(lv, ' plays', ' play') + ' without an account.';
+        })() + ' ' +
         'Signing in with your student ID opens the rest of your level, the written ' +
         'notes, and downloads.</p>' +
         '<div class="accacts">' +
@@ -6009,12 +6073,101 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   }
 
   window.PUBLIC_LECTURES = window.PUBLIC_LECTURES || [];
+  var OUTLINE = [], PREVIEWS = [];
+
+  function anonHeaders() {
+    var C = window.SMK_CONFIG || {};
+    return { apikey: C.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY };
+  }
+
+  /* The outline is every published title, the previews are the ones that come
+     with a video. Merged, a visitor sees the whole course with the free ones
+     playable and the rest padlocked — which is what the page says it shows. */
+  function mergePublic() {
+    var by = {};
+    OUTLINE.forEach(function (l) { by[l.id] = l; });
+    PREVIEWS.forEach(function (l) {
+      var was = by[l.id] || {};
+      by[l.id] = { id: l.id, lvl: l.lvl, topic: l.topic, n: l.n, t: l.t || was.t,
+                   dur: l.dur || was.dur || '', vid: l.vid || '',
+                   notes: l.notes || was.notes || '', free: true, is_preview: true };
+    });
+    var out = Object.keys(by).map(function (k) { return by[k]; });
+    if (!out.length) return;
+    window.PUBLIC_LECTURES = out;
+    window.SMK_LOADED = true;
+    renderLectures();
+    if ($('#sylv').classList.contains('open')) renderSylv();
+  }
+
+  /* ----------------------------------------------------------------------
+     HOW MUCH IS FREE, from the database.
+     Set in the admin panel; read here so the padlocks on this page and the
+     lectures the server will actually hand over can never disagree.
+     ---------------------------------------------------------------------- */
+  async function loadRules() {
+    var C = window.SMK_CONFIG || {};
+    if (!C.SUPABASE_URL) return;
+    try {
+      var r = await fetch(C.SUPABASE_URL +
+        '/rest/v1/access_rules?select=lvl,free_topics,free_per_topic', { headers: anonHeaders() });
+      if (!r.ok) {
+        /* An older database has no access_rules table. The defaults above match
+           what it does, so the page carries on as before. */
+        console.warn('[SMK] access_rules could not be read (' + r.status + '). ' +
+          'Re-run backend.sql in Supabase to set the free preview from the admin panel.');
+        return;
+      }
+      (await r.json()).forEach(function (x) {
+        FREE[x.lvl] = { topics: Math.max(0, +x.free_topics || 0),
+                        per:    Math.max(0, +x.free_per_topic || 0) };
+      });
+      wordsToPage();
+      renderLectures();
+      if ($('#sylv').classList.contains('open')) renderSylv();
+    } catch (e) { }
+  }
+
+  /* the two sentences that are written into the page rather than generated */
+  function wordsToPage() {
+    var lede = $('#freeLede');
+    if (lede) lede.textContent = (freeOff(lecLevel)
+      ? 'Every recorded lecture opens with a student ID.'
+      : freeWords(lecLevel) + freeVerb(lecLevel, ' is', ' are') +
+        ' open to everyone, free and without an account.') +
+      ' Signing in with your student ID unlocks every recorded Physics lecture in your level.';
+    var sy = $('#freeSylv');
+    if (sy) sy.textContent = 'Tap a topic to see its lectures. ' + (freeOff(sylvLevel)
+      ? 'They all come with the course.'
+      : freeWords(sylvLevel) + freeVerb(sylvLevel, ' is', ' are') +
+        ' open to everyone \u2014 the rest come with the course.');
+  }
+
+  /* every published lecture, titles only: no video and no notes are in this
+     view, so listing a locked one gives nothing away */
+  async function loadOutline() {
+    var C = window.SMK_CONFIG || {};
+    if (!C.SUPABASE_URL) return;
+    try {
+      var r = await fetch(C.SUPABASE_URL +
+        '/rest/v1/course_outline?select=id,lvl,topic,n,title,duration,free,has_notes&order=lvl,topic,n',
+        { headers: anonHeaders() });
+      if (!r.ok) return;              // older database: previews only, as before
+      OUTLINE = (await r.json()).map(function (l) {
+        return { id: l.id, lvl: l.lvl, topic: l.topic, n: l.n, t: l.title,
+                 dur: l.duration || '', vid: '', notes: '',
+                 free: !!l.free, published: true };
+      });
+      mergePublic();
+    } catch (e) { }
+  }
+
   async function loadPreview() {
     var C = window.SMK_CONFIG || {};
     if (!C.SUPABASE_URL) return;
     try {
-      var h = { apikey: C.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY };
-      var r = await fetch(C.SUPABASE_URL + '/rest/v1/preview_lectures?order=lvl,topic,n', { headers: h });
+      var r = await fetch(C.SUPABASE_URL + '/rest/v1/preview_lectures?order=lvl,topic,n',
+        { headers: anonHeaders() });
       if (!r.ok) {
         console.error('[SMK] preview_lectures could not be read (' + r.status + '). ' +
           'If this is a 404 the view is missing - re-run backend.sql in Supabase.');
@@ -6025,18 +6178,15 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       }
       var rows = await r.json();
       if (!rows.length) {
-        console.warn('[SMK] No preview lectures yet. A preview is lecture 1 of topics ' +
-          '1 to 4, published, with a video URL. Add one in the admin panel.');
+        console.warn('[SMK] Nothing is free at the moment. Check the free preview numbers ' +
+          'in the admin panel, and that those lectures are published and have a video URL.');
         return;
       }
-      window.SMK_LOADED = true;
-      window.PUBLIC_LECTURES = rows.map(function (l) {
+      PREVIEWS = rows.map(function (l) {
         return { id: l.id, lvl: l.lvl, topic: l.topic, n: l.n, t: l.title,
-                 dur: l.duration || '', vid: l.video_url || '', notes: l.notes_url || '',
-                 is_preview: true };   /* everything in this view is open to all */
+                 dur: l.duration || '', vid: l.video_url || '', notes: l.notes_url || '' };
       });
-      renderLectures();
-      if ($('#sylv').classList.contains('open')) renderSylv();
+      mergePublic();
     } catch (e) {
       loadFailed('Could not reach the server. Check your connection.');
     }
@@ -6044,7 +6194,8 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
 
   window.SMKapplyTier = apply;
   apply();
-  loadPreview();
+  /* the rules first: they decide what the rest of it means */
+  loadRules().then(function () { loadOutline(); loadPreview(); });
 })();
 </script>
 <script>
