@@ -1267,6 +1267,11 @@ body.pv-lock{overflow:hidden}
 .lecflag{flex:none;font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;
   padding:4px 9px;border-radius:99px;border:1px solid var(--line-soft);color:var(--muted);white-space:nowrap}
 .lecflag--open{border-color:rgba(66,176,124,.42);color:var(--ok)}
+/* a brief glow so the topic you came back to is obvious */
+@keyframes backglow{0%{box-shadow:0 0 0 0 rgba(224,169,76,.5)}
+  100%{box-shadow:0 0 0 14px rgba(224,169,76,0)}}
+.topic--back{border-color:var(--gold-400)!important;animation:backglow 1.6s var(--ease) 2}
+@media (prefers-reduced-motion:reduce){.topic--back{animation:none}}
 .showall{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:13px;
   border:1px solid var(--line-soft);background:var(--panel);cursor:pointer;
   margin-top:18px;transition:.25s var(--ease);min-height:52px}
@@ -5325,6 +5330,9 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     if (typeof renderPapers === 'function') renderPapers();
     renderLectures();
     if ($('#sylv').classList.contains('open')) renderSylv();
+    /* last, because it opens a topic in the list that renderLectures has just
+       rebuilt — running it earlier meant the list wiped the opened topic */
+    restorePlace();
   }
 
   /* ----------------------------------------------------------------------
@@ -5778,6 +5786,71 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && $('#acctv').classList.contains('open')) closeAccount();
   });
+
+  /* ----------------------------------------------------------------------
+     COMING BACK FROM A LECTURE
+     The player links here with ?lvl and ?topic. Landing on #portal alone put
+     the student at the top of the page, because the browser jumps to the
+     anchor before the lecture list has been built and the section is barely
+     tall enough to scroll to. So the level is selected and the topic opened
+     first, and only then is the page moved — after the preloader has gone and
+     the layout has settled.
+     ---------------------------------------------------------------------- */
+  function restorePlace() {
+    var q = new URLSearchParams(location.search);
+    var lvl = q.get('lvl'), topic = q.get('topic');
+    var wants = lvl || location.hash === '#portal';
+    if (!wants) return;
+
+    if (lvl && TOPICS[lvl]) {
+      lecLevel = lvl;
+      $$('#lecTabs button').forEach(function (b) {
+        b.classList.toggle('on', b.dataset.lec === lvl);
+      });
+      renderLectures();
+    }
+
+    /* open the topic they were in, and mark it so it is obvious on arrival */
+    var target = null;
+    if (topic) {
+      $$('#lecLive .topic').forEach(function (t) {
+        var n = (t.querySelector('.topic__n') || {}).textContent;
+        if (String(n).trim() === String(topic).trim()) {
+          t.classList.add('open', 'topic--back');
+          target = t;
+        } else {
+          t.classList.remove('open');
+        }
+      });
+    }
+
+    var go = function () {
+      var el = target || $('#portal');
+      if (!el) return;
+      var y = window.scrollY + el.getBoundingClientRect().top - 88;
+      window.scrollTo({ top: Math.max(0, y), behavior: 'auto' });
+      /* tidy the address bar so a refresh does not keep re-jumping */
+      try {
+        history.replaceState(null, '', location.pathname + '#portal');
+      } catch (e) { }
+      if (target) setTimeout(function () { target.classList.remove('topic--back'); }, 2200);
+    };
+
+    /* wait for the preloader and one more frame, or the jump lands short */
+    var pre = document.getElementById('pre');
+    if (pre && !pre.classList.contains('gone')) {
+      var seen = new MutationObserver(function () {
+        if (pre.classList.contains('gone')) {
+          seen.disconnect();
+          requestAnimationFrame(function () { setTimeout(go, 90); });
+        }
+      });
+      seen.observe(pre, { attributes: true, attributeFilter: ['class'] });
+      setTimeout(go, 2200);            // in case the preloader never reports
+    } else {
+      requestAnimationFrame(function () { setTimeout(go, 60); });
+    }
+  }
 
   /* ---------- the sign-in dialog ---------- */
   var box = $('#auth2');
