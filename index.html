@@ -1,4 +1,4 @@
-=<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
@@ -5185,9 +5185,14 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       var openCount = g.lecs.filter(function (l) { return canOpen(lvl, g.t.n, l.n, l); }).length;
       var shut = g.lecs.length - openCount;
       var pl = +(g.t.planned || 0);
+      /* say the whole size of the topic, not just what is recorded — "1 of 11"
+         tells a student far more than "1 lecture" */
       var sub = g.lecs.length
-        ? g.lecs.length + ' lecture' + (g.lecs.length !== 1 ? 's' : '') +
-          (shut > 0 ? ' \u00b7 ' + shut + ' locked' : '')
+        ? (pl > g.lecs.length
+            ? g.lecs.length + ' of ' + pl + ' recorded' +
+              (shut > 0 ? ' \u00b7 ' + shut + ' locked' : '')
+            : g.lecs.length + ' lecture' + (g.lecs.length !== 1 ? 's' : '') +
+              (shut > 0 ? ' \u00b7 ' + shut + ' locked' : ''))
         : (pl ? pl + ' lecture' + (pl !== 1 ? 's' : '') + ' \u00b7 taught later'
               : 'recorded after class');
       var soon = soonRows(g.t, g.lecs.length, lvl);
@@ -6019,6 +6024,48 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     });
   }
 
+  /* ----------------------------------------------------------------------
+     THE TOPIC LIST, FROM THE DATABASE
+     `planned` — how many lectures a topic will end up with — is set in the
+     admin panel and lives in the topics table. Nothing here ever read it: the
+     page fell back to the list bundled in this file, which has no such field,
+     so the upcoming rows never appeared for anyone who was not signed in.
+     The table is public, so it can simply be asked for.
+     ---------------------------------------------------------------------- */
+  async function loadTopics() {
+    var C = window.SMK_CONFIG || {};
+    if (!C.SUPABASE_URL) return;
+    try {
+      var r = await fetch(C.SUPABASE_URL +
+        '/rest/v1/topics?select=lvl,n,name,planned&order=lvl,n', {
+        headers: { apikey: C.SUPABASE_ANON_KEY,
+                   Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY }
+      });
+      if (!r.ok) {
+        console.error('[SMK] topics could not be read (' + r.status + ').');
+        return;
+      }
+      var rows = await r.json();
+      if (!rows.length) return;
+
+      /* merge onto what is bundled, so the books mapping is kept */
+      ['O', 'AS', 'A2'].forEach(function (lvl) {
+        var mine = rows.filter(function (t) { return t.lvl === lvl; });
+        if (!mine.length) return;
+        var had = TOPICS[lvl] || [];
+        TOPICS[lvl] = mine.map(function (t) {
+          var old = had.filter(function (x) { return x.n === t.n; })[0] || {};
+          return { n: t.n, name: t.name || old.name,
+                   planned: +(t.planned || 0), books: old.books || [] };
+        });
+      });
+      fillCourseCards();
+      renderLectures();
+      if ($('#sylv').classList.contains('open')) renderSylv();
+      shareBooks();
+    } catch (e) { /* the bundled list stays */ }
+  }
+
   window.PUBLIC_LECTURES = window.PUBLIC_LECTURES || [];
   async function loadPreview() {
     var C = window.SMK_CONFIG || {};
@@ -6055,6 +6102,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
 
   window.SMKapplyTier = apply;
   apply();
+  loadTopics();
   loadPreview();
 })();
 </script>
