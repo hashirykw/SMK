@@ -1441,6 +1441,55 @@ body{overflow-x:hidden}
   .strip__t b{font-size:.86rem}
   .strip__go{display:none}
 }
+
+/* ==========================================================================
+   PLAYER CONTROLS  (3, 4)
+   The bar covered too much of the video on a phone, and the buttons lifted
+   off the surface on press — which reads as a floating object sitting on top
+   of the lecture. They sink into it instead: the surface darkens, the button
+   presses in, and it merges with the video rather than hovering over it.
+   ========================================================================== */
+.cb{background:rgba(255,255,255,.07);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);
+  transition:background-color .2s var(--ease),box-shadow .2s var(--ease),
+             color .2s var(--ease),transform .12s var(--ease)}
+.cb:hover{background:rgba(255,255,255,.14);color:#fff;transform:none;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.cb:active{background:rgba(0,0,0,.34);transform:scale(.94);
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.05)}
+/* the play button is the one thing that should still read as gold */
+#bPlay{background:rgba(224,169,76,.16);color:var(--gold-300);
+  box-shadow:inset 0 0 0 1px rgba(224,169,76,.22)}
+#bPlay:hover{background:rgba(224,169,76,.26);color:var(--gold-100)}
+#bPlay:active{background:rgba(224,169,76,.1);transform:scale(.94);
+  box-shadow:inset 0 2px 7px rgba(0,0,0,.45)}
+
+/* the big centre button sank as well — no lift, just a press */
+.big{transition:transform .16s var(--ease),box-shadow .25s var(--ease)}
+.big:hover{transform:translate(-50%,-50%) scale(1.03)}
+.big:active{transform:translate(-50%,-50%) scale(.93);
+  box-shadow:inset 0 3px 10px rgba(0,0,0,.4),0 6px 18px rgba(192,138,52,.3)}
+
+@media (max-width:860px){
+  /* less of the lecture behind glass */
+  .ctl{padding:24px 9px 9px;
+    background:linear-gradient(0deg,rgba(2,6,14,.82),rgba(2,6,14,.32) 58%,transparent)}
+  .crow{gap:4px;margin-top:4px}
+  .cb{width:34px;height:34px;border-radius:8px}
+  .cb svg{width:16px;height:16px}
+  .cb b{font-size:.45rem;bottom:3px;right:4px}
+  .ctime{font-size:.66rem;padding:0 5px}
+  .seek{height:18px}
+  .big{width:60px;height:60px;font-size:20px}
+  .pick__m{bottom:42px;min-width:112px}
+  .pick__m button{padding:8px 10px;font-size:.78rem;min-height:40px}
+}
+@media (max-width:420px){
+  .ctl{padding:20px 7px 7px}
+  .cb{width:32px;height:32px}
+  .cb svg{width:15px;height:15px}
+  .ctime{font-size:.62rem;padding:0 3px}
+}
 </style>
 </head>
 <body class="ready">
