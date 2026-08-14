@@ -1697,6 +1697,39 @@ body{overflow-x:hidden}
     $('#bigPlay').classList.add('hide');
   }
 
+  /* ----------------------------------------------------------------------
+     HOW MUCH IS FREE
+     Only so the note under the video says the right thing. Nothing here
+     decides what plays — get_lecture does, and it reads the same two numbers
+     from the database, so the sentence and the lock always agree.
+     ---------------------------------------------------------------------- */
+  var RULES = null;
+  async function loadRules() {
+    if (RULES) return RULES;
+    try {
+      var r = await fetch(C.SUPABASE_URL +
+        '/rest/v1/access_rules?select=lvl,free_topics,free_per_topic', {
+        headers: { apikey: C.SUPABASE_ANON_KEY,
+                   Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY }
+      });
+      RULES = r.ok ? await r.json() : [];
+    } catch (e) { RULES = []; }
+    return RULES;
+  }
+  function numWord(n) {
+    return ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven',
+            'eight', 'nine', 'ten'][n] || n;
+  }
+  function freeWords(lvl) {
+    var r = (RULES || []).filter(function (x) { return x.lvl === lvl; })[0];
+    if (!r) return 'Some lectures at the start of the course play';
+    var t = +r.free_topics || 0, p = +r.free_per_topic || 0;
+    if (!t || !p) return 'Lectures ticked open by Sir Mehboob play';
+    return (p === 1 ? 'The opening lecture' : 'The first ' + numWord(p) + ' lectures') +
+           ' of ' + (t === 1 ? 'the first topic' : 'the first ' + numWord(t) + ' topics') +
+           (p === 1 ? ' plays' : ' play');
+  }
+
   /* the free list, readable by anyone, used when get_lecture cannot answer */
   async function previewFallback() {
     try {
@@ -1798,12 +1831,13 @@ body{overflow-x:hidden}
       nb.style.display = '';
     }
 
+    if (!d.student_id) await loadRules();
     $('#traceNote').innerHTML = d.student_id
       ? '<b>Your student ID is on this video.</b> It moves across the whole frame while you ' +
         'watch. Any recording that leaves this account can be traced straight back to it, and ' +
         'the ID is banned.'
-      : '<b>This is a preview lecture.</b> The opening lecture of the first four topics plays ' +
-        'without an account. <a href="index.html#portal" style="color:var(--gold-300)">Sign in</a> ' +
+      : '<b>This is a free lecture.</b> ' + freeWords(d.lvl) + ' without an account. ' +
+        '<a href="index.html#portal" style="color:var(--gold-300)">Sign in</a> ' +
         'to open the rest of ' + LEVELNAME[d.lvl] + '.';
 
     renderMaterials(d);
