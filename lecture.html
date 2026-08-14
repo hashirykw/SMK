@@ -11,7 +11,9 @@
 <meta name="theme-color" content="#050B18" media="(prefers-color-scheme: dark)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500;6..72,600;6..72,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap">
+<link rel="stylesheet" media="print" onload="this.media='all';this.onload=null" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap"></noscript>
 <style>
 
 
@@ -1327,8 +1329,10 @@ body{overflow-x:hidden}
 .cb{width:38px;height:38px;border-radius:9px;display:grid;place-items:center;color:#fff;
   background:rgba(255,255,255,.09);transition:.22s var(--ease);flex:none;position:relative}
 .cb:hover{background:rgba(224,169,76,.85);color:#150F04;transform:translateY(-2px)}
-.cb svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;
-  stroke-linecap:round;stroke-linejoin:round}
+/* Without a viewBox the browser cannot fit a 24-unit drawing into an 18px
+   box, so every one of these was rendering cropped. */
+.cb svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round;display:block;overflow:visible}
 .cb b{position:absolute;bottom:4px;right:5px;font-family:var(--mono);font-size:.5rem;font-weight:700}
 .ctime{font-family:var(--mono);font-size:.73rem;color:#fff;opacity:.9;padding:0 8px;
   white-space:nowrap;flex:none}
@@ -1520,24 +1524,24 @@ body{overflow-x:hidden}
           <div class="seek__tip" id="sTip">0:00</div>
         </div>
         <div class="crow">
-          <button class="cb" id="bPlay" aria-label="Play"><svg id="iPlay"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg></button>
-          <button class="cb" id="bBack" aria-label="Back 10 seconds"><svg><path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 4 3 9 8 9"/></svg><b>10</b></button>
-          <button class="cb" id="bFwd" aria-label="Forward 10 seconds"><svg><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 4 21 9 16 9"/></svg><b>10</b></button>
+          <button class="cb" id="bPlay" aria-label="Play"><svg id="iPlay" viewBox="0 0 24 24"><polygon points="7 4.5 19 12 7 19.5" fill="currentColor" stroke="none"></polygon></svg></button>
+          <button class="cb" id="bBack" aria-label="Back 10 seconds"><svg viewBox="0 0 24 24"><path d="M3.5 12a8.5 8.5 0 1 0 2.7-6.2"/><polyline points="3.2 3.4 3.2 9 8.8 9"/></svg><b>10</b></button>
+          <button class="cb" id="bFwd" aria-label="Forward 10 seconds"><svg viewBox="0 0 24 24"><path d="M20.5 12a8.5 8.5 0 1 1-2.7-6.2"/><polyline points="20.8 3.4 20.8 9 15.2 9"/></svg><b>10</b></button>
           <span class="ctime" id="tTime">0:00 / 0:00</span>
           <div class="vol">
-            <button class="cb" id="bMute" aria-label="Mute"><svg><path d="M4 9.5h3.2L12 5.4v13.2L7.2 14.5H4z"/><path d="M15.4 9.6a3.4 3.4 0 0 1 0 4.8"/><path d="M17.9 7.1a6.9 6.9 0 0 1 0 9.8"/></svg></button>
+            <button class="cb" id="bMute" aria-label="Mute"><svg viewBox="0 0 24 24"><path d="M4 9.4h3.3L12 5.3v13.4L7.3 14.6H4z" fill="currentColor" stroke="none"/><path d="M15.6 9.8a3.2 3.2 0 0 1 0 4.4"/><path d="M18 7.4a6.6 6.6 0 0 1 0 9.2"/></svg></button>
             <input type="range" id="rVol" min="0" max="100" step="5" value="100" aria-label="Volume">
           </div>
           <span class="csp"></span>
           <div class="pick">
-            <button class="cb" id="bSpeed" aria-label="Speed"><svg><path d="M12 20a8 8 0 1 1 8-8"/><path d="M12 12l4.5-3"/></svg></button>
+            <button class="cb" id="bSpeed" aria-label="Speed"><svg viewBox="0 0 24 24"><path d="M4.4 18.2a8.6 8.6 0 1 1 15.2 0"/><path d="M12 12.6l4.6-3.4"/><circle cx="12" cy="13.2" r="1.5" fill="currentColor" stroke="none"/></svg></button>
             <div class="pick__m" id="mSpeed"></div>
           </div>
           <div class="pick">
-            <button class="cb" id="bCC" aria-label="Quality"><svg><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M7.5 10.5h2M7.5 13.5h4M14.5 10.5h2M14.5 13.5h2"/></svg></button>
+            <button class="cb" id="bCC" aria-label="Quality"><svg viewBox="0 0 24 24"><rect x="3" y="5.4" width="18" height="13.2" rx="2.6"/><path d="M10 10.6a2.4 2.4 0 1 0 0 2.8M17.8 10.6a2.4 2.4 0 1 0 0 2.8"/></svg></button>
             <div class="pick__m" id="mCC"></div>
           </div>
-          <button class="cb" id="bFull" aria-label="Fullscreen"><svg><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+          <button class="cb" id="bFull" aria-label="Fullscreen"><svg viewBox="0 0 24 24"><path d="M4 9.2V4h5.2M20 9.2V4h-5.2M4 14.8V20h5.2M20 14.8V20h-5.2"/></svg></button>
         </div>
       </div>
     </div>
@@ -1944,8 +1948,9 @@ body{overflow-x:hidden}
     else { YT.playVideo(); flash('&#9654;'); }
   }
   function onState(e) {
-    var PLAY = '<polygon points="6 4 20 12 6 20 6 4"></polygon>';
-    var PAUSE = '<path d="M8 4v16M16 4v16"/>';
+    var PLAY = '<polygon points="7 4.5 19 12 7 19.5" fill="currentColor" stroke="none"></polygon>';
+    var PAUSE = '<rect x="7" y="4.5" width="3.4" height="15" rx="1.2" fill="currentColor" stroke="none"/>' +
+      '<rect x="13.6" y="4.5" width="3.4" height="15" rx="1.2" fill="currentColor" stroke="none"/>';
     $('#iPlay').innerHTML = e.data === 1 ? PAUSE : PLAY;
     $('#bigPlay').classList.toggle('hide', e.data === 1 || e.data === 3);
     /* -1 unstarted, 2 paused, 0 ended — the states where YouTube draws its own
