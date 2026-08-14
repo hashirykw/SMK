@@ -1495,9 +1495,47 @@ body{overflow-x:hidden}
   .cb svg{width:15px;height:15px}
   .ctime{font-size:.62rem;padding:0 3px}
 }
+
+/* ---------- the notes reader ---------- */
+.notesv{position:fixed;inset:0;z-index:900;display:none}
+.notesv.open{display:block}
+.notesv__bg{position:absolute;inset:0;background:rgba(3,7,16,.9);backdrop-filter:blur(8px)}
+.notesv__p{position:absolute;inset:0;display:flex;flex-direction:column}
+.notesv__bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:11px clamp(12px,3vw,22px);background:var(--bg);
+  border-bottom:1px solid var(--line-soft)}
+.notesv__bar b{font-family:var(--display);font-weight:600;font-size:.98rem;
+  flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.notesv__note{font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted)}
+.notesv__scroll{flex:1;overflow-y:auto;padding:clamp(10px,2vw,20px);
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+  background:color-mix(in srgb,var(--bg) 60%,#0B1730)}
+.notes__pg{max-width:900px;width:100%;border-radius:8px;display:block;
+  box-shadow:0 8px 26px rgba(0,0,0,.35);
+  user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
+  pointer-events:none}                    /* nothing to long-press or drag */
+.notes__wait{color:var(--muted);font-size:.9rem;padding:40px 20px;text-align:center}
+@media(max-width:620px){
+  .notesv__note{display:none}
+  .notesv__bar{padding:9px 12px;gap:10px}
+}
+@media print{ .notesv{display:none!important} }
 </style>
 </head>
 <body class="ready">
+
+<div class="notesv" id="notesv" role="dialog" aria-modal="true" aria-label="Lecture notes">
+  <div class="notesv__bg"></div>
+  <div class="notesv__p">
+    <div class="notesv__bar">
+      <b id="notesTitle">Lecture notes</b>
+      <span class="notesv__note">Reading only &mdash; these notes cannot be saved or shared</span>
+      <button class="btn btn--line btn--sm" id="notesClose">Close</button>
+    </div>
+    <div class="notesv__scroll" id="notesPages"></div>
+  </div>
+</div>
 
 <div class="lp">
   <header class="lp__bar">
@@ -1553,7 +1591,7 @@ body{overflow-x:hidden}
         <p class="muted" style="font-size:.86rem;margin:0" id="lecS"></p>
       </div>
       <div class="lp__acts">
-        <a class="btn btn--line btn--sm" id="bNotes" style="display:none" target="_blank" rel="noopener">Lecture notes</a>
+        <button class="btn btn--line btn--sm" id="bNotes" style="display:none">Lecture notes</button>
         <a class="btn btn--gold btn--sm" id="bAll" href="index.html#portal">All lectures</a>
       </div>
     </div>
@@ -1697,39 +1735,6 @@ body{overflow-x:hidden}
     $('#bigPlay').classList.add('hide');
   }
 
-  /* ----------------------------------------------------------------------
-     HOW MUCH IS FREE
-     Only so the note under the video says the right thing. Nothing here
-     decides what plays — get_lecture does, and it reads the same two numbers
-     from the database, so the sentence and the lock always agree.
-     ---------------------------------------------------------------------- */
-  var RULES = null;
-  async function loadRules() {
-    if (RULES) return RULES;
-    try {
-      var r = await fetch(C.SUPABASE_URL +
-        '/rest/v1/access_rules?select=lvl,free_topics,free_per_topic', {
-        headers: { apikey: C.SUPABASE_ANON_KEY,
-                   Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY }
-      });
-      RULES = r.ok ? await r.json() : [];
-    } catch (e) { RULES = []; }
-    return RULES;
-  }
-  function numWord(n) {
-    return ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven',
-            'eight', 'nine', 'ten'][n] || n;
-  }
-  function freeWords(lvl) {
-    var r = (RULES || []).filter(function (x) { return x.lvl === lvl; })[0];
-    if (!r) return 'Some lectures at the start of the course play';
-    var t = +r.free_topics || 0, p = +r.free_per_topic || 0;
-    if (!t || !p) return 'Lectures ticked open by Sir Mehboob play';
-    return (p === 1 ? 'The opening lecture' : 'The first ' + numWord(p) + ' lectures') +
-           ' of ' + (t === 1 ? 'the first topic' : 'the first ' + numWord(t) + ' topics') +
-           (p === 1 ? ' plays' : ' play');
-  }
-
   /* the free list, readable by anyone, used when get_lecture cannot answer */
   async function previewFallback() {
     try {
@@ -1824,20 +1829,21 @@ body{overflow-x:hidden}
       all.textContent = 'All ' + (LEVELNAME[d.lvl] || d.lvl).replace(' / IGCSE', '') + ' lectures';
     }
 
+    /* The notes never become a link. The address is held in a closure and the
+       file is drawn into a canvas inside this page — there is no href to copy,
+       no new tab to land on, and no download button. */
     if (d.notes_url && !d.free) {
       var nb = $('#bNotes');
-      nb.href = /^https?:/i.test(d.notes_url) ? d.notes_url
-        : 'https://raw.githubusercontent.com/hashirykw/SMK/main/' + d.notes_url;
       nb.style.display = '';
+      nb.addEventListener('click', function () { openNotes(d); });
     }
 
-    if (!d.student_id) await loadRules();
     $('#traceNote').innerHTML = d.student_id
       ? '<b>Your student ID is on this video.</b> It moves across the whole frame while you ' +
         'watch. Any recording that leaves this account can be traced straight back to it, and ' +
         'the ID is banned.'
-      : '<b>This is a free lecture.</b> ' + freeWords(d.lvl) + ' without an account. ' +
-        '<a href="index.html#portal" style="color:var(--gold-300)">Sign in</a> ' +
+      : '<b>This is a preview lecture.</b> The opening lecture of the first four topics plays ' +
+        'without an account. <a href="index.html#portal" style="color:var(--gold-300)">Sign in</a> ' +
         'to open the rest of ' + LEVELNAME[d.lvl] + '.';
 
     renderMaterials(d);
@@ -1852,11 +1858,106 @@ body{overflow-x:hidden}
   }
 
   /* ----------------------------------------------------------------------
+     THE NOTES READER
+     The PDF is fetched as raw bytes and painted page by page into canvases.
+     Nothing on the page ever holds the address: no href, no iframe src, no
+     object tag, and the blob is revoked the moment it has been parsed. The
+     student ID is written across every page, so a photograph of the screen
+     still names the account it came from.
+     ---------------------------------------------------------------------- */
+  var pdfjsReady = null;
+  function loadPdfJs() {
+    if (pdfjsReady) return pdfjsReady;
+    pdfjsReady = new Promise(function (res, rej) {
+      if (window.pdfjsLib) return res(window.pdfjsLib);
+      var sc = document.createElement('script');
+      sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      sc.onload = function () {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+          'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        res(window.pdfjsLib);
+      };
+      sc.onerror = function () { rej(new Error('reader')); };
+      document.head.appendChild(sc);
+    });
+    return pdfjsReady;
+  }
+
+  async function openNotes(d) {
+    if (!d || !d.notes_url) return;
+    var v = $('#notesv');
+    v.classList.add('open');
+    document.body.classList.add('lock');
+    var host = $('#notesPages');
+    host.innerHTML = '<div class="notes__wait">Opening the notes\u2026</div>';
+    $('#notesTitle').textContent = d.title || 'Lecture notes';
+
+    var url = /^https?:/i.test(d.notes_url) ? d.notes_url : PBASE + d.notes_url;
+    var stamp = (student() && student().sid)
+      ? student().sid.toUpperCase() + '  \u00b7  ' + (student().name || '')
+      : 'PHYSICSWITHSMK.COM';
+
+    try {
+      var lib = await loadPdfJs();
+      var bytes = await (await fetch(url, { cache: 'no-store' })).arrayBuffer();
+      var pdf = await lib.getDocument({ data: bytes }).promise;
+      bytes = null;                       /* let it go as soon as it is parsed */
+      host.innerHTML = '';
+      var wide = Math.min(host.clientWidth || 700, 900);
+
+      for (var i = 1; i <= pdf.numPages; i++) {
+        var page = await pdf.getPage(i);
+        var base = page.getViewport({ scale: 1 });
+        var vp = page.getViewport({ scale: wide / base.width });
+        var cv = document.createElement('canvas');
+        cv.className = 'notes__pg';
+        cv.width = Math.floor(vp.width * (window.devicePixelRatio || 1));
+        cv.height = Math.floor(vp.height * (window.devicePixelRatio || 1));
+        cv.style.width = '100%';
+        var cx = cv.getContext('2d');
+        cx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+        host.appendChild(cv);
+        await page.render({ canvasContext: cx, viewport: vp }).promise;
+
+        /* the ID, written into the pixels rather than laid over them */
+        cx.save();
+        cx.globalAlpha = 0.16;
+        cx.fillStyle = '#0B1730';
+        cx.font = '600 ' + Math.max(13, vp.width / 34) + 'px monospace';
+        cx.translate(vp.width / 2, vp.height / 2);
+        cx.rotate(-Math.PI / 7);
+        for (var yy = -vp.height; yy < vp.height; yy += vp.height / 5) {
+          cx.fillText(stamp, -vp.width / 2.1, yy);
+        }
+        cx.restore();
+      }
+    } catch (e) {
+      host.innerHTML = '<div class="notes__wait">These notes could not be opened. ' +
+        'Check your connection, or ask Sir Mehboob to re-upload them.</div>';
+      console.error('[SMK] notes:', e);
+    }
+  }
+
+  function closeNotes() {
+    $('#notesv').classList.remove('open');
+    document.body.classList.remove('lock');
+    $('#notesPages').innerHTML = '';       /* the pages do not linger in memory */
+  }
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('#notesClose') ||
+        (e.target.classList.contains('notesv__bg'))) closeNotes();
+  });
+  addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && $('#notesv').classList.contains('open')) closeNotes();
+  });
+
+  /* ----------------------------------------------------------------------
      WHAT COMES WITH THE LECTURE
      The written notes, and the topical paper books for this topic — the same
      strip rows the main page uses, so it reads as one site.
      ---------------------------------------------------------------------- */
-  var PBASE = 'https://raw.githubusercontent.com/hashirykw/SMK/main/';
+  var PBASE = (window.SMK_CONFIG && window.SMK_CONFIG.FILES_BASE)
+    || 'https://raw.githubusercontent.com/hashirykw/SMK/main/';
 
   /* the main page leaves the topic-to-books map here when it loads */
   try { window.SMK_BOOKS = JSON.parse(localStorage.getItem('smk_books') || '{}'); }
@@ -1873,13 +1974,20 @@ body{overflow-x:hidden}
       '<span class="strip__go">Open</span></a>';
   }
 
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('[data-open-notes]')) openNotes(DATA || {});
+  });
+
   function renderMaterials(d) {
     var out = '';
 
     if (d.notes_url) {
       out += '<div class="mats__h">Written notes</div>' +
-        strip('&#128196;', 'Notes for this lecture',
-              'PDF \u00b7 opens in a new tab', fileUrl(d.notes_url), 'strip--notes');
+        '<button class="strip strip--notes" data-open-notes>' +
+        '<span class="strip__i">&#128196;</span>' +
+        '<span class="strip__t"><b>Notes for this lecture</b>' +
+        '<span>reads here \u00b7 not downloadable</span></span>' +
+        '<span class="strip__go">Read</span></button>';
     } else if (!d.free) {
       out += '<div class="mats__h">Written notes</div>' +
         '<div class="strip strip--shut"><span class="strip__i">&#128196;</span>' +
