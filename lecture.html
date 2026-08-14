@@ -1550,7 +1550,7 @@ body{overflow-x:hidden}
       </div>
       <div class="lp__acts">
         <a class="btn btn--line btn--sm" id="bNotes" style="display:none" target="_blank" rel="noopener">Lecture notes</a>
-        <a class="btn btn--gold btn--sm" href="index.html#portal">All lectures</a>
+        <a class="btn btn--gold btn--sm" id="bAll" href="index.html#portal">All lectures</a>
       </div>
     </div>
 
@@ -1777,6 +1777,15 @@ body{overflow-x:hidden}
     $('#lecT').textContent = d.title;
     $('#chip').textContent = 'Lecture ' + d.n + (d.duration ? ' \u00b7 ' + d.duration : '');
     $('#lecS').textContent = LEVELNAME[d.lvl] + ' \u00b7 Topic ' + d.topic;
+
+    /* Send the student back to the list they came from — their level, their
+       topic, already open — rather than to the top of the home page. */
+    var all = $('#bAll');
+    if (all) {
+      all.href = 'index.html?lvl=' + encodeURIComponent(d.lvl) +
+                 '&topic=' + encodeURIComponent(d.topic) + '#portal';
+      all.textContent = 'All ' + (LEVELNAME[d.lvl] || d.lvl).replace(' / IGCSE', '') + ' lectures';
+    }
 
     if (d.notes_url && !d.free) {
       var nb = $('#bNotes');
@@ -2089,7 +2098,13 @@ body{overflow-x:hidden}
 
   $('#btnClose').addEventListener('click', function () {
     if (window.opener && !window.opener.closed) window.close();
-    else location.href = 'index.html#portal';
+    else {
+      var d2 = DATA || {};
+      location.href = d2.lvl
+        ? 'index.html?lvl=' + encodeURIComponent(d2.lvl) +
+          (d2.topic ? '&topic=' + encodeURIComponent(d2.topic) : '') + '#portal'
+        : 'index.html#portal';
+    }
   });
 
   /* keep checking they are still allowed to be here */
