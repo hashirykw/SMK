@@ -31,7 +31,21 @@
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500;6..72,600;6..72,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<!-- Fonts used to block the first paint: nothing appeared until Google
+     answered. Five Newsreader weights and five Jakarta weights were being
+     fetched when the page uses three of each. The sheet now loads without
+     blocking and applies when it arrives; the text is readable in a system
+     face until then. -->
+<link rel="preload" as="style"
+      href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap">
+<link rel="stylesheet" media="print" onload="this.media='all';this.onload=null"
+      href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap">
+<noscript><link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap"></noscript>
+
+<!-- the banner is the largest thing on the first screen, so it is asked for
+     at the same moment as the stylesheet rather than after it -->
+<link rel="preload" as="image" href="hero-light.jpg" fetchpriority="high">
 <style>
 /* ==========================================================================
    SIR MEHBOOB KHAN — v3
@@ -54,7 +68,7 @@
   --text:var(--ink); --muted:var(--dim);
 
   --display:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif;
-  --sans:"Plus Jakarta Sans","Inter",system-ui,-apple-system,sans-serif;
+  --sans:"Plus Jakarta Sans","Segoe UI",system-ui,-apple-system,"Helvetica Neue",sans-serif;
   --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
 
   --r:14px; --r-lg:22px; --max:1300px;
@@ -3041,10 +3055,10 @@ body.pv-lock{overflow:hidden}
     </div>
 
     <label class="showall" id="showAllWrap">
-      <input type="checkbox" id="showAll" aria-label="Show every lecture, including ones not yet recorded">
+      <input type="checkbox" id="showAll" checked aria-label="Show every lecture, including ones not yet recorded">
       <span class="showall__b" aria-hidden="true"><i></i></span>
-      <span class="showall__t"><b>Show everything</b>
-        <span>including lectures still to be recorded</span></span>
+      <span class="showall__t"><b>Showing every lecture</b>
+        <span>recorded, locked and still to come &mdash; switch off for recorded only</span></span>
     </label>
 
     <div class="tabs2" role="tablist" id="lecTabs" style="margin-top:16px">
@@ -4970,7 +4984,10 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   var OPEN_TOPICS = 4;
 
   var LEVELNAME = { O: 'O Level / IGCSE', AS: 'AS Level', A2: 'A2 Level' };
-  var showAll = false;       // reveal lectures that have not been recorded yet
+  /* Every lecture is listed by default — locked ones so a visitor can see the
+     whole course, upcoming ones so a paying student can see what is still to
+     come. The switch now hides them rather than reveals them. */
+  var showAll = true;
   var lecLevel = 'O';        // which level the lecture list is showing
   var sylvLevel = 'O';       // which level the syllabus popup is showing
 
@@ -5277,6 +5294,8 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       var n = $('#tvN').textContent;
       openTopic(lecLevel, n);
     }
+    sa.closest('.showall').querySelector('.showall__t b').textContent =
+      showAll ? 'Showing every lecture' : 'Recorded lectures only';
     window.SMKtoast && window.SMKtoast(showAll
       ? 'Showing every lecture, recorded or not'
       : 'Showing recorded lectures only');
