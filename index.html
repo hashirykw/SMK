@@ -3,23 +3,32 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sir Mehboob Khan — O/A Level Physics, Karachi &amp; Online</title>
-<meta name="description" content="Cambridge Physics with Sir Mehboob Khan. O Level, IGCSE, AS and A2 — on campus in Karachi at SWK Solution, and live online worldwide. Teaching since 2007.">
+<title>O Level &amp; A Level Physics Tuition in Karachi | Sir Mehboob Khan</title>
+<meta name="description" content="O Level, IGCSE and A Level Physics tuition in Karachi and live online. Cambridge 5054, 0625 and 9702 with Sir Mehboob Khan — recorded lectures, written notes and every past paper from 2002. Teaching since 2007.">
 <meta name="view-transition" content="same-origin">
 <link rel="canonical" href="https://physicswithsmk.com/">
 <meta property="og:url" content="https://physicswithsmk.com/">
 <meta property="og:type" content="website">
+<!-- The share card: what shows when this link is sent on WhatsApp, which is how
+     most people will first meet this site. It points at the logo, which works.
+     A proper 1200x630 card with the name, the tagline and Sir Mehboob's photo
+     would read far better in a chat — make one, save it as share-card.png, and
+     change the two URLs below to it. Do not point at a file that does not exist
+     yet: a missing image means WhatsApp shows no picture at all. -->
 <meta property="og:image" content="https://physicswithsmk.com/lockup.png">
+<meta property="og:image:alt" content="Sir Mehboob Khan — O/A Level Physics, Karachi and online">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://physicswithsmk.com/lockup.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
-<meta name="theme-color" content="#F4EBE0">
-<meta property="og:title" content="Sir Mehboob Khan — O/A Level Physics">
-<meta property="og:description" content="Cambridge Physics for O Level, IGCSE, AS and A2. Karachi campuses and live online worldwide.">
-<meta property="og:image" content="lockup.png">
+<meta name="theme-color" content="#F4EBE0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#050B18" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="O Level & A Level Physics Tuition in Karachi | Sir Mehboob Khan">
+<meta property="og:description" content="Cambridge Physics tuition for O Level, IGCSE, AS and A2 — 5054, 0625 and 9702. Karachi campuses and live online worldwide.">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1971,6 +1980,417 @@ body.pv-lock{overflow:hidden}
     background-size:cover;background-position:center}
   [data-theme="light"] #hero .galaxy{background-image:url('lightthemehero.png')}
 }
+
+/* ==========================================================================
+   IMAGE SPACE
+   Every image already has a height in CSS, but the browser still does not know
+   how WIDE it will be until the file arrives, so the row reflows around it as
+   it loads. Reserving a minimum width holds the line steady. Google measures
+   this as layout shift, and it is one of the things it ranks on.
+   ========================================================================== */
+.logo img{min-width:34px}
+.aff__logo{min-height:78px;display:grid;place-items:center}
+.aff__logo img{min-width:60px}
+.ftr img{min-width:120px}
+.flip__wm{aspect-ratio:1}
+@media (max-width:860px){
+  .aff__logo{min-height:56px}
+  .aff__logo img{min-width:48px}
+  .ftr img{min-width:90px}
+}
+
+/* the step cards were H4 under an H2, which reads as a missing level to a
+   screen reader. They are H3 now and sized down to match what they were. */
+.step h3{font-size:1rem;margin:10px 0 6px}
+
+/* ==========================================================================
+   ===================  FINAL LAYER  ========================================
+   Fifteen patch blocks had accumulated above, several overriding each other —
+   .flip--course .flip__t was declared twelve times and eleven separate 860px
+   blocks disagreed. That is why some fixes stopped holding. Everything below
+   is the last word on the selectors it names. Nothing above needs deleting;
+   this simply comes last and therefore wins.
+   ========================================================================== */
+
+/* ---------- 5. TOPIC PILLS: one left edge, whether the name wraps or not --- */
+.tlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.tpill{display:flex;align-items:center;gap:10px;text-align:left;width:100%;
+  padding:11px 13px;min-height:48px;border-radius:11px;line-height:1.3}
+.tpill i{flex:0 0 auto;align-self:center;font-style:normal;font-size:.78rem;
+  color:var(--gold-400);min-width:14px}
+@media (max-width:860px){
+  .tlist{grid-template-columns:1fr 1fr;gap:7px}
+  .tpill{padding:10px 11px;min-height:46px;font-size:.8rem;gap:8px}
+}
+@media (max-width:420px){
+  .tlist{grid-template-columns:1fr}
+  .tpill{font-size:.84rem}
+}
+
+/* ---------- 9. PAPER BUTTONS: five on one row, never wrapping -------------- */
+.plinks{display:flex;flex-wrap:nowrap;gap:5px;width:100%;min-width:0}
+.plink{flex:1 1 0;min-width:0;text-align:center;white-space:nowrap;
+  padding:8px 4px;font-size:.6rem;letter-spacing:.02em;overflow:hidden;
+  text-overflow:ellipsis;min-height:40px;display:inline-flex;
+  align-items:center;justify-content:center}
+@media (max-width:520px){
+  .plinks{gap:4px}
+  .plink{font-size:.53rem;padding:8px 2px;letter-spacing:0}
+}
+@media (max-width:360px){ .plink{font-size:.49rem} }
+
+/* ---------- 11. BOOK ROWS + TOPIC DIALOG: tighter ------------------------- */
+.prow{padding:11px 12px;gap:10px;align-items:center}
+.prow__n{width:30px;height:30px;flex:none;font-size:.66rem}
+.prow__t{font-size:.85rem;line-height:1.3}
+.prow__s{font-size:.62rem;margin-top:1px}
+.bookrow{padding:11px 12px;gap:10px;flex-wrap:wrap}
+.bookrow__m b{font-size:.85rem;line-height:1.3}
+.bookrow__m span{font-size:.6rem;line-height:1.35}
+.bookrow__a{width:100%;margin-left:0;margin-top:8px}
+.sylv__p{padding:20px 16px 24px}
+.tv__head{gap:11px}
+.tv__n{width:40px;height:40px;font-size:1.15rem;border-radius:11px}
+#tvName{font-size:1.08rem;line-height:1.25}
+.tvsec{margin:16px 0 9px;font-size:.6rem}
+@media (max-width:520px){
+  .sylv__p{padding:18px 13px 20px}
+  #tvName{font-size:1rem}
+  .tv__n{width:36px;height:36px;font-size:1.05rem}
+}
+
+/* ---------- 6 + 10. TYPE AND TILES: smaller on a phone -------------------- */
+@media (max-width:860px){
+  .tile{padding:15px 14px}
+  .tile p{font-size:.82rem;line-height:1.5;max-width:34ch}
+  .tile__n{font-size:clamp(1.5rem,6.5vw,2rem);line-height:1}
+  .tile__k{font-size:.56rem;letter-spacing:.1em;line-height:1.35}
+  .tile h3{font-size:1rem;margin-bottom:5px}
+  .note{font-size:.83rem;line-height:1.55;padding:12px 13px}
+  .lede{font-size:.9rem;line-height:1.55}
+  .eyebrow{font-size:.6rem}
+  /* three tiles in a two-column grid always strand the last one */
+  .bento .tile.c3:last-child:nth-child(odd),
+  .bento .tile.c4:last-child:nth-child(odd){grid-column:1/-1}
+}
+
+/* ---------- 8. METHOD CARDS: sized to what is actually on them ------------ */
+.flip--how{height:auto;min-height:0}
+.flip--how .flip__i{height:auto}
+.flip--how .flip__f,.flip--how .flip__b{position:relative;inset:auto;height:auto;
+  min-height:186px;padding:18px 16px}
+.flip--how .flip__b{position:absolute;inset:0;height:100%}
+.flip--how.on .flip__f,.flip--how:hover .flip__f,.flip--how:focus-within .flip__f{
+  position:absolute;inset:0;height:100%}
+.flip--how.on .flip__b,.flip--how:hover .flip__b,.flip--how:focus-within .flip__b{
+  position:relative;inset:auto;height:auto}
+.flip--how .flip__n{font-size:1.9rem;line-height:1}
+.flip--how h3{font-size:1.05rem;margin:8px 0 6px;line-height:1.25}
+.flip--how .see{margin-top:12px}
+@media (max-width:860px){
+  .flip--how .flip__f,.flip--how .flip__b{min-height:150px;padding:15px 14px}
+  .flip--how .flip__n{font-size:1.6rem}
+  .flip--how h3{font-size:.98rem}
+}
+
+/* ---------- 15. focus you can actually see -------------------------------- */
+.tpill:focus-visible,[data-tap]:focus-visible,.lec2:focus-visible,
+.showall input:focus-visible + .showall__b,.flip__t:focus-visible,
+.plink:focus-visible,.strip:focus-visible{
+  outline:2px solid var(--gold-300);outline-offset:2px;border-radius:10px}
+
+/* ---------- 17. motion, only if it is wanted ------------------------------ */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;
+    transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .flip__i{transition:none}
+  [data-rv]{opacity:1!important;transform:none!important}
+  .wm{transition:none}
+}
+
+/* ---------- 16. printing a page of papers -------------------------------- */
+@media print{
+  .hdr,.mob,.dock,.bot,.galaxy,.aura,.sprog,.nag,.promo,.upsell,.toast,
+  #pre,.stars,.nxb,.showall,.moreb,.tabs2,.auth2,.pdfv{display:none!important}
+  body{background:#fff;color:#000;font-size:11pt}
+  .sec{padding-block:12pt;break-inside:avoid}
+  .tile,.topic,.prow,.bookrow,.strip{break-inside:avoid;border-color:#bbb}
+  a[href^="http"]::after{content:" (" attr(href) ")";font-size:8pt;color:#555}
+  .clamp{max-height:none!important}
+  .clamp::after{display:none}
+}
+
+/* ==========================================================================
+   MOBILE TYPE SCALE  (12, 13, 6)
+   Font size has been reported card by card. Setting each one separately means
+   the next card is wrong too, so this is one scale applied everywhere: body,
+   card prose, titles, mono labels and the big numbers, all stepped down about
+   12% on a phone. Section headings and the hero keep their weight — that is
+   where the site reads as worth paying for, and shrinking those would make it
+   feel cheap rather than compact.
+   ========================================================================== */
+@media (max-width:860px){
+  body{font-size:15px;line-height:1.6}
+
+  /* prose inside cards, which is where the bulk of the reading is */
+  .tile p,.two__c p,.step p,.nag p,.aff p,.mcard p,.rcard p{
+    font-size:.84rem;line-height:1.52}
+  .lede{font-size:.92rem;line-height:1.56}
+  .note{font-size:.82rem;line-height:1.55}
+
+  /* card titles sit a step below section headings */
+  .tile h3,.two__c b,.step h3,.mcard h3{font-size:.98rem;line-height:1.28}
+
+  /* JetBrains Mono is wide, and 0.14em tracking is why two-word labels wrap.
+     Tightening it here fixes several cramped labels at once. */
+  .tile__l,.eyebrow,.chip,.lecflag,.prow__s,.strip__t span,.showall__t span,
+  .stat span,.mats__h,.tvsec{letter-spacing:.07em}
+  .tile__l{font-size:.6rem;line-height:1.35}
+  .chip{font-size:.62rem;padding:5px 10px}
+  .eyebrow{font-size:.62rem}
+
+  /* the big numbers were sized for a desktop column */
+  .tile__n{font-size:clamp(1.6rem,7vw,2.1rem);line-height:1}
+  .hero__m b{font-size:clamp(1.5rem,6.5vw,1.9rem)}
+}
+@media (max-width:420px){
+  body{font-size:14.6px}
+  .tile p,.two__c p,.step p{font-size:.82rem}
+  .tile__n{font-size:1.55rem}
+}
+
+/* ==========================================================================
+   CARDS  (5, 8, 9, 10, 11)
+   ========================================================================== */
+
+/* ---- 5. topic pills: one alignment whether the name wraps or not ---- */
+.tpill{align-items:center;text-align:left;gap:10px}
+.tpill i{flex:0 0 auto;align-self:center;line-height:1}
+.tpill span,.tpill{justify-content:flex-start}
+@media (max-width:860px){
+  .tlist{align-items:stretch}
+  .tpill{padding:10px 12px;min-height:52px;line-height:1.25;
+    display:flex;align-items:center;text-align:left}
+  .tpill i{font-size:.72rem;min-width:14px}
+}
+
+/* ---- 8. method cards were mostly empty space ---- */
+.mcard{min-height:0}
+@media (max-width:860px){
+  .mcard,.step{padding:16px 15px}
+  .mcard__n,.step__n{font-size:1.9rem;line-height:1;margin-bottom:4px}
+  .mcard h3{margin:4px 0 8px}
+  /* the footer line was pinned to the bottom of a tall card, leaving a hole */
+  .mcard .flip__go,.mcard .see,.mcard__f{margin-top:12px!important}
+  .mcard p{margin-bottom:8px}
+}
+
+/* ---- 9 + 11. every paper button on one line ---- */
+.plinks{display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.plinks::-webkit-scrollbar{display:none}
+.plinks .plink{flex:0 0 auto;white-space:nowrap;min-width:42px;justify-content:center}
+@media (max-width:860px){
+  .plinks{gap:5px}
+  .plinks .plink{font-size:.56rem;letter-spacing:.04em;padding:9px 9px;min-height:42px;
+    display:inline-flex;align-items:center}
+}
+@media (max-width:420px){
+  .plinks .plink{font-size:.53rem;padding:9px 8px;letter-spacing:.02em;min-height:42px}
+}
+
+/* ---- 10. stat tiles ---- */
+@media (max-width:860px){
+  .tile{padding:14px 13px}
+  .tile__l{margin:6px 0 6px}
+  .tile p{margin:0}
+  /* three tiles in two columns always left a gap — the last one spans */
+  .bento .tile.c3:nth-last-child(1):nth-child(odd),
+  .bento .tile.c4:nth-last-child(1):nth-child(odd){grid-column:1/-1}
+}
+
+/* ---- 11. the topic dialog was loose ---- */
+@media (max-width:860px){
+  .sylv__p{padding:16px 14px 20px}
+  .tv__head{gap:11px}
+  .tv__n{width:38px;height:38px;font-size:1.05rem;border-radius:11px}
+  #tvName{font-size:1.08rem;line-height:1.22}
+  #tvSub{font-size:.82rem;margin:9px 0 12px}
+  .tvsec{margin:15px 0 9px;font-size:.6rem}
+  .bookrow{padding:11px 12px;gap:10px;flex-wrap:wrap}
+  .bookrow__i{width:32px;height:32px;font-size:14px}
+  .bookrow__m b{font-size:.86rem;line-height:1.25}
+  .bookrow__m span{font-size:.62rem;line-height:1.35}
+  .bookrow__a{margin-left:0;width:100%;margin-top:2px}
+}
+
+/* ==========================================================================
+   POLISH  (16, 17, 18, 20)
+   ========================================================================== */
+
+/* ---- 16. reading columns stop widening on a big screen ---- */
+@media (min-width:1100px){
+  #portal .topics,#papers #paperHost,#syllabus #sylHost,
+  #notes .wrap > .note,.showall{max-width:920px}
+  .lec2__t b{max-width:60ch}
+}
+
+/* ---- 17. you can always see where the keyboard is ---- */
+:focus-visible{outline:2px solid var(--gold-300);outline-offset:3px;border-radius:8px}
+.lec2:focus-visible,.tpill:focus-visible,.topic__h:focus-visible,
+.sylvrow:focus-visible,.plink:focus-visible,.strip:focus-visible,
+.yr:focus-visible,.flip__t:focus-visible,[data-tap]:focus-visible{
+  outline:2px solid var(--gold-300);outline-offset:2px;
+  box-shadow:0 0 0 5px rgba(224,169,76,.16)}
+.dock__b:focus-visible,.dock__ai:focus-visible{outline-offset:4px}
+
+/* ---- 18. the assistant steps aside while you read ---- */
+.dock{transition:transform .32s var(--ease),opacity .32s var(--ease)}
+.dock.tuck{transform:translateY(120%);opacity:0;pointer-events:none}
+
+/* ---- 20. the newest animations respect the setting too ---- */
+@media (prefers-reduced-motion:reduce){
+  .rip{display:none}
+  .tabs2 button.on::after{animation:none}
+  .lec2--shut.nope{animation:none}
+  .dock{transition:none}
+  .dock.tuck{transform:none;opacity:1;pointer-events:auto}
+  .nx:hover::after{animation:none;opacity:0}
+  .introv__ring{animation:none}
+}
+
+/* ==========================================================================
+   THE HERO BANNER
+   The artwork carries its own headline, so nothing is written over it at any
+   width. It is never blown up to fill a screen — it scales a little and stops,
+   because stretching a photograph of a person is the fastest way to make a
+   site look cheap.
+   ========================================================================== */
+/* the header is fixed, so the banner needs to start below it rather than
+   behind it */
+.hero{padding:76px 0 0;min-height:0;display:block}
+@media (max-width:860px){.hero{padding-top:66px}}
+@media (max-width:400px){.hero{padding-top:60px}}
+.hban{position:relative;width:100%;max-width:1440px;margin-inline:auto;
+  padding:clamp(8px,1.4vw,18px) clamp(8px,1.6vw,22px) 0}
+.hban__p,.hban img{display:block;width:100%;height:auto}
+.hban__p{position:relative;border-radius:clamp(12px,1.4vw,20px);overflow:hidden;
+  box-shadow:0 18px 50px rgba(8,18,38,.14)}
+[data-theme="dark"] .hban__p,[data-theme="focus"] .hban__p{
+  box-shadow:0 18px 60px rgba(0,0,0,.5)}
+
+/* the two files cross-fade on a theme change instead of cutting */
+.hban{isolation:isolate}
+.hban__dark{position:absolute;inset:clamp(8px,1.4vw,18px) clamp(8px,1.6vw,22px) auto;
+  width:calc(100% - clamp(16px,3.2vw,44px));border-radius:clamp(12px,1.4vw,20px);
+  opacity:0;transition:opacity .5s var(--ease);pointer-events:none;z-index:1}
+[data-theme="dark"] .hban__dark,[data-theme="focus"] .hban__dark{opacity:1}
+
+/* it arrives with a slow settle rather than appearing */
+@keyframes hbanin{from{opacity:0;transform:scale(1.035) translateY(10px)}
+  to{opacity:1;transform:none}}
+.hban__p,.hban__dark{animation:hbanin 1.1s var(--ease) both}
+/* and breathes very slightly on a wide screen — 1.5%, no more */
+@media (min-width:900px) and (hover:hover){
+  .hban__p img,.hban__dark{transition:transform 1.6s var(--ease)}
+  .hban:hover .hban__p img,.hban:hover .hban__dark{transform:scale(1.015)}
+}
+
+/* ---- the buttons sit in the clear space to his left ---- */
+/* Low enough to clear the figures printed in the artwork — they sit at about
+   85% of the height, so the buttons live in the band beneath them. */
+.hban__cta{position:absolute;z-index:3;display:flex;gap:12px;flex-wrap:wrap;
+  left:clamp(26px,5.4vw,84px);bottom:clamp(14px,2.2vw,30px)}
+@media (max-width:900px){.hban__cta{display:none}}
+@media (min-width:901px) and (max-width:1180px){
+  .hban__cta{left:clamp(20px,4vw,54px);bottom:clamp(12px,1.8vw,22px);gap:9px}
+  .hban__cta .pbtn{height:46px}
+  .hban__cta .pbtn__t{font-size:.8rem;padding:0 13px}
+}
+
+/* ---- on a phone they get their own compact strip ---- */
+.hstrip{display:none}
+@media (max-width:900px){
+  .hstrip{display:flex;gap:9px;padding:12px clamp(14px,4vw,20px) 4px;
+    max-width:560px;margin-inline:auto}
+  .hstrip .pbtn{flex:1 1 0;min-width:0;justify-content:center}
+  .hstrip .pbtn__t{font-size:.78rem;padding:0 10px;white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .hstrip .pbtn__go{display:none}
+  /* "Watch the introduction" will not fit half a phone width, so the strip
+     says what the button does in the space it actually has */
+  .hstrip .pbtn--line .pbtn__t{font-size:0}
+  .hstrip .pbtn--line .pbtn__t::after{content:"Introduction";font-size:.78rem}
+}
+@media (max-width:400px){
+  .hstrip{gap:7px;padding:10px 12px 2px}
+  .hstrip .pbtn{padding:0 10px}
+  .hstrip .pbtn__t{font-size:.72rem}
+}
+
+/* the headline still exists for search engines and screen readers */
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;
+  clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;margin:-1px;padding:0;border:0}
+
+.hero .cue{margin-top:10px}
+@media (max-width:900px){.hero .cue{display:none}}
+
+/* ==========================================================================
+   BUTTONS — a shape with an icon block, in the theme's own colours
+   ========================================================================== */
+.pbtn{display:inline-flex;align-items:stretch;height:52px;border-radius:11px;
+  overflow:hidden;text-decoration:none;position:relative;isolation:isolate;
+  transition:transform .22s var(--ease),box-shadow .3s var(--ease),
+             background-color .3s var(--ease),border-color .3s var(--ease)}
+.pbtn__i{display:grid;place-items:center;width:48px;flex:0 0 48px}
+.pbtn__i svg{width:19px;height:19px;display:block}
+.pbtn__t{display:flex;align-items:center;padding:0 16px;font-size:.86rem;
+  font-weight:700;letter-spacing:.01em;white-space:nowrap}
+.pbtn__go{display:flex;align-items:center;padding-right:15px;font-size:1.1rem;
+  opacity:.6;transition:transform .25s var(--ease),opacity .25s var(--ease)}
+.pbtn:hover .pbtn__go{transform:translateX(3px);opacity:1}
+.pbtn:active{transform:scale(.975)}
+
+.pbtn--gold{background:linear-gradient(120deg,var(--gold-600),var(--gold-300));
+  color:#150F04;box-shadow:0 8px 22px rgba(192,138,52,.3)}
+.pbtn--gold .pbtn__i{background:rgba(0,0,0,.14)}
+.pbtn--gold:hover{box-shadow:0 14px 34px rgba(192,138,52,.42)}
+
+.pbtn--line{background:color-mix(in srgb,var(--bg) 82%,transparent);
+  border:1px solid var(--line);color:var(--text);backdrop-filter:blur(10px)}
+.pbtn--line .pbtn__i{background:color-mix(in srgb,var(--gold-500) 14%,transparent);
+  color:var(--gold-400)}
+.pbtn--line:hover{border-color:var(--gold-400);
+  background:color-mix(in srgb,var(--bg) 92%,transparent)}
+
+@media (max-width:900px){
+  .pbtn{height:46px;border-radius:10px}
+  .pbtn__i{width:40px;flex:0 0 40px}
+  .pbtn__i svg{width:17px;height:17px}
+  .pbtn__t{padding:0 12px}
+}
+
+/* ==========================================================================
+   THE HEADER
+   Over a pale banner the bar disappeared into the artwork. It now carries its
+   own surface and a defined edge in all three themes, so it always reads as a
+   bar rather than as text floating on a photograph.
+   ========================================================================== */
+.hdr{background:color-mix(in srgb,var(--bg) 92%,transparent);
+  border-bottom:1px solid var(--line-soft);
+  box-shadow:0 1px 0 color-mix(in srgb,var(--gold-500) 12%,transparent),
+             0 6px 26px rgba(8,18,38,.06);
+  backdrop-filter:blur(18px) saturate(1.3)}
+[data-theme="dark"] .hdr,[data-theme="focus"] .hdr{
+  background:color-mix(in srgb,var(--navy-900) 88%,transparent);
+  box-shadow:0 1px 0 rgba(224,169,76,.14),0 8px 30px rgba(0,0,0,.4)}
+/* once the page moves, it firms up further */
+.hdr.stuck{background:color-mix(in srgb,var(--bg) 97%,transparent);
+  box-shadow:0 1px 0 color-mix(in srgb,var(--gold-500) 18%,transparent),
+             0 10px 30px rgba(8,18,38,.1)}
+[data-theme="dark"] .hdr.stuck,[data-theme="focus"] .hdr.stuck{
+  background:color-mix(in srgb,var(--navy-900) 96%,transparent)}
+.hdr__in{position:relative;z-index:1}
 </style>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -2025,7 +2445,7 @@ body.pv-lock{overflow:hidden}
 <header class="hdr">
   <div class="hdr__in">
     <a class="logo" href="index.html">
-      <img src="mark.png" alt="SMK">
+      <img src="mark.png" alt="SMK" fetchpriority="high" decoding="async">
       <b>SIR <i>MEHBOOB</i> KHAN</b>
     </a>
     <nav class="nav">
@@ -2066,26 +2486,69 @@ body.pv-lock{overflow:hidden}
 
 <!-- ================= HERO ================= -->
 <section class="hero" id="hero">
-  <div class="galaxy" aria-hidden="true">
-    <img src="galaxy.png" alt="">
-    <div class="orb"><i></i></div>
-    <div class="orb"><i></i></div>
-    <div class="orb"><i></i></div>
-  </div>
-  <div class="wrap hero__g">
-    <div class="eyebrow">O / A Level Physics &middot; Since 2007</div>
-    <h1><span data-split>Physics, taught until it</span> <span class="grad" data-split>actually clicks.</span></h1>
-    <p class="lede">Cambridge Physics for O Level, IGCSE, AS and A2 &mdash; on campus across Karachi and live online worldwide. Nineteen years of knowing exactly where students get stuck.</p>
-    <div class="hero__cta">
-      <a class="btn btn--gold" href="#register" data-mag>Register now</a>
-      <a class="btn btn--line" href="#intro">Watch the introduction</a>
+  <!-- The banner carries its own headline, so no text is laid over it on any
+       screen. Two files, one per theme; the browser picks and the swap is
+       cross-faded rather than cut. -->
+  <div class="hban">
+    <picture class="hban__p">
+      <source srcset="hero-dark.jpg" media="(prefers-color-scheme: dark)">
+      <img src="hero-light.jpg" width="1280" height="678" fetchpriority="high"
+           decoding="async"
+           alt="Sir Mehboob Khan — Cambridge Physics tuition for O Level, IGCSE, AS and A2 in Karachi and online since 2007">
+    </picture>
+    <img class="hban__dark" src="hero-dark.jpg" width="1280" height="685" alt=""
+         aria-hidden="true" decoding="async">
+
+    <!-- on a wide screen these sit in the clear space beside him -->
+    <div class="hban__cta">
+      <a class="pbtn pbtn--gold" href="#register" data-mag>
+        <span class="pbtn__i" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
+        </span>
+        <span class="pbtn__t">Register now</span>
+        <span class="pbtn__go" aria-hidden="true">&rsaquo;</span>
+      </a>
+      <a class="pbtn pbtn--line" href="#intro">
+        <span class="pbtn__i" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9.2"/><path d="M10 8.6l6 3.4-6 3.4z" fill="currentColor" stroke="none"/></svg>
+        </span>
+        <span class="pbtn__t">Watch the introduction</span>
+        <span class="pbtn__go" aria-hidden="true">&rsaquo;</span>
+      </a>
     </div>
-    <div class="hero__m">
-      <div><b><span data-count="19">0</span></b><span>Years teaching</span></div>
-      <div><b><span data-count="7">0</span></b><span>Campus affiliations</span></div>
-      <div><b><span data-count="7">0</span></b><span>Distinctions / 10 yrs</span></div>
-    </div>
   </div>
+
+  <!-- on a phone the two buttons get their own compact strip under the banner -->
+  <div class="hstrip">
+    <a class="pbtn pbtn--gold" href="#register">
+      <span class="pbtn__i" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
+      </span>
+      <span class="pbtn__t">Register now</span>
+      <span class="pbtn__go" aria-hidden="true">&rsaquo;</span>
+    </a>
+    <a class="pbtn pbtn--line" href="#intro">
+      <span class="pbtn__i" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9.2"/><path d="M10 8.6l6 3.4-6 3.4z" fill="currentColor" stroke="none"/></svg>
+      </span>
+      <span class="pbtn__t">Watch the introduction</span>
+      <span class="pbtn__go" aria-hidden="true">&rsaquo;</span>
+    </a>
+  </div>
+
+  <!-- the headline lives in the banner, but a search engine and a screen
+       reader still need it as text -->
+  <h1 class="vh">O Level, IGCSE, AS and A2 Physics tuition in Karachi &mdash; Sir Mehboob Khan</h1>
   <div class="cue"><span>Scroll</span><i></i></div>
 </section>
 
@@ -2121,15 +2584,15 @@ body.pv-lock{overflow:hidden}
     <p class="lede" data-rv style="--d:1;margin-bottom:26px">Morning college programmes, evening academy batches, and live online worldwide.</p>
 
     <div class="affg">
-      <div class="aff" data-rv><div class="aff__logo"><img src="aff-whales.png" alt="Whales College"></div><span>Morning</span></div>
-      <div class="aff" data-rv style="--d:1"><div class="aff__logo"><img src="aff-credo.png" alt="Credo College"></div><span>Morning</span></div>
-      <div class="aff" data-rv style="--d:2"><div class="aff__logo"><img src="aff-highbrow.png" alt="Highbrow College"></div><span>Morning</span></div>
-      <div class="aff" data-rv style="--d:3"><div class="aff__logo"><img src="aff-bcp.png" alt="Beaconhouse College Programme"></div><span>Morning</span></div>
+      <div class="aff" data-rv><div class="aff__logo"><img src="aff-whales.png" loading="lazy" decoding="async" alt="Whales College"></div><span>Morning</span></div>
+      <div class="aff" data-rv style="--d:1"><div class="aff__logo"><img src="aff-credo.png" loading="lazy" decoding="async" alt="Credo College"></div><span>Morning</span></div>
+      <div class="aff" data-rv style="--d:2"><div class="aff__logo"><img src="aff-highbrow.png" loading="lazy" decoding="async" alt="Highbrow College"></div><span>Morning</span></div>
+      <div class="aff" data-rv style="--d:3"><div class="aff__logo"><img src="aff-bcp.png" loading="lazy" decoding="async" alt="Beaconhouse College Programme"></div><span>Morning</span></div>
     </div>
 
     <div class="affg2" style="margin-top:12px">
       <div class="aff aff--wide" data-rv>
-        <div class="aff__logo"><img src="aff-swk.png" alt="SWK Solution"></div>
+        <div class="aff__logo"><img src="aff-swk.png" loading="lazy" decoding="async" alt="SWK Solution"></div>
         <div><b>SWK Solution</b><span>Evening &middot; Gulshan &middot; Johar &middot; North</span></div>
       </div>
       <div class="aff aff--wide" data-rv style="--d:1">
@@ -2153,10 +2616,10 @@ body.pv-lock{overflow:hidden}
       <div class="flip flip--course c4" data-rv tabindex="0" style="--d:0">
         <div class="flip__i">
           <div class="flip__f edge">
-            <div class="flip__ring"></div><img class="flip__wm" src="mark.png" alt="">
+            <div class="flip__ring"></div><img class="flip__wm" src="mark.png" alt="" loading="lazy" decoding="async">
             <span class="chip chip--gold">5054 / 0625</span>
             <h3 style="margin:14px 0 10px">O Level &amp; IGCSE Physics</h3>
-            <p class="muted" style="font-size:.92rem">Built from first principles, then drilled against real papers until the awkward questions stop being awkward.</p>
+            <p class="muted" style="font-size:.92rem">O Level and IGCSE Physics tuition built from first principles, then drilled against real 5054 and 0625 past papers until the awkward questions stop being awkward.</p>
             <div class="flip__chips">
               <span class="chip">9 topics</span><span class="chip">Live + recorded</span>
             </div>
@@ -2174,10 +2637,10 @@ body.pv-lock{overflow:hidden}
       <div class="flip flip--course c4" data-rv tabindex="0" style="--d:1">
         <div class="flip__i">
           <div class="flip__f edge">
-            <div class="flip__ring"></div><img class="flip__wm" src="mark.png" alt="">
+            <div class="flip__ring"></div><img class="flip__wm" src="mark.png" alt="" loading="lazy" decoding="async">
             <span class="chip chip--gold">9702 (AS)</span>
             <h3 style="margin:14px 0 10px">AS Level Physics</h3>
-            <p class="muted" style="font-size:.92rem">The real step up. Working-out earns marks here, so exam technique starts in week one — not in the last month.</p>
+            <p class="muted" style="font-size:.92rem">AS Level Physics 9702 is the real step up. Working-out earns marks here, so exam technique starts in week one &mdash; not in the last month.</p>
             <div class="flip__chips">
               <span class="chip">9 topics</span><span class="chip">Live + recorded</span>
             </div>
@@ -2195,10 +2658,10 @@ body.pv-lock{overflow:hidden}
       <div class="flip flip--course c4" data-rv tabindex="0" style="--d:2">
         <div class="flip__i">
           <div class="flip__f edge">
-            <div class="flip__ring"></div><img class="flip__wm" src="mark.png" alt="">
+            <div class="flip__ring"></div><img class="flip__wm" src="mark.png" alt="" loading="lazy" decoding="async">
             <span class="chip chip--gold">9702 (A2)</span>
             <h3 style="margin:14px 0 10px">A2 Level Physics</h3>
-            <p class="muted" style="font-size:.92rem">Fields, quantum and nuclear — plus the Paper 5 method that rewards a repeatable approach over raw knowledge.</p>
+            <p class="muted" style="font-size:.92rem">A2 Physics 9702 &mdash; fields, quantum and nuclear, plus a Paper 5 preparation method that rewards a repeatable approach over raw knowledge.</p>
             <div class="flip__chips">
               <span class="chip">13 topics</span><span class="chip chip--gold">Paper 5 track</span>
             </div>
@@ -2234,7 +2697,7 @@ body.pv-lock{overflow:hidden}
   <div class="wrap">
     <div class="eyebrow">Syllabus</div>
     <h2 data-rv><span id="topicTotal">31</span> topics, taught in order</h2>
-    <p class="lede" data-rv style="--d:1;margin-bottom:22px">Each topic has its own lectures, written notes and topical paper book.</p>
+    <p class="lede" data-rv style="--d:1;margin-bottom:22px">Every topic of the Cambridge Physics syllabus has its own recorded lectures, written notes and topical past-paper book.</p>
 
     <div class="tabs2" role="tablist">
       <button class="on" data-syl="O"><span class="lg">O Level &mdash; 9 topics</span><span class="sm">O Level</span></button>
@@ -2354,10 +2817,10 @@ body.pv-lock{overflow:hidden}
     <h2 data-rv>From first message to first lecture</h2>
     <p class="lede" data-rv style="--d:1;margin-bottom:44px">Four steps, and no payment before you've sat in on a real class.</p>
     <div class="steps" data-rv>
-      <div class="step"><div class="step__n">1</div><h4>Register</h4><p>Send the form or a WhatsApp message with your level and exam session.</p></div>
-      <div class="step"><div class="step__n">2</div><h4>Free demo lesson</h4><p>Sit in on a real session. No payment details, no obligation.</p></div>
-      <div class="step"><div class="step__n">3</div><h4>Get your student ID</h4><p>Your ID unlocks the portal — your course only, nothing else.</p></div>
-      <div class="step"><div class="step__n">4</div><h4>Start learning</h4><p>Live classes, recorded lectures, notes and past papers, module by module.</p></div>
+      <div class="step"><div class="step__n">1</div><h3>Register</h3><p>Send the form or a WhatsApp message with your level and exam session.</p></div>
+      <div class="step"><div class="step__n">2</div><h3>Trial lesson</h3><p>Sit in on a real session. No payment details, no obligation.</p></div>
+      <div class="step"><div class="step__n">3</div><h3>Get your student ID</h3><p>Your ID unlocks the portal — your course only, nothing else.</p></div>
+      <div class="step"><div class="step__n">4</div><h3>Start learning</h3><p>Live classes, recorded lectures, notes and past papers, module by module.</p></div>
     </div>
   </div>
 </section>
@@ -2413,7 +2876,7 @@ body.pv-lock{overflow:hidden}
   <div class="wrap">
     <div class="eyebrow">Lectures</div>
     <h2 data-rv>Recorded after every class</h2>
-    <p class="lede" data-rv style="--d:1;margin-bottom:22px">The opening lecture of the first four topics is open to everyone. Signing in with your student ID unlocks every lecture in your level.</p>
+    <p class="lede" data-rv style="--d:1;margin-bottom:22px">The opening lecture of the first four topics is open to everyone, free and without an account. Signing in with your student ID unlocks every recorded Physics lecture in your level.</p>
 
     <div class="upsell" id="lecUpsell">
       <span class="upsell__p">PKR 7,000</span>
@@ -2422,7 +2885,7 @@ body.pv-lock{overflow:hidden}
     </div>
 
     <label class="showall" id="showAllWrap">
-      <input type="checkbox" id="showAll">
+      <input type="checkbox" id="showAll" aria-label="Show every lecture, including ones not yet recorded">
       <span class="showall__b" aria-hidden="true"><i></i></span>
       <span class="showall__t"><b>Show everything</b>
         <span>including lectures still to be recorded</span></span>
@@ -2542,7 +3005,7 @@ body.pv-lock{overflow:hidden}
   <div class="wrap">
     <div class="ftr__g">
       <div class="ftr__brand">
-        <img src="lockup.png" alt="Sir Mehboob Khan">
+        <img src="lockup.png" loading="lazy" decoding="async" alt="Sir Mehboob Khan">
         <p class="muted" style="font-size:.84rem;max-width:30ch;margin:10px 0 0">O/A Level Physics &mdash; Karachi campuses and live online worldwide. Teaching since 2007.</p>
       </div>
       <div class="ftr__l">
@@ -3856,17 +4319,12 @@ const TOPICS = {
    Add new lectures at the bottom. The examples below show the shape —
    delete them once your real ones are in.
    -------------------------------------------------------------------------- */
-const LECTURES = [
-  { id:'o-3-01',  lvl:'O',  topic:3,  n:1, t:'Introduction to Motion',            dur:'42:18', vid:'', notes:'', date:'' },
-  { id:'o-3-02',  lvl:'O',  topic:3,  n:2, t:'Distance–Time Graphs',              dur:'38:04', vid:'', notes:'', date:'' },
-  { id:'o-3-03',  lvl:'O',  topic:3,  n:3, t:'Velocity–Time Graphs',              dur:'45:30', vid:'', notes:'', date:'' },
-  { id:'o-17-01', lvl:'O',  topic:17, n:1, t:'Current, Charge and Potential Difference', dur:'49:12', vid:'', notes:'', date:'' },
-  { id:'o-17-02', lvl:'O',  topic:17, n:2, t:'Resistance and Resistivity',        dur:'41:55', vid:'', notes:'', date:'' },
-  { id:'as-3-01', lvl:'AS', topic:3,  n:1, t:'Kinematics — Equations of Motion',  dur:'46:50', vid:'', notes:'', date:'' },
-  { id:'as-9-01', lvl:'AS', topic:9,  n:1, t:'Superposition and Interference',    dur:'56:33', vid:'', notes:'', date:'' },
-  { id:'a2-2-01', lvl:'A2', topic:2,  n:1, t:'Gravitational Fields — Field Lines', dur:'58:14', vid:'', notes:'', date:'' },
-  { id:'a2-8-01', lvl:'A2', topic:8,  n:1, t:'Simple Harmonic Motion',            dur:'62:40', vid:'', notes:'', date:'' }
-];
+/* The sample lectures that used to sit here are gone. They were numbered
+   against the old 22-topic list, so once the real syllabus landed they showed
+   under the wrong topics — "Introduction to Motion" appearing under
+   Deformation, Moments & Momentum — and none of them could open. The database
+   is the only source of lectures now. */
+const LECTURES = [];
 
 </script>
 <script>
@@ -4163,7 +4621,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   <div class="auth2__bg"></div>
   <div class="auth2__p">
     <button class="auth2__x" aria-label="Close">&times;</button>
-    <img src="logo.png" alt="SMK" style="height:56px;margin:0 auto 16px;display:block">
+    <img src="logo.png" alt="SMK" loading="lazy" decoding="async" style="height:56px;margin:0 auto 16px;display:block">
     <h3 style="font-size:1.3rem;text-align:center;margin-bottom:4px" id="authH">Student sign in</h3>
     <p class="muted" style="text-align:center;font-size:.85rem;margin-bottom:20px" id="authP">
       Use the student ID and password sent to you on WhatsApp.</p>
@@ -4211,7 +4669,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
             <option>Live online</option>
             <option>Recorded lectures only</option>
           </select></div>
-        <div class="hp"><input type="text" tabindex="-1" aria-hidden="true"></div>
+        <div class="hp"><input type="text" tabindex="-1" aria-hidden="true" autocomplete="off" aria-label="Leave this field empty"></div>
         <button class="btn btn--gold btn--wide" type="submit">Send my details</button>
         <div class="msg msg--bad" id="pAskErr" style="display:none;margin-top:12px"></div>
         <div class="msg msg--ok" id="pAskOk" style="display:none;margin-top:12px"></div>
@@ -4391,26 +4849,31 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   }
 
   /* ---------- one lecture row, locked or not ---------- */
-  /* a lecture that is planned but not recorded yet — shown so the student can
-     see the shape of the course before it has been taught. `planned` is an
-     optional integer on the topics table; without it nothing is invented. */
-  function soonRow(n, vague) {
-    return '<div class="lec2 lec2--soon">' +
-      '<span class="lec2__p">&#8226;</span>' +
+  /* A lecture that is planned but not recorded yet, shown so a student can see
+     the shape of the course. `planned` is an optional integer on the topics
+     table; without it nothing is invented.
+     It also has a known future: it will
+     either be open to everyone or it will not. Saying which is the difference
+     between "something is coming" and "something is coming that I will get". */
+  function soonRow(n, vague, lvl, topicN) {
+    var willBeFree = canOpen(lvl, topicN, n);
+    return '<div class="lec2 lec2--soon' + (willBeFree ? ' lec2--soonfree' : '') + '">' +
+      '<span class="lec2__p">' + (willBeFree ? '&#9654;' : '&#128274;') + '</span>' +
       '<span class="lec2__t"><b>' + (vague ? 'Lectures for this topic' : 'Lecture ' + n) +
       '</b><span>recorded after class</span></span>' +
-      '<span class="lecflag lecflag--soon">Coming</span></div>';
+      '<span class="lecflag ' + (willBeFree ? 'lecflag--free' : 'lecflag--shut') + '">' +
+      (willBeFree ? 'Preview' : 'Locked') + ' \u00b7 upcoming</span></div>';
   }
-  function soonRows(t, have) {
+  function soonRows(t, have, lvl) {
     var planned = +(t.planned || 0);
     /* With the switch on, a topic with nothing recorded still shows a row, so
        a student can see the shape of the course rather than an empty topic.
        Without a planned count there is nothing honest to promise, so it shows
        a single "recorded after class" line rather than inventing a number. */
-    if (showAll && !planned && have === 0) return soonRow(1, true);
+    if (showAll && !planned && have === 0) return soonRow(1, true, lvl, t.n);
     if (!planned || planned <= have) return '';
     var out = '';
-    for (var i = have + 1; i <= planned; i++) out += soonRow(i);
+    for (var i = have + 1; i <= planned; i++) out += soonRow(i, false, lvl, t.n);
     return out;
   }
 
@@ -4504,7 +4967,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
           (shut > 0 ? ' \u00b7 ' + shut + ' locked' : '')
         : (pl ? pl + ' lecture' + (pl !== 1 ? 's' : '') + ' \u00b7 taught later'
               : 'recorded after class');
-      var soon = soonRows(g.t, g.lecs.length);
+      var soon = soonRows(g.t, g.lecs.length, lvl);
       var body = (g.lecs.length || soon)
         ? g.lecs.map(function (l) { return lecRow(lvl, l); }).join('') + soon
         : '<p class="muted" style="font-size:.85rem;margin:0">' +
@@ -4718,7 +5181,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
           (shut ? ' \u00b7 ' + shut + ' locked' : '')
         : (pl2 ? pl2 + ' lecture' + (pl2 !== 1 ? 's' : '') + ' \u00b7 taught later'
                : 'recorded after class');
-      var soon2 = soonRows(t, mine.length);
+      var soon2 = soonRows(t, mine.length, lvl);
       var body = (mine.length || soon2)
         ? mine.map(function (l) { return lecRow(lvl, l); }).join('') + soon2
         : '<p class="muted" style="font-size:.85rem;margin:0">' +
@@ -4736,7 +5199,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     var lecs = lecturesFor(lvl).filter(function (l) { return l.topic === +n; })
                                .sort(function (a, b) { return a.n - b.n; });
     var tObj = (topicsFor(lvl) || []).filter(function (t) { return t.n === +n; })[0] || {};
-    var soon3 = soonRows(tObj, lecs.length);
+    var soon3 = soonRows(tObj, lecs.length, lvl);
     if (!lecs.length && soon3) {
       return '<p class="muted" style="font-size:.88rem;margin:0 0 14px">' +
         tObj.planned + ' lectures planned \u00b7 taught later in the year</p>' + soon3;
@@ -4911,11 +5374,11 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     $('#tvBooks').innerHTML = books.length
       ? '<div class="tvsec">Topical paper books</div>' + books.map(function (bk) {
           var links = '';
-          if (bk.paper)     links += pLink(bk.paper,     'Whole book', false);
-          if (bk.mcq)       links += pLink(bk.mcq,       'MCQs', false);
-          if (bk.ms_mcq)    links += pLink(bk.ms_mcq,    'MCQ answers', true);
+          if (bk.paper)     links += pLink(bk.paper,     'Book', false);
+          if (bk.mcq)       links += pLink(bk.mcq,       'MCQ', false);
+          if (bk.ms_mcq)    links += pLink(bk.ms_mcq,    'MCQ MS', true);
           if (bk.theory)    links += pLink(bk.theory,    'Theory', false);
-          if (bk.ms_theory) links += pLink(bk.ms_theory, 'Theory answers', true);
+          if (bk.ms_theory) links += pLink(bk.ms_theory, 'Theory MS', true);
           return '<div class="bookrow"><span class="bookrow__i">&#128216;</span>' +
             '<span class="bookrow__m"><b>' + esc(bk.topic) + '</b>' +
             '<span>Book ' + bk.n + ' \u00b7 every past-paper question on this topic</span></span>' +
@@ -5120,6 +5583,22 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
      topics — so nothing paid is ever sent to an anonymous browser.
      Falls back silently to whatever is bundled in this file.
      ---------------------------------------------------------------------- */
+  /* A silent failure leaves an empty section and no reason for it. One quiet
+     line, and a way to try again, is worth more than a blank space. */
+  function loadFailed(why) {
+    var host = $('#lecLive');
+    if (!host || host.dataset.failed) return;
+    host.dataset.failed = '1';
+    host.insertAdjacentHTML('afterbegin',
+      '<div class="note" style="margin-bottom:14px"><b>Lectures did not load.</b> ' +
+      esc(why) + ' <button id="lecRetry" style="color:var(--gold-300);' +
+      'text-decoration:underline">Try again</button></div>');
+    var r = $('#lecRetry');
+    if (r) r.addEventListener('click', function () {
+      host.dataset.failed = ''; loadPreview();
+    });
+  }
+
   window.PUBLIC_LECTURES = window.PUBLIC_LECTURES || [];
   async function loadPreview() {
     var C = window.SMK_CONFIG || {};
@@ -5129,7 +5608,10 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       var r = await fetch(C.SUPABASE_URL + '/rest/v1/preview_lectures?order=lvl,topic,n', { headers: h });
       if (!r.ok) {
         console.error('[SMK] preview_lectures could not be read (' + r.status + '). ' +
-          'If this is a 404 the view is missing — re-run backend.sql in Supabase.');
+          'If this is a 404 the view is missing - re-run backend.sql in Supabase.');
+        loadFailed(r.status === 404
+          ? 'The lecture list is not set up on the server yet.'
+          : 'The lecture list could not be loaded.');
         return;
       }
       var rows = await r.json();
@@ -5146,7 +5628,9 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       });
       renderLectures();
       if ($('#sylv').classList.contains('open')) renderSylv();
-    } catch (e) { /* bundled list stays */ }
+    } catch (e) {
+      loadFailed('Could not reach the server. Check your connection.');
+    }
   }
 
   window.SMKapplyTier = apply;
@@ -5465,6 +5949,199 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   if (document.readyState === 'loading') addEventListener('DOMContentLoaded', go);
   else go();
 })();
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "Where are the on-site classes?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "In Karachi — SWK Solution at Gulshan, Johar and North. Morning college programmes run at Whales, Credo, Highbrow and Beaconhouse College Programme."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Do you teach students outside Karachi or Pakistan?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Yes. Live online classes are open worldwide, and class times are shown in your own timezone once you enrol."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "What's the difference between O Level and IGCSE Physics?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "The physics content overlaps heavily. The differences are mainly in paper structure and assessment — 0625 has more paper variants, including separate practical options. Which one you sit is set by your school's entry, not by you."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "How does the student portal work?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "You get a student ID at enrollment. Signing in opens exactly the course you registered for, with lectures grouped by module. Recorded lectures play in place; live sessions open a Zoom link."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Can I join mid-session?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Usually yes. Recorded modules cover what you've missed, and a short diagnostic works out what needs catching up first."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Can I sit in on a class first?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Yes — a trial lesson before you commit, with no payment details needed."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "What if I miss a live class?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Every live session is recorded and added to your portal, so a missed class isn't a lost one."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Do you cover the practical papers and Paper 5?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Yes. Practical technique is taught explicitly, and A2 Paper 5 gets its own weekly slot because it rewards method more than knowledge."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "What if I'm retaking?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "A retake starts with a past-paper diagnostic, so time goes to the topics where marks were actually lost rather than the whole syllabus again."
+   }
+  }
+ ]
+}
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "ItemList",
+ "itemListElement": [
+  {
+   "@type": "ListItem",
+   "position": 1,
+   "item": {
+    "@type": "Course",
+    "name": "O Level & IGCSE Physics (5054 / 0625)",
+    "description": "Cambridge O Level and IGCSE Physics taught across nine topics, from first principles then drilled against real past papers.",
+    "url": "https://physicswithsmk.com/#courses",
+    "educationalLevel": "O Level / IGCSE",
+    "inLanguage": "en",
+    "provider": {
+     "@type": "EducationalOrganization",
+     "name": "Sir Mehboob Khan",
+     "url": "https://physicswithsmk.com/"
+    },
+    "hasCourseInstance": [
+     {
+      "@type": "CourseInstance",
+      "courseMode": [
+       "Onsite",
+       "Online"
+      ],
+      "location": {
+       "@type": "Place",
+       "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Karachi",
+        "addressCountry": "PK"
+       }
+      },
+      "courseWorkload": "PT4H"
+     }
+    ]
+   }
+  },
+  {
+   "@type": "ListItem",
+   "position": 2,
+   "item": {
+    "@type": "Course",
+    "name": "AS Level Physics (9702)",
+    "description": "Cambridge AS Level Physics across nine topics — kinematics, dynamics, waves, electricity and particle physics — with exam technique from week one.",
+    "url": "https://physicswithsmk.com/#courses",
+    "educationalLevel": "AS Level",
+    "inLanguage": "en",
+    "provider": {
+     "@type": "EducationalOrganization",
+     "name": "Sir Mehboob Khan",
+     "url": "https://physicswithsmk.com/"
+    },
+    "hasCourseInstance": [
+     {
+      "@type": "CourseInstance",
+      "courseMode": [
+       "Onsite",
+       "Online"
+      ],
+      "location": {
+       "@type": "Place",
+       "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Karachi",
+        "addressCountry": "PK"
+       }
+      },
+      "courseWorkload": "PT4H"
+     }
+    ]
+   }
+  },
+  {
+   "@type": "ListItem",
+   "position": 3,
+   "item": {
+    "@type": "Course",
+    "name": "A2 Level Physics (9702)",
+    "description": "Cambridge A2 Level Physics across thirteen topics — fields, quantum and nuclear — plus a repeatable Paper 5 method.",
+    "url": "https://physicswithsmk.com/#courses",
+    "educationalLevel": "A2 Level",
+    "inLanguage": "en",
+    "provider": {
+     "@type": "EducationalOrganization",
+     "name": "Sir Mehboob Khan",
+     "url": "https://physicswithsmk.com/"
+    },
+    "hasCourseInstance": [
+     {
+      "@type": "CourseInstance",
+      "courseMode": [
+       "Onsite",
+       "Online"
+      ],
+      "location": {
+       "@type": "Place",
+       "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Karachi",
+        "addressCountry": "PK"
+       }
+      },
+      "courseWorkload": "PT4H"
+     }
+    ]
+   }
+  }
+ ]
+}
 </script>
 </body>
 </html>
