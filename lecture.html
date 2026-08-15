@@ -2359,15 +2359,38 @@ body{overflow-x:hidden}
     }
   }
 
+  /* Closing used to try window.close() and stop there. A tab the browser did
+     not open by script refuses to close, silently — so nothing happened, the
+     student pressed Back, and landed on the top of the home page. Now it asks
+     to close, and if the window is still here a moment later it navigates to
+     the list it came from instead. */
+  function backToList() {
+    var d2 = DATA || {};
+    /* if the lecture never loaded, its id still tells us where it belongs:
+       ids are level-topic-number, e.g. as-1-02 */
+    var m = /^([a-z0-9]+)-(\d+)-(\d+)$/i.exec(LEC || '');
+    var lvl = d2.lvl || (m ? m[1].toUpperCase() : '');
+    var topic = d2.topic || (m ? m[2] : '');
+    location.href = lvl
+      ? 'index.html?lvl=' + encodeURIComponent(lvl) +
+        (topic ? '&topic=' + encodeURIComponent(topic) : '') + '#portal'
+      : 'index.html#portal';
+  }
+
   $('#btnClose').addEventListener('click', function () {
-    if (window.opener && !window.opener.closed) window.close();
-    else {
-      var d2 = DATA || {};
-      location.href = d2.lvl
-        ? 'index.html?lvl=' + encodeURIComponent(d2.lvl) +
-          (d2.topic ? '&topic=' + encodeURIComponent(d2.topic) : '') + '#portal'
-        : 'index.html#portal';
+    if (window.opener && !window.opener.closed) {
+      try {
+        window.opener.location.href = 'index.html?lvl=' +
+          encodeURIComponent((DATA || {}).lvl || '') +
+          '&topic=' + encodeURIComponent((DATA || {}).topic || '') + '#portal';
+        window.opener.focus();
+      } catch (e) { /* another origin — leave it alone */ }
+      window.close();
+    } else {
+      window.close();
     }
+    /* if the window is still open, the browser refused; go back ourselves */
+    setTimeout(function () { if (!window.closed) backToList(); }, 160);
   });
 
   /* keep checking they are still allowed to be here */
