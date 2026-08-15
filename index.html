@@ -2552,6 +2552,90 @@ body.pv-lock{overflow:hidden}
 @media (prefers-reduced-motion:reduce){
   .tpill2,.tpill2__k,.tpill2__k svg,.tpill2__lab{transition:none}
 }
+
+/* ==========================================================================
+   THE INTRO
+   Roughly a second and a half at most: the monogram writes itself inside a
+   ring that draws on, a marker runs round the orbit, the name settles letter
+   by letter, then the whole panel splits and lifts to reveal the page. It is
+   all vector and CSS, so it costs nothing to fetch — the thing covering the
+   wait is not itself part of the wait.
+   ========================================================================== */
+/* The cream sheet is the veil, not #pre itself — the veil is what clips away
+   on exit. #pre stays transparent so the page shows through as it lifts. */
+#pre{position:fixed;inset:0;z-index:9999;background:transparent;
+  display:grid;place-items:center;overflow:hidden;
+  transition:opacity .5s var(--ease),visibility .5s}
+#pre.gone{opacity:0;visibility:hidden;pointer-events:none}
+
+.intro{position:relative;z-index:3;display:grid;place-items:center;gap:0;
+  text-align:center;padding:20px}
+
+/* ---- the mark: the real logo, wiped upward into view ---- */
+.intro__mk{width:min(148px,36vw);aspect-ratio:1;position:relative;
+  display:grid;place-items:center}
+.intro__logo{width:62%;height:auto;display:block;position:relative;z-index:2;
+  clip-path:inset(100% 0 0 0);
+  filter:drop-shadow(0 6px 22px rgba(192,138,52,.32));
+  animation:ilogo 1s cubic-bezier(.62,.02,.28,1) .28s forwards}
+@keyframes ilogo{
+  0%{clip-path:inset(100% 0 0 0);transform:scale(.94)}
+  70%{clip-path:inset(0 0 0 0);transform:scale(1.015)}
+  100%{clip-path:inset(0 0 0 0);transform:scale(1)}
+}
+.intro__ring{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+/* a faint full circle, then a bright arc that races round it */
+.io{opacity:.22}
+.io2{stroke-dasharray:86 260;stroke-dashoffset:346;transform-origin:60px 60px;
+  animation:iarc 1.25s var(--ease) .1s forwards}
+@keyframes iarc{to{stroke-dashoffset:0}}
+.ip{opacity:0;transform-origin:60px 60px;
+  animation:idot 1.25s var(--ease) .1s forwards}
+@keyframes idot{
+  0%{opacity:0;transform:rotate(0)}
+  10%{opacity:1}
+  88%{opacity:1}
+  100%{opacity:0;transform:rotate(360deg)}
+}
+
+/* ---- the name, letter by letter ---- */
+.intro__nm{margin-top:20px;font-family:var(--display);font-weight:600;
+  font-size:clamp(1.02rem,3.4vw,1.42rem);letter-spacing:.16em;
+  color:var(--text);display:flex;justify-content:center;flex-wrap:wrap}
+.intro__nm em{width:.42em}
+.intro__nm span{display:inline-block;opacity:0;transform:translateY(9px);
+  animation:iletter .5s var(--ease) forwards;
+  animation-delay:calc(.72s + var(--i) * .026s)}
+@keyframes iletter{to{opacity:1;transform:none}}
+.intro__nm span:nth-child(n+5):nth-child(-n+11){color:var(--gold-500)}
+
+.intro__sub{margin-top:9px;font-family:var(--mono);font-size:.6rem;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--muted);
+  opacity:0;animation:iletter .6s var(--ease) 1.02s forwards}
+
+/* ---- a hairline that fills as the page actually loads ---- */
+.intro__bar{margin-top:24px;width:min(148px,42vw);height:2px;border-radius:99px;
+  background:var(--line-soft);overflow:hidden;opacity:0;
+  animation:iletter .5s var(--ease) 1.12s forwards}
+.intro__bar i{display:block;height:100%;width:8%;border-radius:99px;
+  background:linear-gradient(90deg,var(--gold-600),var(--gold-300));
+  transition:width .45s var(--ease)}
+
+/* ---- the exit: the panel splits and lifts ---- */
+.intro__veil{position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:var(--bg);clip-path:inset(0 0 0 0);
+  transition:clip-path .72s cubic-bezier(.76,0,.24,1)}
+#pre.lift .intro__veil{clip-path:inset(0 0 100% 0)}
+#pre.lift .intro{opacity:0;transform:translateY(-14px) scale(.97);
+  transition:opacity .38s var(--ease),transform .5s var(--ease)}
+#pre.lift{background:transparent}
+
+@media (prefers-reduced-motion:reduce){
+  .io,.io2,.ip,.intro__logo,.intro__nm span,.intro__sub,.intro__bar{
+    animation:none;opacity:1;stroke-dashoffset:0;transform:none;
+    clip-path:none}
+  .intro__veil{transition:none}
+}
 </style>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -2588,16 +2672,48 @@ body.pv-lock{overflow:hidden}
 })();
 </script>
 
-<div id="pre"><div class="pl">
-  <div class="pl__sys">
-    <div class="pl__o"><span class="pl__p"></span></div>
-    <div class="pl__o"><span class="pl__p"></span></div>
-    <div class="pl__o"><span class="pl__p"></span></div>
-    <img class="pl__sun" src="logo.png" alt="">
+<div id="pre">
+  <!-- A short brand intro rather than a spinner: the mark draws itself, the
+       name settles under it, and the whole thing lifts away to reveal the
+       page. Pure SVG and CSS — nothing to download, so it never delays what
+       it is covering. It also exits early the moment the page is ready. -->
+  <div class="intro" aria-hidden="true">
+    <div class="intro__mk">
+      <!-- the real logo, revealed rather than redrawn -->
+      <!-- onerror clears itself first: without that, a missing mark.png makes
+           the handler fire again on its own replacement, and the browser loops
+           for ever on a file that is not there. The page then never loads. -->
+      <img class="intro__logo" src="logo.png" alt=""
+           onerror="this.onerror=null;this.src='mark.png'">
+      <svg class="intro__ring" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+        <circle class="io" cx="60" cy="60" r="55" stroke="url(#ig)" stroke-width="1.3"/>
+        <circle class="io2" cx="60" cy="60" r="55" stroke="var(--gold-300)" stroke-width="1.3"
+                stroke-linecap="round"/>
+        <circle class="ip" cx="60" cy="5" r="3.2" fill="var(--gold-300)"/>
+        <defs>
+          <linearGradient id="ig" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="var(--gold-600)"/>
+            <stop offset=".5" stop-color="var(--gold-300)"/>
+            <stop offset="1" stop-color="var(--gold-500)"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <div class="intro__nm">
+      <span style="--i:0">S</span><span style="--i:1">I</span><span style="--i:2">R</span>
+      <em></em>
+      <span style="--i:3">M</span><span style="--i:4">E</span><span style="--i:5">H</span>
+      <span style="--i:6">B</span><span style="--i:7">O</span><span style="--i:8">O</span>
+      <span style="--i:9">B</span>
+      <em></em>
+      <span style="--i:10">K</span><span style="--i:11">H</span><span style="--i:12">A</span>
+      <span style="--i:13">N</span>
+    </div>
+    <div class="intro__sub">O Level &middot; IGCSE &middot; AS &middot; A2 Physics</div>
+    <div class="intro__bar"><i></i></div>
   </div>
-  <div class="pl__t"><div class="pl__b"></div></div>
-  <div class="pl__x"></div>
-</div></div>
+  <div class="intro__veil"></div>
+</div>
 
 <canvas id="stars"></canvas>
 <div class="aura"></div>
@@ -3584,33 +3700,68 @@ const SYN = {
   const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const FINE = matchMedia('(hover:hover) and (pointer:fine)').matches;
 
-  /* ================= PRELOADER ================= */
+  /* ================= THE INTRO =================
+     The bar follows what has actually happened — fonts ready, hero decoded,
+     window loaded — rather than a random number pretending to be progress.
+     It runs its full sequence once, then lifts. Anyone coming back within the
+     session skips it entirely: an intro is worth seeing the first time and
+     tiresome the fifth. */
   const pre = $('#pre');
   if (pre) {
-    const bar = $('.pl__b', pre), txt = $('.pl__x', pre);
-    const lines = ['Calibrating orbits', 'Resolving vectors', 'Aligning the syllabus', 'Ready'];
-    let p = 0, li = 0;
+    const bar = $('.intro__bar i', pre);
+    let seenBefore = false;
+    try { seenBefore = sessionStorage.getItem('smk_intro') === '1'; } catch (e) { }
+
+    const SEQUENCE = RM ? 260 : 1650;      // how long the animation needs
+    const CAP      = RM ? 900 : 4200;      // never hold the page longer than this
+    const started  = performance.now();
+    let pct = 6, finished = false;
+
     document.body.classList.add('lock');
-    const tick = setInterval(() => {
-      p = Math.min(p + Math.random() * 17, 93);
-      if (bar) bar.style.width = p + '%';
-      const want = Math.min(Math.floor(p / 26), lines.length - 1);
-      if (want !== li && txt) { li = want; txt.textContent = lines[li]; }
-    }, 150);
-    if (txt) txt.textContent = lines[0];
-    const done = () => {
-      clearInterval(tick);
-      if (bar) bar.style.width = '100%';
-      if (txt) txt.textContent = lines[lines.length - 1];
+
+    const step = (to) => {
+      pct = Math.max(pct, Math.min(to, 100));
+      if (bar) bar.style.width = pct + '%';
+    };
+
+    /* real milestones, not a timer */
+    step(10);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => step(45));
+    } else step(45);
+
+    const hero = document.querySelector('.hban__p img');
+    if (hero) {
+      if (hero.complete) step(75);
+      else hero.addEventListener('load', () => step(75), { once: true });
+      hero.addEventListener('error', () => step(75), { once: true });
+    } else step(75);
+
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      step(100);
+      try { sessionStorage.setItem('smk_intro', '1'); } catch (e) { }
+      /* let the animation reach its end before lifting, unless it already has */
+      const left = Math.max(0, SEQUENCE - (performance.now() - started));
       setTimeout(() => {
-        pre.classList.add('gone');
+        pre.classList.add('lift');
         document.body.classList.remove('lock');
         document.body.classList.add('ready');
-      }, 380);
+        setTimeout(() => pre.classList.add('gone'), 720);
+      }, seenBefore ? 0 : left);
     };
-    if (document.readyState === 'complete') setTimeout(done, 500);
-    else addEventListener('load', () => setTimeout(done, 500));
-    setTimeout(done, 5000);                       // safety net
+
+    if (seenBefore) {
+      /* straight past it — no animation, no wait */
+      pre.classList.add('lift', 'gone');
+      document.body.classList.remove('lock');
+      document.body.classList.add('ready');
+    } else {
+      if (document.readyState === 'complete') finish();
+      else addEventListener('load', finish, { once: true });
+      setTimeout(finish, CAP);                    // safety net
+    }
   } else {
     document.body.classList.add('ready');
   }
