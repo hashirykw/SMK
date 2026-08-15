@@ -5051,6 +5051,20 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     if (!out.length && typeof PUBLIC_LECTURES !== 'undefined') {
       out = PUBLIC_LECTURES.filter(function (l) { return l.lvl === lvl; });
     }
+
+    /* Anything the index knows about that is not already here gets added as a
+       listed-but-locked row. Whatever came from the payload wins, because it
+       carries the video and the notes. */
+    if (window.ALL_LECTURES && window.ALL_LECTURES.length) {
+      var seen = {};
+      out.forEach(function (l) { seen[l.topic + '-' + l.n] = true; });
+      window.ALL_LECTURES.forEach(function (l) {
+        if (l.lvl !== lvl) return;
+        if (seen[l.topic + '-' + l.n]) return;
+        out.push(l);
+      });
+      out.sort(function (a, b) { return a.topic - b.topic || a.n - b.n; });
+    }
     /* The bundled LECTURES array is sample data for laying the page out. It is
        only used when the database has told us nothing at all, so a visitor
        never sees a lecture that cannot open. */
@@ -6066,6 +6080,41 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     } catch (e) { /* the bundled list stays */ }
   }
 
+  /* ----------------------------------------------------------------------
+     EVERY LECTURE, LISTED
+     Signing in only ever revealed your own level; browsing another one showed
+     just the four previews, so an A2 student looking at AS saw one lecture
+     where there were two. The index carries titles and numbering for every
+     published lecture and nothing that costs money, so the whole course can
+     be listed at every level, locked.
+     ---------------------------------------------------------------------- */
+  window.ALL_LECTURES = window.ALL_LECTURES || [];
+  async function loadIndex() {
+    var C = window.SMK_CONFIG || {};
+    if (!C.SUPABASE_URL) return;
+    try {
+      var r = await fetch(C.SUPABASE_URL +
+        '/rest/v1/lecture_index?select=*&order=lvl,topic,n', {
+        headers: { apikey: C.SUPABASE_ANON_KEY,
+                   Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY }
+      });
+      if (!r.ok) {
+        console.error('[SMK] lecture_index unavailable (' + r.status +
+          '). Re-run backend.sql if this is a 404.');
+        return;
+      }
+      var rows = await r.json();
+      if (!rows.length) return;
+      window.ALL_LECTURES = rows.map(function (l) {
+        return { id: l.id, lvl: l.lvl, topic: l.topic, n: l.n, t: l.title,
+                 dur: l.duration || '', vid: '', notes: l.has_notes ? '1' : '',
+                 is_preview: !!l.is_preview };
+      });
+      renderLectures();
+      if ($('#sylv').classList.contains('open')) renderSylv();
+    } catch (e) { }
+  }
+
   window.PUBLIC_LECTURES = window.PUBLIC_LECTURES || [];
   async function loadPreview() {
     var C = window.SMK_CONFIG || {};
@@ -6103,6 +6152,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   window.SMKapplyTier = apply;
   apply();
   loadTopics();
+  loadIndex();
   loadPreview();
 })();
 </script>
