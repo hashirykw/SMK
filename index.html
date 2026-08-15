@@ -2902,8 +2902,16 @@ body.pv-lock{overflow:hidden}
   .deck{perspective:none;padding:4px 0}
   .deck__rail{display:flex;gap:12px;min-height:0;overflow-x:auto;
     scroll-snap-type:x mandatory;scroll-padding:0 16px;
-    /* head- and foot-room so a lifted card is not clipped by the rail */
-    padding:14px 16px 20px;margin-inline:-16px;
+    /* justify-content:center is inherited from the desktop rule, and on an
+       overflowing scroller it splits the overflow across BOTH ends — which
+       parked the first card at a negative offsetLeft, where scrollLeft can
+       never reach it. That is why the rail would not swipe back to O Level.
+       Start-aligned, with the end padding doing the centring instead: the
+       side padding is exactly the gap needed for the first and last cards to
+       snap dead centre, so every card is reachable and none is clipped. */
+    justify-content:flex-start;
+    padding:14px max(16px,calc((100% - min(300px,82vw)) / 2 + 16px)) 20px;
+    margin-inline:-16px;
     -webkit-overflow-scrolling:touch;scrollbar-width:none}
   .deck__rail::-webkit-scrollbar{display:none}
   .deck__c{width:min(300px,82vw);scroll-snap-align:center;
