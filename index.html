@@ -345,7 +345,6 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
   border-color:rgba(224,169,76,.34)}
 [data-theme="light"] .flip__f--b,[data-theme="focus"] .flip__f--b{background:var(--panel-2)}
 .flip:hover .flip__f{box-shadow:0 34px 80px rgba(0,0,0,.5)}
-.flip--course{height:436px}
 .flip--sm{height:250px}
 .flip__ring{position:absolute;right:-64px;top:-64px;width:200px;height:200px;border-radius:50%;
   border:1px solid var(--line);opacity:.55;transition:transform .9s var(--ease)}
@@ -1141,7 +1140,6 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
   .ftr__g{grid-template-columns:1fr}
   .bot{right:12px;left:12px;width:auto;bottom:84px;height:min(500px,66svh)}
   .dock{right:14px;bottom:14px}
-  .flip--course{height:400px}
   /* readability: nothing informative drops below 0.84rem on a phone */
   .tile p,.feat p,.step p,.syl__i p,.demo3__b p,.note,.acc .body{font-size:.9rem}
   .chip{font-size:.72rem}
@@ -1329,12 +1327,10 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 }
 
 /* ---- flip cards: content now fills the face instead of leaving dead space ---- */
-.flip--course{height:430px}
 .flip__f > p{flex:0 0 auto}
 .flip__chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
 .flip__list--2col{grid-template-columns:1fr 1fr;column-gap:16px;gap:5px;font-size:.84rem}
 @media (max-width:520px){
-  .flip--course{height:410px}
   .flip__list--2col{grid-template-columns:1fr}
 }
 
@@ -1530,7 +1526,6 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
   .lec2__t b{font-size:.88rem}
   .topic__h{padding:14px 16px;gap:12px}
   .topic__n{width:32px;height:32px;font-size:.92rem}
-  .flip--course{height:auto;min-height:360px}
   .sec{padding-block:52px}
   h2{font-size:clamp(1.5rem,6vw,2rem)}
 }
@@ -1634,7 +1629,6 @@ button.plink:hover{border-color:var(--gold-400);color:var(--gold-300);background
   .tile p{font-size:.85rem}
   .tile__k{font-size:.66rem}
 
-  .flip--course{height:330px}
   .flip__f{padding:17px}
   .flip__f h3{font-size:1.08rem}
   .flip__f p{font-size:.85rem}
@@ -2415,30 +2409,10 @@ body.pv-lock{overflow:hidden}
    tightened until all of them fit rather than letting the card grow — these
    sit in a grid, and a growing card stretches its neighbours to match.
    ========================================================================== */
-.flip--course{height:512px}
-.flip--course .flip__b{display:flex;flex-direction:column}
-.flip--course .flip__list{overflow-y:auto;flex:1 1 auto;min-height:0;
-  gap:0;margin-top:10px;padding-bottom:4px;scrollbar-width:thin}
-.flip--course .flip__list li{padding:0;align-items:center;gap:9px;min-height:0}
-.flip--course .flip__t{padding:5px 0;line-height:1.3;min-height:0;font-size:.85rem}
-.flip--course .flip__list li::before{width:4px;height:4px;flex:none}
-.flip--course .flip__go{margin-top:10px;flex:0 0 auto}
 
-@media (max-width:1024px){
-  .flip--course{height:578px}
-  .flip--course .flip__t{min-height:42px;display:flex;align-items:center;padding:7px 0}
-}
-@media (max-width:860px){
-  .flip--course{height:600px}
-  .flip--course .flip__f,.flip--course .flip__b{padding:18px 16px}
-  .flip--course .flip__list--2col{grid-template-columns:1fr}
-  .flip--course .flip__wm{width:120px}
-  .flip--course .flip__t{min-height:42px;font-size:.86rem}
-}
-@media (max-width:520px){
-  .flip--course{height:612px}
-  .flip--course .flip__t{font-size:.84rem}
-}
+
+
+
 
 /* ==========================================================================
    HEADER — the logo cannot overlap the name whatever mark.png turns out to be
@@ -2504,26 +2478,11 @@ body.pv-lock{overflow:hidden}
    long. Rows are tighter, type is a shade smaller, and the sections that only
    restate what is above them are folded away on a phone.
    ========================================================================== */
-.flip--course{height:452px}
-.flip--course .flip__t{padding:3px 0;font-size:.82rem;line-height:1.25}
-.flip--course .flip__list{margin-top:8px;padding-bottom:2px}
-.flip--course .flip__f h3,.flip--course .flip__b h3{margin:10px 0 6px;font-size:1.08rem}
-.flip--course .flip__f p{font-size:.86rem;line-height:1.5}
 
-@media (max-width:1024px){
-  .flip--course{height:512px}
-  .flip--course .flip__list{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
-  .flip--course .flip__t{min-height:42px;padding:7px 0;font-size:.8rem;line-height:1.2}
-}
+
 @media (max-width:860px){
   /* thirteen topics, thumb-sized rows and a short card only coexist in two
      columns — so the list goes two-up on a phone. */
-  .flip--course{height:486px}
-  .flip--course .flip__f,.flip--course .flip__b{padding:16px 14px}
-  .flip--course .flip__list{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
-  .flip--course .flip__t{min-height:42px;font-size:.78rem;line-height:1.2;padding:6px 0}
-  .flip--course .flip__list li::before{width:3px;height:3px}
-  .flip--course .flip__wm{width:100px}
 
   /* tighter through the whole page */
   .sec{padding-block:30px}
@@ -2537,11 +2496,7 @@ body.pv-lock{overflow:hidden}
   h2{margin-bottom:.3em}
   .lede{margin-bottom:14px!important}
 }
-@media (max-width:520px){
-  .flip--course{height:502px}
-  .flip--course .flip__t{font-size:.75rem}
-  .flip--course .flip__list{gap:0 8px}
-}
+
 
 /* ==========================================================================
    COURSE CARDS — half the height
@@ -2551,33 +2506,10 @@ body.pv-lock{overflow:hidden}
    back's list scrolls inside it. The full list is one tap away in the topic
    dialog either way.
    ========================================================================== */
-.flip--course{height:326px}
-.flip--course .flip__f{justify-content:flex-start}
-.flip--course .flip__f p{margin-bottom:12px}
-.flip--course .flip__f .flip__go,.flip--course .flip__f .see{margin-top:auto}
-.flip--course .flip__list{overflow-y:auto;overscroll-behavior:contain;
-  -webkit-overflow-scrolling:touch;margin-top:8px;
-  mask-image:linear-gradient(180deg,#000 88%,transparent);
-  -webkit-mask-image:linear-gradient(180deg,#000 88%,transparent)}
-.flip--course .flip__t{min-height:38px;padding:4px 0;font-size:.82rem}
 
-@media (max-width:1024px){
-  .flip--course{height:352px}
-  .flip--course .flip__t{min-height:44px}
-}
-@media (max-width:860px){
-  .flip--course{height:360px}
-  .flip--course .flip__f,.flip--course .flip__b{padding:15px 14px}
-  .flip--course .flip__f h3{font-size:1.02rem;margin:8px 0 5px}
-  .flip--course .flip__f p{font-size:.83rem;line-height:1.45;margin-bottom:10px}
-  .flip--course .flip__list{grid-template-columns:1fr 1fr;gap:0 10px}
-  .flip--course .flip__t{min-height:44px;font-size:.77rem}
-  .flip--course .flip__wm{width:84px}
-}
-@media (max-width:520px){
-  .flip--course{height:368px}
-  .flip--course .flip__t{font-size:.75rem}
-}
+
+
+
 
 /* ==========================================================================
    BATCH OF FIXES — kept together and placed last / ID-scoped on purpose,
@@ -2599,11 +2531,6 @@ body.pv-lock{overflow:hidden}
    next to a one-line topic no longer leaves a ragged gap before the next
    row. Applies to all three cards (O Level, AS, A2) since they share this
    same markup. ---- */
-#courses .flip--course .flip__list.flip__list--2col{
-  display:block;columns:2;column-gap:16px;gap:0}
-#courses .flip--course .flip__list.flip__list--2col li{
-  break-inside:avoid;-webkit-column-break-inside:avoid;margin:0 0 7px}
-#courses .flip--course .flip__list.flip__list--2col li:last-child{margin-bottom:0}
 
 /* ---- distinctions block: smaller type so the whole section takes less
    room on a phone, not just smaller numbers ---- */
@@ -3113,13 +3040,7 @@ body.pv-lock{overflow:hidden}
 }
 
 /* a laptop has the room the phone does not — the course cards get it back */
-@media (min-width:1025px){
-  .flip--course{height:430px}
-  .flip--course .flip__t{min-height:34px;padding:5px 0;font-size:.86rem}
-  .flip--course .flip__f h3,.flip--course .flip__b h3{font-size:1.16rem}
-  .flip--course .flip__f p{font-size:.9rem;line-height:1.55}
-  .flip--course .flip__f,.flip--course .flip__b{padding:24px 22px}
-}
+
 
 /* ==========================================================================
    THEME SWITCH
@@ -3432,6 +3353,536 @@ body.pv-lock{overflow:hidden}
   .deck.in .deck__c.on,
   .deck.in.picked .deck__c:not(.on){transform:none;transition:none}
 }
+
+/* ==========================================================================
+   NO SIDEWAYS SCROLL
+   A card rotated in 3D occupies a wider bounding box than the cell it sits in,
+   so the raked decks were pushing the page 11px wide on a tablet and the whole
+   thing could be dragged sideways. Clipping at the body keeps the perspective
+   intact — `clip` rather than `hidden`, because `hidden` on the body breaks
+   position:sticky in Safari.
+   ========================================================================== */
+html{overflow-x:clip}
+body{overflow-x:clip;max-width:100%}
+@supports not (overflow:clip){
+  html,body{overflow-x:hidden}
+}
+/* the header sat 2px proud of the viewport on a 430px phone */
+.hdr,.hdr__in{max-width:100%}
+.hdr__in{box-sizing:border-box}
+
+/* ==========================================================================
+   MOTION  (15)
+   Headings assemble word by word; cards and sections drop into place. Applied
+   selectively — headings get the moment, everything else gets a short stagger,
+   because motion on every element is how a site starts to feel slow.
+   ========================================================================== */
+.wsplit{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.06em}
+.wsplit > i{display:inline-block;font-style:inherit;transform:translateY(105%);
+  opacity:0;transition:transform .74s cubic-bezier(.2,.9,.24,1),opacity .5s ease}
+.wsplit.in > i{transform:none;opacity:1}
+
+/* sections unfold downward, the way a dropdown opens */
+[data-drop]{opacity:0;transform:translateY(-10px) scaleY(.985);
+  transform-origin:top center;
+  transition:opacity .55s var(--ease),transform .7s cubic-bezier(.2,.9,.26,1)}
+[data-drop].in{opacity:1;transform:none}
+
+@media (prefers-reduced-motion:reduce){
+  .wsplit > i,[data-drop]{transition:none;transform:none;opacity:1}
+}
+
+/* ==========================================================================
+   THE DECK ON A PHONE  (4, 14)
+   The raked perspective is kept, just smaller: the cards are narrower and the
+   chosen one comes forward nearly full width so the syllabus is still
+   readable. A stack that looks right but cannot be read is no use.
+   ========================================================================== */
+@media (max-width:900px){
+  .deck{perspective:900px;perspective-origin:50% 42%;padding:2px 0}
+  .deck__rail{display:flex;justify-content:center;align-items:center;
+    min-height:296px;overflow:hidden;padding:6px 0;margin:0;
+    transform-style:preserve-3d;scroll-snap-type:none}
+  .deck__c{position:absolute;width:min(232px,62vw);scroll-snap-align:none;
+    transform:translateX(calc(var(--i) * -34%)) rotateY(-26deg) scale(.86);opacity:0}
+  /* the offsets are a share of the card, so on a narrow phone the leftmost
+     one used to sit past the edge — pulled in and clipped at the rail */
+  .deck.in .deck__c{opacity:1;
+    transform:translateX(calc(var(--i) * 10% - 4%))
+              translateZ(calc(var(--i) * -56px))
+              rotateY(-26deg);
+    transition-delay:calc(var(--i) * 110ms)}
+  .deck.in .deck__c.on{width:min(300px,86vw);
+    transform:translateX(0) translateZ(60px) rotateY(0deg);z-index:6}
+  .deck.in.picked .deck__c:not(.on){opacity:.3;filter:saturate(.6)}
+  .deck__in{min-height:266px;padding:15px 14px 14px}
+  .deck__t{font-size:.98rem;margin:10px 0 6px}
+  .deck__d{font-size:.77rem;line-height:1.45;margin-bottom:10px;max-width:30ch}
+  .deck__code{font-size:.58rem;padding:5px 10px}
+  .deck__n{font-size:2rem;right:12px;top:10px}
+  .deck__c.on .deck__in{min-height:0}
+  .deck__c.on .deck__more{max-height:460px;opacity:1}
+  .deck__list{columns:2;font-size:.72rem;column-gap:10px}
+  .deck__dots{margin-top:8px}
+}
+@media (max-width:400px){
+  .deck__rail{min-height:274px}
+  .deck__c{width:min(210px,60vw)}
+  .deck.in .deck__c.on{width:min(286px,88vw)}
+  .deck__in{min-height:246px}
+}
+
+/* ==========================================================================
+   FAQ  (16)
+   Each question is its own card rather than a row between hairlines, with a
+   circular control that turns from + to − and an answer that unfolds inside.
+   ========================================================================== */
+.faqs{display:grid;gap:10px}
+.faqs details{border:1px solid var(--line-soft);border-radius:16px;
+  background:var(--panel);overflow:hidden;
+  transition:border-color .3s var(--ease),background .3s var(--ease),
+             box-shadow .35s var(--ease)}
+.faqs details:hover{border-color:var(--gold-400)}
+.faqs details[open]{border-color:var(--gold-400);
+  background:color-mix(in srgb,var(--gold-500) 6%,var(--panel));
+  box-shadow:0 12px 34px rgba(8,18,38,.09)}
+[data-theme="dark"] .faqs details[open]{box-shadow:0 12px 34px rgba(0,0,0,.35)}
+
+.faqs summary{display:flex;align-items:center;gap:16px;
+  padding:17px 18px;cursor:pointer;list-style:none;font-weight:600;
+  font-size:.92rem;line-height:1.35;min-height:60px}
+.faqs summary::-webkit-details-marker{display:none}
+.faqs summary::after{content:"";width:32px;height:32px;flex:0 0 32px;
+  margin-left:auto;border-radius:50%;border:1px solid var(--line);
+  background:
+    linear-gradient(var(--gold-500),var(--gold-500)) center/12px 1.6px no-repeat,
+    linear-gradient(var(--gold-500),var(--gold-500)) center/1.6px 12px no-repeat;
+  transition:transform .4s var(--spring),border-color .3s var(--ease),
+             background-size .35s var(--ease)}
+.faqs details[open] summary::after{
+  /* the upright bar shrinks away, so + becomes − */
+  background-size:12px 1.6px, 1.6px 0;
+  transform:rotate(180deg);border-color:var(--gold-400)}
+.faqs .body{padding:0 18px 18px;font-size:.87rem;line-height:1.62;
+  color:var(--muted);max-width:62ch}
+@media (max-width:860px){
+  .faqs summary{padding:14px 15px;font-size:.87rem;gap:12px;min-height:56px}
+  .faqs summary::after{width:28px;height:28px;flex:0 0 28px}
+  .faqs .body{padding:0 15px 15px;font-size:.83rem}
+}
+
+/* ==========================================================================
+   DROPDOWNS  (7)
+   The native menu is the operating system's, not the site's. The control is
+   restyled and the arrow drawn in gold; the list itself still belongs to the
+   browser, which is the right trade — a hand-built menu loses keyboard and
+   screen-reader behaviour that people depend on.
+   ========================================================================== */
+.fld select,select.search,.upl select{
+  appearance:none;-webkit-appearance:none;
+  padding:13px 42px 13px 15px;border-radius:12px;
+  border:1px solid var(--line-soft);background-color:var(--panel);color:var(--text);
+  font:inherit;font-size:.9rem;cursor:pointer;width:100%;
+  background-image:
+    linear-gradient(45deg,transparent 50%,var(--gold-500) 50%),
+    linear-gradient(135deg,var(--gold-500) 50%,transparent 50%);
+  background-position:calc(100% - 21px) calc(50% + 2px),calc(100% - 15px) calc(50% + 2px);
+  background-size:6px 6px,6px 6px;background-repeat:no-repeat;
+  transition:border-color .25s var(--ease),box-shadow .25s var(--ease)}
+.fld select:hover{border-color:var(--gold-400)}
+.fld select:focus{outline:0;border-color:var(--gold-400);
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--gold-500) 16%,transparent)}
+.fld select option{background:var(--bg);color:var(--text);padding:10px}
+
+
+/* ==========================================================================
+   REVIEWS  (10)
+   The quotes stand side by side as narrow slats with their names running
+   upright, the way a rack of cards does. One lifts out of the line, widens,
+   and its quote becomes readable; a moment later it settles back and the next
+   one lifts on its own. Pressing a card takes the cycle over.
+   ========================================================================== */
+.revrack{display:flex;align-items:stretch;gap:8px;margin-top:18px;
+  min-height:320px;perspective:1400px}
+.revrack__c{position:relative;flex:0 0 74px;border-radius:16px;overflow:hidden;
+  cursor:pointer;text-align:left;padding:0;
+  border:1px solid var(--line-soft);
+  background:linear-gradient(155deg,
+    color-mix(in srgb,var(--gold-500) 9%,var(--panel)),var(--panel));
+  transition:flex-basis .68s cubic-bezier(.24,.9,.28,1),
+             transform .6s var(--spring),
+             box-shadow .5s var(--ease),
+             border-color .4s var(--ease)}
+.revrack__c.on{flex:1 1 auto;transform:translateY(-10px);
+  border-color:var(--gold-400);z-index:2;
+  box-shadow:0 26px 56px rgba(8,18,38,.2)}
+[data-theme="dark"] .revrack__c.on{box-shadow:0 26px 56px rgba(0,0,0,.5)}
+
+/* the upright name, shown only while the card is a slat */
+.revrack__spine{position:absolute;inset:0;display:grid;place-items:center;
+  transition:opacity .35s var(--ease)}
+.revrack__spine b{writing-mode:vertical-rl;transform:rotate(180deg);
+  font-family:var(--display);font-weight:600;font-size:.92rem;letter-spacing:.02em;
+  white-space:nowrap;color:var(--text)}
+.revrack__c.on .revrack__spine{opacity:0}
+
+/* what appears once it has lifted */
+.revrack__body{position:absolute;inset:0;padding:24px 24px 20px;
+  display:flex;flex-direction:column;justify-content:center;gap:14px;
+  opacity:0;transform:translateY(8px);pointer-events:none;
+  transition:opacity .4s var(--ease) .18s,transform .5s var(--ease) .18s}
+.revrack__c.on .revrack__body{opacity:1;transform:none;pointer-events:auto}
+.revrack__q{font-size:clamp(.95rem,1.5vw,1.12rem);line-height:1.6;
+  max-width:46ch;color:var(--text)}
+.revrack__who{display:flex;align-items:center;gap:12px}
+.revrack__av{width:44px;height:44px;flex:none;border-radius:50%;display:grid;
+  place-items:center;font-family:var(--display);font-size:1.1rem;
+  background:color-mix(in srgb,var(--gold-500) 16%,transparent);color:var(--gold-600);
+  border:1px solid var(--line)}
+.revrack__who b{display:block;font-size:.94rem}
+.revrack__tag{display:inline-block;margin-top:4px;font-family:var(--mono);
+  font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-600);
+  border:1px solid var(--line);border-radius:99px;padding:4px 10px}
+.revrack__stars{color:var(--gold-400);font-size:.8rem;letter-spacing:.16em}
+
+@media (max-width:860px){
+  /* a 74px slat cannot be read or reliably tapped, so the phone shows one
+     card at a time with the same automatic advance */
+  .revrack{min-height:0;display:block;perspective:none}
+  .revrack__c{display:none;flex:none;width:100%;min-height:230px;transform:none}
+  .revrack__c.on{display:block;transform:none;animation:revin .5s var(--ease)}
+  @keyframes revin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .revrack__spine{display:none}
+  .revrack__body{position:relative;inset:auto;opacity:1;transform:none;
+    padding:20px 18px;pointer-events:auto;transition:none}
+  .revrack__q{font-size:.92rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .revrack__c,.revrack__body{transition:none}
+}
+
+/* ==========================================================================
+   GLASS
+   One surface treatment applied to every card on the site, so a tile, a
+   lecture row and a review read as the same material: a translucent pane with
+   a light edge along the top, a soft blur behind it, and a sheen catching one
+   corner. Kept subtle — glass reads as expensive at 8% and as plastic at 40%.
+   ========================================================================== */
+.tile,.aff,.step,.mcard,.note,.strip,.prow,.bookrow,.plrow,.accrow,.showall,
+.faqs details,.deck__c,.revrack__c,.xp__in,.konline,.kcard,.two__c,.nag,
+.auth2__p,.sylv__p,.acctv__p,.yrdrop__in,.mats .strip{
+  position:relative;
+  background:
+    linear-gradient(150deg,
+      color-mix(in srgb,#fff 46%,transparent),
+      color-mix(in srgb,#fff 8%,transparent) 42%,
+      transparent 70%),
+    color-mix(in srgb,var(--panel) 88%,transparent);
+  backdrop-filter:blur(14px) saturate(1.15);
+  -webkit-backdrop-filter:blur(14px) saturate(1.15);
+  border:1px solid color-mix(in srgb,#fff 34%,var(--line-soft));
+  box-shadow:0 10px 30px rgba(8,18,38,.07),
+             inset 0 1px 0 color-mix(in srgb,#fff 55%,transparent)}
+
+[data-theme="dark"] .tile,[data-theme="dark"] .aff,[data-theme="dark"] .step,
+[data-theme="dark"] .mcard,[data-theme="dark"] .note,[data-theme="dark"] .strip,
+[data-theme="dark"] .prow,[data-theme="dark"] .bookrow,[data-theme="dark"] .accrow,
+[data-theme="dark"] .showall,[data-theme="dark"] .faqs details,
+[data-theme="dark"] .deck__c,[data-theme="dark"] .revrack__c,
+[data-theme="dark"] .xp__in,[data-theme="dark"] .konline,[data-theme="dark"] .kcard,
+[data-theme="dark"] .two__c,[data-theme="dark"] .nag,[data-theme="dark"] .auth2__p,
+[data-theme="dark"] .sylv__p,[data-theme="dark"] .acctv__p,
+[data-theme="focus"] .tile,[data-theme="focus"] .deck__c,[data-theme="focus"] .faqs details{
+  background:
+    linear-gradient(150deg,
+      rgba(255,255,255,.09),rgba(255,255,255,.03) 44%,transparent 72%),
+    color-mix(in srgb,var(--navy-800) 62%,transparent);
+  border-color:rgba(255,255,255,.09);
+  box-shadow:0 12px 34px rgba(0,0,0,.34),
+             inset 0 1px 0 rgba(255,255,255,.07)}
+
+/* the deck keeps its own gold wash, just on the glass */
+.deck__c{background:
+    linear-gradient(150deg,
+      color-mix(in srgb,#fff 40%,transparent),
+      color-mix(in srgb,var(--gold-500) 14%,transparent) 46%,
+      transparent 76%),
+    color-mix(in srgb,var(--panel) 84%,transparent)}
+
+/* a device that cannot blur gets a solid panel instead of a muddy one */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .tile,.aff,.step,.note,.strip,.prow,.faqs details,.deck__c,.revrack__c,
+}
+
+/* ==========================================================================
+   SIZE  (14)
+   Everything steps down as the screen narrows — type, padding and card
+   heights together, so a section holds its proportions instead of one part
+   shrinking while the rest stays put.
+   ========================================================================== */
+@media (max-width:1200px){
+  :root{--r-lg:18px}
+  .sec{padding-block:clamp(40px,5.4vw,84px)}
+}
+@media (max-width:860px){
+  body{font-size:14.6px;line-height:1.58}
+  h1{font-size:clamp(1.86rem,7.6vw,2.5rem)}
+  h2{font-size:clamp(1.36rem,5.4vw,1.82rem);margin-bottom:.34em}
+  h3{font-size:1rem}
+  .lede{font-size:.88rem;line-height:1.55;margin-bottom:14px!important}
+  .sec{padding-block:32px}
+  .tile,.aff,.step,.mcard{padding:13px 12px}
+  .tile__n{font-size:clamp(1.5rem,6.6vw,1.95rem)}
+  .tile__l{font-size:.57rem;letter-spacing:.06em}
+  .tile p,.step p,.two__c p{font-size:.8rem;line-height:1.5}
+  .note{padding:12px 13px;font-size:.8rem}
+  .chip{font-size:.6rem;padding:5px 9px}
+  .eyebrow{font-size:.6rem;margin-bottom:8px}
+  .strip{min-height:56px;padding:11px 13px}
+  .bento{gap:9px}
+  .konline{padding:13px 14px}
+  .faqs{gap:8px}
+}
+@media (max-width:520px){
+  body{font-size:14.2px}
+  .sec{padding-block:28px}
+  h2{font-size:clamp(1.26rem,6vw,1.6rem)}
+  .tile,.aff,.step{padding:11px 11px}
+  .tile p,.step p{font-size:.78rem}
+  .wrap{padding-inline:14px}
+}
+
+/* ==========================================================================
+   REGISTRATION  (6)
+   Built to the reference: two glass panels side by side, the form on one and
+   the ways to reach a person on the other. Labels sit inside the fields and
+   lift out of the way when you type, so the column reads as a stack of pills
+   rather than a wall of small print.
+   ========================================================================== */
+#register .rgrid{display:grid;grid-template-columns:1.25fr .85fr;
+  gap:clamp(14px,2vw,22px);align-items:start}
+@media (max-width:960px){#register .rgrid{grid-template-columns:1fr}}
+
+.rpane{border-radius:22px;padding:clamp(20px,2.6vw,30px);position:relative;overflow:hidden}
+.rpane::after{content:"";position:absolute;inset:-40% -30% auto auto;width:280px;height:280px;
+  border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,color-mix(in srgb,var(--gold-500) 16%,transparent),transparent 70%)}
+
+/* ---- fields as pills, with the label inside ---- */
+.rf{position:relative;margin-bottom:11px}
+.rf input,.rf select,.rf textarea{
+  width:100%;padding:22px 16px 9px;border-radius:13px;font:inherit;font-size:.9rem;
+  color:var(--text);border:1px solid color-mix(in srgb,#fff 26%,var(--line-soft));
+  background:color-mix(in srgb,var(--bg) 55%,transparent);
+  backdrop-filter:blur(8px);
+  transition:border-color .25s var(--ease),box-shadow .25s var(--ease),
+             background .25s var(--ease)}
+.rf textarea{min-height:104px;resize:vertical;padding-top:24px}
+.rf input:focus,.rf select:focus,.rf textarea:focus{
+  outline:0;border-color:var(--gold-400);
+  background:color-mix(in srgb,var(--bg) 75%,transparent);
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--gold-500) 15%,transparent)}
+.rf label{position:absolute;left:17px;top:15px;pointer-events:none;
+  font-size:.86rem;color:var(--muted);
+  transition:top .2s var(--ease),font-size .2s var(--ease),color .2s var(--ease)}
+.rf input:focus + label,.rf textarea:focus + label,
+.rf input:not(:placeholder-shown) + label,
+.rf textarea:not(:placeholder-shown) + label,
+.rf select:focus + label,.rf select.has + label,.rf label.lifted{
+  top:7px;font-size:.62rem;letter-spacing:.09em;text-transform:uppercase;
+  font-family:var(--mono);color:var(--gold-600)}
+.rf select{padding-top:22px}
+.rf .rq{color:var(--gold-500)}
+.rf .er{display:none;font-size:.74rem;color:var(--bad);margin:5px 0 0 3px}
+.rf.bad input,.rf.bad select,.rf.bad textarea{border-color:var(--bad)}
+.fld.bad input,.fld.bad select{border-color:var(--bad)}
+.rf.bad .er{display:block}
+
+/* ---- the one prominent action ---- */
+.rgo{width:100%;min-height:54px;border-radius:14px;margin-top:6px;
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  font-size:.94rem;font-weight:700;color:#150F04;position:relative;overflow:hidden;
+  background:linear-gradient(110deg,var(--gold-600),var(--gold-300) 52%,var(--gold-500));
+  background-size:200% 100%;background-position:0 50%;
+  box-shadow:0 12px 30px rgba(192,138,52,.32);
+  transition:background-position .7s var(--ease),transform .22s var(--ease),
+             box-shadow .35s var(--ease)}
+.rgo:hover{background-position:100% 50%;transform:translateY(-2px);
+  box-shadow:0 18px 42px rgba(192,138,52,.44)}
+.rgo:active{transform:scale(.985)}
+.rgo svg{width:17px;height:17px}
+
+/* ---- the contact rows ---- */
+.rc{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 16px;border-radius:13px;margin-bottom:9px;text-decoration:none;
+  border:1px solid color-mix(in srgb,#fff 22%,var(--line-soft));
+  background:color-mix(in srgb,var(--bg) 45%,transparent);
+  transition:border-color .25s var(--ease),transform .25s var(--ease),
+             background .25s var(--ease);min-height:56px}
+.rc:hover{border-color:var(--gold-400);transform:translateX(3px);
+  background:color-mix(in srgb,var(--gold-500) 8%,transparent)}
+.rc__k{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted)}
+.rc__v{font-weight:700;font-size:.94rem;color:var(--text)}
+.rc__v--sm{font-size:.82rem;word-break:break-all}
+.rsoc{display:flex;gap:9px;margin-top:4px}
+.rsoc a{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;
+  color:var(--muted);border:1px solid color-mix(in srgb,#fff 22%,var(--line-soft));
+  background:color-mix(in srgb,var(--bg) 45%,transparent);
+  transition:.25s var(--ease)}
+.rsoc a:hover{color:var(--gold-300);border-color:var(--gold-400);transform:translateY(-2px)}
+.rsoc svg{width:20px;height:20px}
+
+@media (max-width:860px){
+  .rpane{border-radius:16px;padding:16px 15px}
+  .rf input,.rf select,.rf textarea{padding:20px 14px 8px;font-size:16px;border-radius:11px}
+  .rf label{left:15px;top:14px;font-size:.82rem}
+  .rc{padding:12px 13px;min-height:52px}
+  .rc__v{font-size:.88rem}
+  .rgo{min-height:50px;font-size:.9rem}
+  .rsoc a{width:42px;height:42px}
+}
+
+/* ==========================================================================
+   The form's dropdowns keep the label above them, as they were: a floating
+   label works for a field you type into, but a select always shows a value,
+   so the label has nowhere to sit and the two collide.
+   ========================================================================== */
+#register .fld{margin-bottom:11px}
+#register .fld label{display:block;font-size:.8rem;font-weight:600;
+  margin-bottom:6px;color:var(--muted)}
+#register .fld select{width:100%;padding:14px 42px 14px 15px;border-radius:13px;
+  font:inherit;font-size:.9rem;min-height:52px}
+
+/* ==========================================================================
+   MORE GLASS
+   Pushed further: the panes let more of the page through, the top edge catches
+   more light, and a second highlight runs down the left. Transparency is what
+   reads as expensive here — but only while the text on top stays legible, so
+   the fill lifts again behind anything carrying small print.
+   ========================================================================== */
+.tile,.aff,.step,.mcard,.strip,.prow,.bookrow,.faqs details,.deck__c,
+
+[data-theme="dark"] .tile,[data-theme="dark"] .aff,[data-theme="dark"] .step,
+[data-theme="dark"] .strip,[data-theme="dark"] .prow,[data-theme="dark"] .bookrow,
+[data-theme="dark"] .faqs details,[data-theme="dark"] .deck__c,
+[data-theme="dark"] .revrack__c,[data-theme="dark"] .konline,[data-theme="dark"] .kcard,
+[data-theme="dark"] .two__c,[data-theme="dark"] .rpane,[data-theme="dark"] .rc{
+  background:
+    linear-gradient(148deg,rgba(255,255,255,.13),rgba(255,255,255,.03) 40%,transparent 70%),
+    color-mix(in srgb,var(--navy-800) 42%,transparent);
+  border-color:rgba(255,255,255,.13);
+  box-shadow:0 14px 40px rgba(0,0,0,.4),
+             inset 0 1px 0 rgba(255,255,255,.11)}
+
+/* small print needs something behind it */
+.note,.accrow,.plrow,.showall,.auth2__p,.sylv__p,.acctv__p,.yrdrop__in{
+  background:color-mix(in srgb,var(--panel) 86%,transparent)}
+[data-theme="dark"] .note,[data-theme="dark"] .auth2__p,
+[data-theme="dark"] .sylv__p,[data-theme="dark"] .acctv__p{
+  background:color-mix(in srgb,var(--navy-800) 88%,transparent)}
+
+/* ==========================================================================
+   DEPTH
+   Cards tilt very slightly toward the pointer and a highlight tracks across
+   the glass with it, so a flat pane behaves like a real one catching light.
+   Two degrees, no more: past about four it stops reading as a surface and
+   starts reading as a gimmick. Pointer only — a phone has nothing to track.
+   ========================================================================== */
+@media (hover:hover) and (pointer:fine){
+  .tilt{transform-style:preserve-3d;
+    transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
+  .tilt.live{transition:transform .12s linear}
+  .tilt{--tx:0deg;--ty:0deg;--mx:50%;--my:50%}
+  .tilt.live{transform:perspective(900px) rotateX(var(--tx)) rotateY(var(--ty))}
+  /* the light follows the pointer across the pane */
+  .tilt::after{content:"";position:absolute;inset:0;border-radius:inherit;
+    pointer-events:none;opacity:0;transition:opacity .35s var(--ease);
+    background:radial-gradient(320px circle at var(--mx) var(--my),
+      color-mix(in srgb,#fff 26%,transparent),transparent 62%)}
+  [data-theme="dark"] .tilt::after{
+    background:radial-gradient(320px circle at var(--mx) var(--my),
+      rgba(255,255,255,.09),transparent 62%)}
+  .tilt.live::after{opacity:1}
+}
+@media (prefers-reduced-motion:reduce){
+  .tilt,.tilt.live{transform:none;transition:none}
+  .tilt::after{display:none}
+}
+
+/* ==========================================================================
+   THE COST OF GLASS
+   A backdrop blur makes the GPU re-blur everything behind it, every frame,
+   for every layer. Sixty-five of them across a long page is what turns a
+   smooth scroll into a stuttering one on a mid-range Android — which is most
+   of the phones this site will be read on.
+   Blur is kept where it sits over changing content and is genuinely seen:
+   the header, dialogs, the map card, the three deck cards. Everything that
+   repeats down a list gets a translucent fill instead. Side by side the
+   difference is almost invisible; in frame times it is not.
+   ========================================================================== */
+.tile,.aff,.step,.mcard,.strip,.prow,.bookrow,.plrow,.accrow,.showall,
+.faqs details,.revrack__c,.xp__in,.konline,.two__c,.rc,.rf input,.rf textarea,
+.mats .strip,.yrdrop__in{
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+
+/* the few that keep it */
+/* .note is a plain text panel that never sits over moving content, so its
+   blur was paid for on every scroll frame and never seen. */
+.note{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  background:color-mix(in srgb,var(--panel) 88%,transparent)}
+
+/* without a blur behind them the panes need a touch more fill to stay legible */
+.tile,.aff,.step,.mcard,.strip,.prow,.bookrow,.faqs details,.revrack__c,
+.konline,.two__c,.rc{
+  background:
+    linear-gradient(148deg,
+      color-mix(in srgb,#fff 52%,transparent),
+      color-mix(in srgb,#fff 10%,transparent) 40%,
+      transparent 68%),
+    color-mix(in srgb,var(--panel) 74%,transparent)}
+[data-theme="dark"] .tile,[data-theme="dark"] .aff,[data-theme="dark"] .step,
+[data-theme="dark"] .strip,[data-theme="dark"] .prow,[data-theme="dark"] .bookrow,
+[data-theme="dark"] .faqs details,[data-theme="dark"] .revrack__c,
+[data-theme="dark"] .konline,[data-theme="dark"] .two__c,[data-theme="dark"] .rc{
+  background:
+    linear-gradient(148deg,rgba(255,255,255,.11),rgba(255,255,255,.03) 42%,transparent 70%),
+    color-mix(in srgb,var(--navy-800) 62%,transparent)}
+
+/* the browser is told which things will move, so it can plan for them */
+.deck__c.on,.revrack__c.on{will-change:auto}
+
+/* ---------- the campuses on film ---------- */
+.cvid{position:relative;margin:6px 0 0;border-radius:22px;overflow:hidden;
+  border:1px solid var(--line-soft);background:var(--navy-900);
+  aspect-ratio:16/9;box-shadow:0 20px 50px rgba(8,18,38,.16)}
+.cvid__v{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.cvid__sh{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(0deg,rgba(4,10,22,.62),transparent 42%),
+             linear-gradient(90deg,rgba(4,10,22,.3),transparent 46%)}
+.cvid__b{position:absolute;left:50%;top:50%;translate:-50% -50%;z-index:3;
+  width:74px;height:74px;border-radius:50%;display:grid;place-items:center;
+  color:#150F04;background:linear-gradient(135deg,var(--gold-600),var(--gold-300));
+  box-shadow:0 14px 38px rgba(192,138,52,.46);
+  transition:transform .3s var(--spring),opacity .35s var(--ease)}
+.cvid__b svg{width:30px;height:30px}
+.cvid__b:hover{transform:translate(-50%,-50%) scale(1.07)}
+.cvid.playing .cvid__b{opacity:0;pointer-events:none}
+.cvid:hover .cvid__b,.cvid.playing:hover .cvid__b{opacity:1;pointer-events:auto}
+.cvid__cap{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:20px 22px;
+  pointer-events:none}
+.cvid__cap b{display:block;font-family:var(--display);font-weight:600;
+  font-size:1.14rem;color:#F3EEE3}
+.cvid__cap span{display:block;font-family:var(--mono);font-size:.66rem;
+  letter-spacing:.1em;color:rgba(243,238,227,.7);margin-top:4px}
+@media (max-width:860px){
+  .cvid{border-radius:15px;aspect-ratio:16/10}
+  .cvid__b{width:58px;height:58px}
+  .cvid__b svg{width:24px;height:24px}
+  .cvid__cap{padding:14px 15px}
+  .cvid__cap b{font-size:.98rem}
+  .cvid__cap span{font-size:.6rem}
+}
 </style>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -3665,25 +4116,48 @@ body.pv-lock{overflow:hidden}
     <h2 data-rv>Seven campuses across Karachi</h2>
     <p class="lede" data-rv style="--d:1;margin-bottom:26px">Morning college programmes, evening academy batches, and live online worldwide.</p>
 
-    <div class="affg">
-      <div class="aff" data-rv><div class="aff__logo"><img src="aff-whales.png" loading="lazy" decoding="async" alt="Whales College"></div><span>Morning</span></div>
-      <div class="aff" data-rv style="--d:1"><div class="aff__logo"><img src="aff-credo.png" loading="lazy" decoding="async" alt="Credo College"></div><span>Morning</span></div>
-      <div class="aff" data-rv style="--d:2"><div class="aff__logo"><img src="aff-highbrow.png" loading="lazy" decoding="async" alt="Highbrow College"></div><span>Morning</span></div>
-      <div class="aff" data-rv style="--d:3"><div class="aff__logo"><img src="aff-bcp.png" loading="lazy" decoding="async" alt="Beaconhouse College Programme"></div><span>Morning</span></div>
+    <!-- The campuses on film. It only starts downloading when the section is
+         near the screen, and the poster stands in until the first frame is
+         ready, so nothing is paid for by someone who never scrolls this far. -->
+    <figure class="cvid" id="cvid">
+      <video id="cvidEl" class="cvid__v" poster="campus-poster.jpg"
+             muted loop playsinline preload="none" disablepictureinpicture
+             aria-label="The campuses across Karachi">
+        <source data-src="campus.webm" type="video/webm">
+        <source data-src="campus.mp4"  type="video/mp4">
+      </video>
+      <div class="cvid__sh" aria-hidden="true"></div>
+      <button class="cvid__b" id="cvidBtn" aria-label="Play">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <polygon class="cvp" points="8 5.5 18.5 12 8 18.5" fill="currentColor"/>
+          <g class="cvs" style="display:none">
+            <rect x="7.6" y="5.5" width="3.1" height="13" rx="1.1" fill="currentColor"/>
+            <rect x="13.3" y="5.5" width="3.1" height="13" rx="1.1" fill="currentColor"/>
+          </g>
+        </svg>
+      </button>
+      <figcaption class="cvid__cap">
+        <b>Seven campuses across Karachi</b>
+        <span>Gulshan-e-Iqbal &middot; North Nazimabad &middot; Gulistan-e-Johar</span>
+      </figcaption>
+    </figure>
+
+    <div class="konline" data-rv>
+      <span class="konline__i" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <circle cx="12" cy="12" r="9.2"/>
+          <path d="M2.9 12h18.2M12 2.8c2.4 2.6 3.7 5.8 3.7 9.2s-1.3 6.6-3.7 9.2
+                   c-2.4-2.6-3.7-5.8-3.7-9.2S9.6 5.4 12 2.8z"/>
+        </svg>
+      </span>
+      <div class="konline__t">
+        <b>Live online, worldwide</b>
+        <span>Zoom, every class recorded, and class times set to your own timezone
+              &mdash; the same course, wherever you are.</span>
+      </div>
+      <a class="btn btn--gold btn--sm" href="#register">Join from anywhere</a>
     </div>
 
-    <div class="affg2" style="margin-top:12px">
-      <div class="aff aff--wide" data-rv>
-        <div class="aff__logo"><img src="aff-swk.png" loading="lazy" decoding="async" alt="SWK Solution"></div>
-        <div><b>SWK Solution</b><span>Evening &middot; Gulshan &middot; Johar &middot; North</span></div>
-      </div>
-      <div class="aff aff--wide" data-rv style="--d:1">
-        <div class="aff__logo" style="font-family:var(--display);font-size:1.8rem;color:var(--gold-300)">&#9673;</div>
-        <div><b>Live Online</b><span>Worldwide &middot; Zoom &middot; every class recorded</span></div>
-      </div>
-    </div>
-
-    <p class="muted" style="font-size:.86rem;margin-top:16px">On-site classes are Karachi only. Online is open worldwide, with class times in your own timezone.</p>
   </div>
 </section>
 
@@ -4068,7 +4542,7 @@ body.pv-lock{overflow:hidden}
             <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
         </div>
       </div>
-      <div class="rst__d" id="revGrid"></div>
+      <div class="revrack" id="revRack"></div>
       <div class="rst__dots" id="revDots" aria-hidden="true"></div>
     </div>
   </div>
@@ -4077,92 +4551,91 @@ body.pv-lock{overflow:hidden}
 <!-- ================= REGISTER ================= -->
 <section class="sec" id="register">
   <div class="wrap">
-    <div class="bento" style="align-items:start">
-      <div class="c7">
-        <div class="eyebrow">Registration</div>
-        <h2>Register at the academy</h2>
-        <p class="lede">Fill this in and the team replies on WhatsApp, usually the same day. A trial lesson comes first &mdash; you decide after.</p>
-        <form data-form novalidate style="margin-top:28px">
-          <div class="bento" style="gap:0 16px">
-            <div class="fld c6"><label for="rn">Student name <span class="rq">*</span></label>
-              <input id="rn" name="name" required autocomplete="name"><div class="er">Please enter the student's name.</div></div>
-            <div class="fld c6"><label for="rp">WhatsApp number <span class="rq">*</span></label>
-              <input id="rp" name="phone" type="tel" required placeholder="03XX XXXXXXX" autocomplete="tel"><div class="er">Please enter a contact number.</div></div>
-          </div>
-          <div class="fld"><label for="re">Email <span class="rq">*</span></label>
-            <input id="re" name="email" type="email" required autocomplete="email"><div class="er">Please enter a valid email.</div></div>
-          <div class="bento" style="gap:0 16px">
-            <div class="fld c6"><label for="rl">Level <span class="rq">*</span></label>
-              <select id="rl" name="level" required>
-                <option value="">Select a level&hellip;</option>
-                <option>O Level Physics (5054)</option><option>IGCSE Physics (0625)</option>
-                <option>AS Level Physics (9702)</option><option>A2 Level Physics (9702)</option>
-                <option>Not sure yet</option>
-              </select><div class="er">Please choose a level.</div></div>
-            <div class="fld c6"><label for="rmode">Class mode</label>
-              <select id="rmode" name="mode">
-                <option>Online (worldwide)</option>
-                <option>On campus — SWK Gulshan</option>
-                <option>On campus — SWK Johar</option>
-                <option>On campus — SWK North</option>
-                              </select></div>
-          </div>
-          <div class="fld"><label for="rs">Exam session</label>
-            <select id="rs" name="session"><option>May/June</option><option>Oct/Nov</option><option>Not sure yet</option></select></div>
-          <div class="fld"><label for="rm">Anything else?</label>
-            <textarea id="rm" name="message" placeholder="Current grade, school, or what you're finding hardest&hellip;"></textarea></div>
-          <div class="hp"><input type="text" tabindex="-1" autocomplete="off" aria-hidden="true"></div>
-          <button class="btn btn--gold btn--wide" type="submit" data-mag>Send registration</button>
-        </form>
-        <div class="okp">
-          <div class="tick">&#10003;</div>
-          <h3>Registration received</h3>
-          <p class="muted">You'll get a WhatsApp reply, usually the same day.</p>
-          <div data-fallback style="display:none">
-            <div class="note" style="margin:18px auto;max-width:44ch;text-align:left">
-              We couldn't reach the server just now. Please send the same details on WhatsApp so nothing is lost.
+    <div class="eyebrow">Registration</div>
+    <h2 data-rv>Register at the academy</h2>
+    <p class="lede" data-rv style="--d:1;margin-bottom:26px">Fill this in and the team
+      replies on WhatsApp, usually the same day. A trial lesson comes first &mdash; you
+      decide after.</p>
+
+    <div class="rgrid">
+      <div class="rpane" data-rv>
+        <form data-form novalidate>
+          <div class="bento" style="gap:0 12px">
+            <div class="rf c6">
+              <input id="rn" name="name" required autocomplete="name" placeholder=" ">
+              <label for="rn">Student name <span class="rq">*</span></label>
+              <div class="er">Please enter the student's name.</div>
+            </div>
+            <div class="rf c6">
+              <input id="rp" name="phone" type="tel" required autocomplete="tel" placeholder=" ">
+              <label for="rp">WhatsApp number <span class="rq">*</span></label>
+              <div class="er">Please enter a contact number.</div>
             </div>
           </div>
-          <a class="btn btn--line" id="waBtn" target="_blank" rel="noopener">Message on WhatsApp</a>
-        </div>
+          <div class="rf">
+            <input id="re" name="email" type="email" required autocomplete="email" placeholder=" ">
+            <label for="re">Email <span class="rq">*</span></label>
+            <div class="er">Please enter a valid email.</div>
+          </div>
+          <div class="bento" style="gap:0 12px">
+            <div class="fld c6">
+              <label for="rl">Level <span class="rq">*</span></label>
+              <select id="rl" name="level" required>
+                <option value="">Select a level&hellip;</option>
+                <option>O Level / IGCSE</option><option>AS Level</option><option>A2 Level</option>
+              </select>
+              <div class="er">Please choose a level.</div>
+            </div>
+            <div class="fld c6">
+              <label for="rm">Class mode</label>
+              <select id="rm" name="mode">
+                <option>Online (worldwide)</option>
+                <option>On campus &mdash; Karachi</option>
+                <option>Either</option>
+              </select>
+            </div>
+          </div>
+          <div class="fld">
+            <label for="rs">Exam session</label>
+            <select id="rs" name="session">
+              <option>May/June</option><option>Oct/Nov</option><option>Not decided yet</option>
+            </select>
+          </div>
+          <div class="rf">
+            <textarea id="rx" name="message" placeholder=" "></textarea>
+            <label for="rx">Current grade, school, or what you're finding hardest</label>
+          </div>
+          <div class="hp"><input type="text" tabindex="-1" aria-hidden="true"
+                                 autocomplete="off" aria-label="Leave this field empty"></div>
+          <button class="rgo" type="submit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                 stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+            Send my details
+          </button>
+          <div class="msg msg--ok" style="display:none;margin-top:12px"></div>
+          <div class="msg msg--bad" style="display:none;margin-top:12px"></div>
+        </form>
       </div>
 
-      <div class="c5">
-        <div class="tile" style="margin-bottom:16px">
-          <h3>Direct contact</h3>
-          <div style="display:grid;gap:10px;margin-top:18px" id="contactList"></div>
+      <div>
+        <div class="rpane" data-rv style="--d:1">
+          <h3 style="margin:0 0 14px;font-size:1.12rem">Direct contact</h3>
+          <a class="rc" id="waBtn" href="#" target="_blank" rel="noopener">
+            <span class="rc__k">WhatsApp</span><span class="rc__v" data-cfg-phone></span></a>
+          <a class="rc" id="telBtn" href="#">
+            <span class="rc__k">Call</span><span class="rc__v" data-cfg-phone></span></a>
+          <a class="rc" id="mailBtn" href="#">
+            <span class="rc__k">Email</span><span class="rc__v rc__v--sm" data-cfg-email></span></a>
         </div>
-        <div class="tile">
-          <h3>Follow</h3>
-          <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:16px" id="socialList"></div>
+
+        <div class="rpane" data-rv style="--d:2;margin-top:12px">
+          <h3 style="margin:0 0 12px;font-size:1.12rem">Follow</h3>
+          <div class="rsoc" id="socialList"></div>
         </div>
       </div>
     </div>
   </div>
 </section>
-
-<!-- ================= FAQ ================= -->
-<section class="sec" id="faq">
-  <div class="wrap" style="max-width:860px">
-    <div class="eyebrow">FAQ</div>
-    <h2 data-rv>Questions worth asking</h2>
-    <p class="lede" data-rv style="--d:1">Anything not here, ask the SMK Assistant in the corner — it answers from the same information.</p>
-    <div class="acc" style="margin-top:30px">
-      <details open><summary>Where are the on-site classes?</summary><div class="body">In Karachi — SWK Solution at Gulshan, Johar and North. Morning college programmes run at Whales, Credo, Highbrow and Beaconhouse College Programme.</div></details>
-      <details><summary>Do you teach students outside Karachi or Pakistan?</summary><div class="body">Yes. Live online classes are open worldwide, and class times are shown in your own timezone once you enrol.</div></details>
-      <details><summary>What's the difference between O Level and IGCSE Physics?</summary><div class="body">The physics content overlaps heavily. The differences are mainly in paper structure and assessment — 0625 has more paper variants, including separate practical options. Which one you sit is set by your school's entry, not by you.</div></details>
-      <details><summary>How does the student portal work?</summary><div class="body">You get a student ID at enrollment. Signing in opens exactly the course you registered for, with lectures grouped by module. Recorded lectures play in place; live sessions open a Zoom link.</div></details>
-      <details><summary>Can I join mid-session?</summary><div class="body">Usually yes. Recorded modules cover what you've missed, and a short diagnostic works out what needs catching up first.</div></details>
-      <details><summary>Can I sit in on a class first?</summary><div class="body">Yes &mdash; a trial lesson before you commit, with no payment details needed.</div></details>
-      <details><summary>What if I miss a live class?</summary><div class="body">Every live session is recorded and added to your portal, so a missed class isn't a lost one.</div></details>
-      <details><summary>Do you cover the practical papers and Paper 5?</summary><div class="body">Yes. Practical technique is taught explicitly, and A2 Paper 5 gets its own weekly slot because it rewards method more than knowledge.</div></details>
-      <details><summary>What if I'm retaking?</summary><div class="body">A retake starts with a past-paper diagnostic, so time goes to the topics where marks were actually lost rather than the whole syllabus again.</div></details>
-    </div>
-  </div>
-</section>
-
-<!-- ================= FOOTER ================= -->
-<!-- syllabus popup lives further down, next to the other dialogs -->
 
 <footer class="ftr">
   <div class="wrap">
@@ -4522,7 +4995,10 @@ const SYN = {
         + '<span class="mono" style="font-size:.7rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase">' + label + '</span>'
         + '<b style="font-size:.9rem">' + val + '</b></a>';
     };
-    document.getElementById('contactList').innerHTML =
+    /* the registration panel now carries its own rows, so this block only runs
+       where the old list is still present */
+    var cl = document.getElementById('contactList');
+    if (cl) cl.innerHTML =
       row('WhatsApp', C.phoneDisplay, 'https://wa.me/' + C.wa) +
       row('Call', C.phoneDisplay, 'tel:+' + C.wa) +
       row('Email', C.email, 'mailto:' + C.email);
@@ -4532,12 +5008,25 @@ const SYN = {
       YouTube:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.5 9.5v5l4.2-2.5z" fill="currentColor" stroke="none"/></svg>',
       Threads:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M16.4 11.6c-.2-3-1.9-4.6-4.5-4.6-2 0-3.4.9-4 2.2"/><path d="M12 21c-4.7 0-7.5-3.2-7.5-9S7.4 3 12 3s7.5 3.3 7.5 9c0 4.3-1.8 6.9-4.4 6.9-1.8 0-3-1.1-3-2.7 0-1.8 1.5-2.9 3.6-2.9 2.6 0 4.3 1.4 4.3 3.6"/></svg>'
     };
-    document.getElementById('socialList').innerHTML =
+    var sl = document.getElementById('socialList');
+    if (sl) sl.innerHTML =
       [['Instagram', C.instagram], ['YouTube', C.youtube], ['Threads', C.threads]]
         .map(function (p) {
           return '<a class="sico" href="' + p[1] + '" target="_blank" rel="noopener" ' +
                  'aria-label="' + p[0] + '" title="' + p[0] + '">' + ICO[p[0]] + '</a>';
         }).join('');
+    /* the registration panel's contact rows */
+    document.querySelectorAll('[data-cfg-phone]').forEach(function (el) {
+      el.textContent = C.phoneDisplay;
+    });
+    document.querySelectorAll('[data-cfg-email]').forEach(function (el) {
+      el.textContent = C.email;
+    });
+    var tb = document.getElementById('telBtn');
+    if (tb) tb.href = 'tel:+' + C.wa;
+    var mb = document.getElementById('mailBtn');
+    if (mb) mb.href = 'mailto:' + C.email;
+
     var fc = document.getElementById('footContact');
     /* the footer keeps the ways to reach a person; the social icons live
        in their own row below, so they are not repeated here as words */
@@ -4551,59 +5040,98 @@ const SYN = {
     if (typeof REVIEWS !== 'undefined' && REVIEWS.length) {
       document.getElementById('reviews').style.display = '';
       // a stack of cards: one in front, the rest peeking out behind it
-      var grid = document.getElementById('revGrid');
+      var rack = document.getElementById('revRack');
       var dots = document.getElementById('revDots');
       var esc = function (v) {
         return String(v == null ? '' : v).replace(/[&<>"]/g, function (ch) {
           return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch];
         });
       };
-      grid.innerHTML = REVIEWS.map(function (r) {
-        // the initial circle is the default on purpose: most of these students
-        // are minors, and a photo only goes in when a family has said yes
+
+      rack.innerHTML = REVIEWS.map(function (r, i) {
+        /* the initial circle is the default on purpose: most of these students
+           are minors, and a photo only goes in when a family has said yes */
         var av = r.pic
-          ? '<img src="' + esc(r.pic) + '" alt="" class="rst__pic">'
-          : '<span class="rst__pic">' + esc(r.name.charAt(0)) + '</span>';
+          ? '<img src="' + esc(r.pic) + '" alt="" class="revrack__av">'
+          : '<span class="revrack__av">' + esc(r.name.charAt(0)) + '</span>';
         var tag = [r.role, r.level].filter(Boolean).map(esc).join(' \u00b7 ');
-        return '<figure class="rst__c">'
-          + '<blockquote class="rst__q">&ldquo;' + esc(r.text) + '&rdquo;</blockquote>'
-          + '<figcaption class="rst__by">' + av + '<span><b>' + esc(r.name) + '</b>'
-          + (tag ? '<span class="rst__tag">' + tag + '</span>' : '') + '</span></figcaption>'
-          + '</figure>';
+        return '<button type="button" class="revrack__c" data-rev="' + i + '" ' +
+          'aria-label="Review from ' + esc(r.name) + '">' +
+          '<span class="revrack__spine"><b>' + esc(r.name) + '</b></span>' +
+          '<span class="revrack__body">' +
+            '<span class="revrack__stars">\u2605\u2605\u2605\u2605\u2605</span>' +
+            '<span class="revrack__q">&ldquo;' + esc(r.text) + '&rdquo;</span>' +
+            '<span class="revrack__who">' + av + '<span><b>' + esc(r.name) + '</b>' +
+            (tag ? '<span class="revrack__tag">' + tag + '</span>' : '') +
+            '</span></span>' +
+          '</span></button>';
       }).join('');
       dots.innerHTML = REVIEWS.map(function () { return '<i></i>'; }).join('');
 
-      var cards = [].slice.call(grid.children), marks = [].slice.call(dots.children);
-      var n = cards.length, at = 0;
+      var cards = [].slice.call(rack.children), marks = [].slice.call(dots.children);
+      var n = cards.length, at = 0, timer = null, held = false;
       var count = document.getElementById('revCount');
 
       function place() {
-        cards.forEach(function (c, j) {
-          var d = (j - at + n) % n;                 /* how far back in the pile */
-          c.setAttribute('data-p', d > 2 ? 3 : d);
-          c.setAttribute('aria-hidden', d === 0 ? 'false' : 'true');
-        });
+        cards.forEach(function (c, j) { c.classList.toggle('on', j === at); });
         marks.forEach(function (m, j) { m.classList.toggle('on', j === at); });
         if (count) count.textContent = (at + 1) + ' of ' + n;
       }
-      function step(by) { at = (at + by + n) % n; place(); if (window.SMKsfx) SMKsfx.card(); }
+
+      /* A card holds long enough to actually read. One second was the ask, but
+         nobody finishes two sentences in a second, so it rests for four and
+         then hands over to the next. */
+      var HOLD = 4200;
+      function cycle() {
+        clearTimeout(timer);
+        if (held || n < 2) return;
+        if (matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+        timer = setTimeout(function () {
+          at = (at + 1) % n; place(); cycle();
+        }, HOLD);
+      }
+      function step(by) {
+        at = (at + by + n) % n; place();
+        if (window.SMKsfx) SMKsfx.card();
+        cycle();
+      }
+
+      cards.forEach(function (c, i) {
+        c.addEventListener('click', function () {
+          held = true;                       /* a press takes the cycle over */
+          at = i; place();
+          if (window.SMKsfx) SMKsfx.card();
+          clearTimeout(timer);
+          setTimeout(function () { held = false; cycle(); }, 9000);
+        });
+      });
 
       document.getElementById('revNext').addEventListener('click', function () { step(1); });
       document.getElementById('revPrev').addEventListener('click', function () { step(-1); });
 
-      /* swipe the pile on a phone */
+      /* it stops while someone is reading, and while the section is off screen */
+      rack.addEventListener('mouseenter', function () { held = true; clearTimeout(timer); });
+      rack.addEventListener('mouseleave', function () { held = false; cycle(); });
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (e.isIntersecting) cycle(); else clearTimeout(timer);
+          });
+        }, { threshold: .3 }).observe(rack);
+      }
+
       var sx = 0, sy = 0, live = false;
-      grid.addEventListener('touchstart', function (e) {
+      rack.addEventListener('touchstart', function (e) {
         sx = e.changedTouches[0].clientX; sy = e.changedTouches[0].clientY; live = true;
       }, { passive: true });
-      grid.addEventListener('touchend', function (e) {
+      rack.addEventListener('touchend', function (e) {
         if (!live) return; live = false;
         var dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
-        if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;  /* a scroll, not a swipe */
+        if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
         step(dx < 0 ? 1 : -1);
       }, { passive: true });
 
-      place();
+      place(); cycle();
     }
   })();
 </script>
@@ -4746,14 +5274,25 @@ const SYN = {
     if (e.target.closest(CARDS)) { tone(392, .06, 'sine', .05); lh = Date.now(); }
     else if (e.target.closest('a,button')) { sfx.hover(); lh = Date.now(); }
   }, true);
+  /* Every press makes a sound now, not just a chosen few. The kind is picked
+     from what was actually pressed, so the site answers differently to a topic,
+     a locked lecture and a paper. Throttled, or a fast scroll through a list
+     turns into a rattle. */
+  let lastSfx = 0;
   document.addEventListener('click', e => {
     if (!e.target.closest) return;
-    var t = e.target;
-    if (t.closest('.tabs2 button,.acc summary')) sfx.tab();
-    else if (t.closest('.nag__x,.modal__x,.bot__x')) sfx.close();
-    else if (t.closest('[data-theme-btn],[data-sound]')) sfx.toggle();
-    else if (t.closest(CARDS) && !t.closest('.btn')) sfx.open();
-    else if (t.closest('a,button')) sfx.click();
+    const t = e.target;
+    if (Date.now() - lastSfx < 55) return;
+    lastSfx = Date.now();
+    if (t.closest('[data-theme-btn],[data-sound]')) sfx.toggle();
+    else if (t.closest('[data-topic-open],[data-syl-topic],.deck__c,.lay__c')) sfx.topic();
+    else if (t.closest('.lec2--open,.lec2--unlocked,.lecflag--free')) sfx.unlock();
+    else if (t.closest('.lec2--shut,.lec2--soon,.lecnotes--shut')) sfx.locked();
+    else if (t.closest('[data-pdf],[data-book],[data-notes],.plink,.strip')) sfx.paper();
+    else if (t.closest('.auth2__x,.modal__x,[data-xp-close],#notesClose,summary')) sfx.fold();
+    else if (t.closest('.tabs2 button,.tabsA button,.pick__m button,[data-lec],[data-lvl]')) sfx.tab();
+    else if (t.closest('.rev__c,.revrack__c')) sfx.card();
+    else if (t.closest('button,a,input,select,label,[data-tap],[role=button]')) sfx.click();
   });
 
   /* ================= THEME ================= */
@@ -7007,6 +7546,20 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       } else if (window.SMKsfx) window.SMKsfx.fold();
     }
 
+    /* pressing anywhere that is not a card returns the chosen one to the group,
+       so another course can be picked straight away */
+    document.addEventListener('click', function (e) {
+      if (!deck.classList.contains('picked')) return;
+      if (e.target.closest('.deck__c')) return;
+      cards.forEach(function (c) { c.classList.remove('on'); });
+      deck.classList.remove('picked');
+    });
+    addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape' || !deck.classList.contains('picked')) return;
+      cards.forEach(function (c) { c.classList.remove('on'); });
+      deck.classList.remove('picked');
+    });
+
     cards.forEach(function (c) {
       c.addEventListener('click', function (e) {
         /* a control inside the card handles its own press */
@@ -7566,6 +8119,155 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
 
     go(0);
     hold(held);
+  })();
+
+  /* ---------- depth: cards catch the light as the pointer crosses them ------- */
+  (function () {
+    if (!matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+    if (matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+
+    /* named from what this build actually has — an earlier list referred to
+       classes that no longer exist, so only four elements ever tilted */
+    var SEL = '.lay__c,.comb__in,.rpane,.konline,.faqs details,.accrow,' +
+              '.revrack__c,.strip,.bookrow,.prow';
+    $$(SEL).forEach(function (el) { el.classList.add('tilt'); });
+
+    var frame = null;
+    function move(e) {
+      var el = e.target.closest('.tilt'); if (!el) return;
+      if (frame) return;
+      frame = requestAnimationFrame(function () {
+        frame = null;
+        var r = el.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+        el.style.setProperty('--ty', ((px - .5) * 4).toFixed(2) + 'deg');
+        el.style.setProperty('--tx', ((.5 - py) * 4).toFixed(2) + 'deg');
+        el.style.setProperty('--mx', (px * 100).toFixed(1) + '%');
+        el.style.setProperty('--my', (py * 100).toFixed(1) + '%');
+        el.classList.add('live');
+      });
+    }
+    function leave(e) {
+      var el = e.target.closest('.tilt'); if (!el) return;
+      el.classList.remove('live');
+      el.style.setProperty('--tx', '0deg'); el.style.setProperty('--ty', '0deg');
+    }
+    document.addEventListener('pointermove', move, { passive: true });
+    document.addEventListener('pointerout', leave, { passive: true });
+  })();
+
+  /* ----------------------------------------------------------------------
+     THE CAMPUS FILM
+     The sources carry data-src rather than src, so nothing is fetched until
+     the section is near the screen: a visitor who never scrolls this far pays
+     nothing for it. It plays by itself while genuinely on screen and pauses
+     when it is not, because a video running behind you is battery spent for
+     no reason.
+     ---------------------------------------------------------------------- */
+  (function () {
+    var box = $('#cvid'); if (!box) return;
+    var v = $('#cvidEl'), btn = $('#cvidBtn'), armed = false, manual = false;
+
+    function arm() {
+      if (armed) return; armed = true;
+      $$('source', v).forEach(function (src) {
+        if (src.dataset.src) src.src = src.dataset.src;
+      });
+      v.preload = 'auto';
+      v.load();
+    }
+
+    /* The observers are held back until the page has laid itself out. Set up
+       any earlier and every section is still stacked at the top of the
+       document, so all of them read as on screen and the video downloads
+       immediately — which is the exact thing this is meant to avoid. */
+    function watch() {
+      new IntersectionObserver(function (es, o) {
+        es.forEach(function (e) { if (e.isIntersecting) { arm(); o.disconnect(); } });
+      }, { rootMargin: '400px 0px' }).observe(box);
+
+      new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          if (e.isIntersecting) {
+            if (!manual && !matchMedia('(prefers-reduced-motion:reduce)').matches) {
+              arm(); v.play().catch(function () { });
+            }
+          } else if (!v.paused) v.pause();
+        });
+      }, { threshold: .35 }).observe(box);
+    }
+
+    if (!('IntersectionObserver' in window)) { arm(); }
+    else if (document.readyState === 'complete') requestAnimationFrame(watch);
+    else addEventListener('load', function () { requestAnimationFrame(watch); }, { once: true });
+
+    function icon() {
+      box.classList.toggle('playing', !v.paused);
+      $('.cvp', btn).style.display = v.paused ? '' : 'none';
+      $('.cvs', btn).style.display = v.paused ? 'none' : '';
+      btn.setAttribute('aria-label', v.paused ? 'Play' : 'Pause');
+    }
+    v.addEventListener('play', icon);
+    v.addEventListener('pause', icon);
+
+    function toggle() {
+      manual = true; arm();
+      if (v.paused) v.play().catch(function () { }); else v.pause();
+    }
+    btn.addEventListener('click', function (e) { e.stopPropagation(); toggle(); });
+    box.addEventListener('click', function (e) {
+      if (!e.target.closest('.cvid__b')) toggle();
+    });
+  })();
+
+  /* one question open at a time, so the section stays scannable */
+  $$('#faq details').forEach(function (d) {
+    d.addEventListener('toggle', function () {
+      if (!d.open) return;
+      $$('#faq details').forEach(function (o) { if (o !== d) o.open = false; });
+    });
+  });
+
+  /* ---------- 15. headings assemble, sections drop ---------- */
+  (function () {
+    if (matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+
+    /* every word of a heading becomes its own sliding piece */
+    $$('h1,h2').forEach(function (h) {
+      if (h.dataset.split || h.querySelector('.wsplit') || !h.textContent.trim()) return;
+      if (h.closest('#pre,.auth2,.modal,.notesv')) return;
+      var frag = document.createDocumentFragment();
+      Array.prototype.forEach.call(h.childNodes, function (node) {
+        if (node.nodeType !== 3) { frag.appendChild(node.cloneNode(true)); return; }
+        node.textContent.split(/(\s+)/).forEach(function (w) {
+          if (!w.trim()) { frag.appendChild(document.createTextNode(w)); return; }
+          var s1 = document.createElement('span'); s1.className = 'wsplit';
+          var i1 = document.createElement('i'); i1.textContent = w;
+          s1.appendChild(i1); frag.appendChild(s1);
+        });
+      });
+      h.textContent = ''; h.appendChild(frag); h.dataset.split = '1';
+    });
+
+    /* sections unfold as they are reached */
+    $$('.sec > .wrap > .bento, .sec > .wrap > .deck, #faq .faqs, .revrack')
+      .forEach(function (el) { el.setAttribute('data-drop', ''); });
+
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var el = e.target;
+        if (el.classList.contains('wsplit')) {
+          var kids = Array.prototype.slice.call(el.parentNode.querySelectorAll('.wsplit'));
+          var i = kids.indexOf(el);
+          el.querySelector('i').style.transitionDelay = (i * 52) + 'ms';
+        }
+        el.classList.add('in');
+        io.unobserve(el);
+      });
+    }, { threshold: .2, rootMargin: '0px 0px -8% 0px' });
+
+    $$('.wsplit,[data-drop]').forEach(function (el) { io.observe(el); });
   })();
 
   /* ---------- the sign-in dialog ---------- */
