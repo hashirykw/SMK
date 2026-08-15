@@ -564,12 +564,17 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 .dl__panel h3{margin:14px 0 10px}
 .dl__panel p{font-size:.94rem;color:var(--muted);margin:0;max-width:60ch}
 
-.dl__dots{display:flex;gap:7px;margin-top:16px;flex-wrap:wrap}
-.dl__dots button{width:7px;height:7px;border-radius:50%;background:var(--line-soft);
-  border:0;padding:0;cursor:pointer;transition:.3s var(--ease)}
-.dl__dots button:hover{background:var(--gold-600)}
-.dl__dots button.on{background:var(--gold-400);width:22px;border-radius:99px}
-.dl__dots button:focus-visible{outline:2px solid var(--gold-300);outline-offset:3px}
+.dl__dots{display:flex;gap:1px;margin-top:12px;flex-wrap:wrap}
+/* the dot is 7px of paint inside a 30px button — a finger needs the second
+   number, the eye only ever sees the first */
+.dl__dots button{width:32px;height:32px;display:grid;place-items:center;
+  background:none;border:0;padding:0;cursor:pointer}
+.dl__dots button::before{content:"";display:block;width:7px;height:7px;
+  border-radius:50%;background:var(--line-soft);transition:.3s var(--ease)}
+.dl__dots button:hover::before{background:var(--gold-600)}
+.dl__dots button.on::before{background:var(--gold-400);width:22px;border-radius:99px}
+.dl__dots button:focus-visible{outline:0}
+.dl__dots button:focus-visible::before{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--gold-300)}
 
 @media (max-width:860px){
   .dl{grid-template-columns:1fr;gap:26px;justify-items:center}
@@ -595,7 +600,10 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
    ========================================================================== */
 .lay{position:relative;display:grid;grid-template-columns:repeat(3,1fr);
   gap:clamp(14px,2.4vw,32px);perspective:1500px;perspective-origin:50% 26%;
-  padding:30px 0 40px;transform-style:preserve-3d;
+  /* the side room is not decoration: the cards are turned on Z, so their
+     corners reach past the box the grid gives them, and without it the
+     outermost card is shaved off at the edge of the screen */
+  padding:30px clamp(20px,1.6vw,26px) 40px;transform-style:preserve-3d;
   /* The container is a flat plane at z=0 while the tilted cards lean partly
      behind it, so it wins the hit test over its own children and presses land
      on nothing. Same trap as the course deck rail. Nothing here scrolls, so
@@ -619,8 +627,9 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 .lay__f{position:relative;overflow:hidden;border-radius:16px;
   padding:20px 20px 18px;display:flex;flex-direction:column;
   /* fixed, so the icon can sit at the top and the words at the foot the way a
-     printed card is laid out — and so nothing reflows when one opens */
-  height:clamp(244px,19vw,272px);
+     printed card is laid out — and so nothing reflows when one opens. The
+     floor comes from the measured slot, so the words can never be cut. */
+  height:max(clamp(244px,19vw,272px),var(--card-h,244px));
   background:linear-gradient(140deg,#0E1B36,#081226 52%,#16294B);
   border:1px solid rgba(224,169,76,.26);color:#F3EEE3;
   box-shadow:0 26px 44px -16px rgba(5,11,24,.55);
@@ -660,7 +669,13 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
   line-height:1.2;margin:22px 0 0;letter-spacing:-.01em}
 
 /* the hint and the paragraph share one slot, so nothing reflows on press */
-.lay__slot{position:relative;display:grid;margin-top:10px;min-height:104px}
+/* --slot-h is measured at runtime from the longest of the three paragraphs at
+   the current width. A hard 104px fitted the desktop column and cut three
+   lines off the bottom on a phone, where the same words wrap to twice the
+   depth. Measuring keeps every card the same height — so opening one still
+   moves nothing — while guaranteeing the words fit at any width. */
+.lay__slot{position:relative;display:grid;align-items:start;margin-top:10px;
+  min-height:var(--slot-h,104px)}
 .lay__slot > *{grid-area:1/1;margin:0;
   transition:opacity .4s var(--ease),transform .5s var(--ease)}
 /* the hint sits at the foot of the slot, so a closed card reads as a printed
@@ -692,9 +707,14 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 
 @media (max-width:820px){
   .lay{grid-template-columns:1fr;gap:16px;perspective:1100px;
-    perspective-origin:50% 50%;padding:18px 0 26px}
+    perspective-origin:50% 50%;
+    /* one column means near-full-width cards, so the turned corners swing
+       much further out than they do in a narrow desktop column */
+    padding:18px clamp(20px,5vw,34px) 26px}
+  /* a gentler turn on a phone: at -5deg the corners of a full-width card
+     reached past the edge of the screen and were shaved off */
   .lay__c,.lay__c:nth-child(2),.lay__c:nth-child(3){
-    transform:rotateX(26deg) rotateZ(-5deg)}
+    transform:rotateX(26deg) rotateZ(-2.4deg)}
   .lay__c.on,.lay__c:nth-child(2).on,.lay__c:nth-child(3).on{
     transform:rotateX(0deg) rotateZ(0deg) translateZ(40px)}
   .lay__slot{min-height:92px}
@@ -1127,10 +1147,27 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
   .ftr__g{grid-template-columns:1fr 1fr}
 }
 @media (max-width:900px){
-  .nav,.hdr__cta{display:none}
-  .burger{display:flex}
   .mob{display:block}
   .cue{display:none}
+}
+/* The bar carries a 711px nav, a 184px pair of buttons and a 42px account
+   button. With the logo and the gaps that needs about 1100px. It used to hand
+   over to the burger at 900, so from 901 to ~1090 the row overflowed and the
+   logo — the one flexible item — was crushed to nothing: the site name simply
+   vanished on every small laptop. The handover now happens where the row
+   actually stops fitting. */
+@media (max-width:1100px){
+  .nav,.hdr__cta{display:none}
+  .burger{display:flex}
+}
+/* Just above the handover the row fits but only by eating the brand name.
+   Tightening the link spacing here buys back the ~90px the name needs, so it
+   reads in full from the moment the desktop bar appears. */
+@media (min-width:1101px) and (max-width:1299px){
+  .nav{gap:17px}
+  .nav a{font-size:.83rem}
+  .hdr__cta{margin-left:12px;gap:8px}
+  .hdr__in{gap:12px}
 }
 @media (max-width:680px){
   body{font-size:16px}
@@ -2418,7 +2455,10 @@ body.pv-lock{overflow:hidden}
    HEADER — the logo cannot overlap the name whatever mark.png turns out to be
    ========================================================================== */
 .hdr__in{gap:14px}
+/* flex-shrink stays, but the name keeps a floor: it may ellipsis, never
+   collapse to zero the way it did between 900 and 1100 */
 .logo{min-width:0;flex:0 1 auto;gap:9px;align-items:center;min-height:42px}
+.logo b{min-width:3.5ch}
 .logo img{height:32px;width:auto;max-width:42px;object-fit:contain;flex:0 0 auto;display:block}
 .logo b{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   letter-spacing:.02em}
@@ -3258,8 +3298,12 @@ body.pv-lock{overflow:hidden}
 /* what unfolds when a card is chosen */
 .deck__more{max-height:0;overflow:hidden;opacity:0;
   transition:max-height .6s var(--ease),opacity .4s var(--ease)}
-.deck__list{columns:2;column-gap:14px;margin:14px 0 12px;font-size:.79rem}
-.deck__list button{display:block;width:100%;text-align:left;padding:5px 0;
+/* columns and a column-gap overrun their container by the gap itself unless
+   the box is told to keep the padding inside its own width */
+.deck__list{columns:2;column-gap:14px;margin:14px 0 12px;font-size:.79rem;
+  box-sizing:border-box;max-width:100%;overflow:hidden}
+.deck__list button{display:block;width:100%;text-align:left;padding:7px 0;
+  min-height:34px;
   color:var(--text);line-height:1.3;border-bottom:1px solid transparent;
   break-inside:avoid;transition:.2s var(--ease)}
 .deck__list button:hover{color:var(--gold-600);border-bottom-color:var(--gold-500)}
@@ -3853,13 +3897,31 @@ body{overflow-x:clip;max-width:100%}
 .deck__c.on,.revrack__c.on{will-change:auto}
 
 /* ---------- the campuses on film ---------- */
-.cvid{position:relative;margin:6px 0 0;border-radius:22px;overflow:hidden;
-  border:1px solid var(--line-soft);background:var(--navy-900);
-  aspect-ratio:16/9;box-shadow:0 20px 50px rgba(8,18,38,.16)}
+/* Full bleed. The figure sits outside .wrap rather than breaking out of it
+   with a 100vw trick, because 100vw counts the scrollbar and would leave the
+   band a few pixels wider than the screen and fractionally off centre. Out
+   here it is simply as wide as the section, which is as wide as the page. */
+.cvid{position:relative;margin:clamp(18px,3vw,34px) 0 0;width:100%;
+  border:0;border-radius:0;box-shadow:none;overflow:hidden;
+  background:var(--navy-900);
+  /* the frame's own shape, so object-fit:cover has nothing left to crop */
+  aspect-ratio:var(--vid-ar,16/9);
+  /* A 16:9 film shown edge to edge is 56% of the screen's width tall, which on
+     a wide monitor is a very deep band. The only ceiling is one screenful —
+     so the band never runs past the fold, and below that nothing is cropped
+     at all. Past the ceiling it crops from the centre, keeping the buildings
+     in shot. */
+  max-height:100svh}
 .cvid__v{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+/* The footage carries its own burnt-in label in the bottom left, and it runs
+   bright besides. The scrim is weighted to the TOP now, where the caption has
+   moved to — reading over the film without covering the map's own titling or
+   fighting the glare off the middle of the frame. */
 .cvid__sh{position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(0deg,rgba(4,10,22,.62),transparent 42%),
-             linear-gradient(90deg,rgba(4,10,22,.3),transparent 46%)}
+  background:linear-gradient(180deg,rgba(4,10,22,.88) 0%,rgba(4,10,22,.5) 26%,transparent 58%),
+             linear-gradient(90deg,rgba(4,10,22,.4),transparent 54%),
+             linear-gradient(0deg,rgba(4,10,22,.4),transparent 22%)}
+.cvid__cap b,.cvid__cap span{text-shadow:0 1px 12px rgba(4,10,22,.8)}
 .cvid__b{position:absolute;left:50%;top:50%;translate:-50% -50%;z-index:3;
   width:74px;height:74px;border-radius:50%;display:grid;place-items:center;
   color:#150F04;background:linear-gradient(135deg,var(--gold-600),var(--gold-300));
@@ -3869,19 +3931,44 @@ body{overflow-x:clip;max-width:100%}
 .cvid__b:hover{transform:translate(-50%,-50%) scale(1.07)}
 .cvid.playing .cvid__b{opacity:0;pointer-events:none}
 .cvid:hover .cvid__b,.cvid.playing:hover .cvid__b{opacity:1;pointer-events:auto}
-.cvid__cap{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:20px 22px;
-  pointer-events:none}
+.cvid__cap{position:absolute;left:50%;translate:-50% 0;top:0;z-index:2;
+  width:100%;max-width:var(--max);
+  padding:26px clamp(18px,4vw,40px);pointer-events:none}
 .cvid__cap b{display:block;font-family:var(--display);font-weight:600;
   font-size:1.14rem;color:#F3EEE3}
 .cvid__cap span{display:block;font-family:var(--mono);font-size:.66rem;
   letter-spacing:.1em;color:rgba(243,238,227,.7);margin-top:4px}
 @media (max-width:860px){
-  .cvid{border-radius:15px;aspect-ratio:16/10}
+  /* the 16/10 that used to be here cropped a tenth off the sides of a 16:9
+     frame on every phone; the shape now follows the file at every width */
+  .cvid{max-height:none}
   .cvid__b{width:58px;height:58px}
   .cvid__b svg{width:24px;height:24px}
-  .cvid__cap{padding:14px 15px}
+  .cvid__cap{padding:16px clamp(18px,4vw,40px)}
   .cvid__cap b{font-size:.98rem}
   .cvid__cap span{font-size:.6rem}
+}
+
+/* ==========================================================================
+   READABLE FLOOR ON PHONES
+   The mono micro-labels sit at 9.3-9.6px. Small caps with wide tracking stop
+   being comfortable well before that on a handheld, so they are nudged up to
+   ~11px on narrow screens only — the desktop scale is untouched. This block
+   sits last on purpose: the rules it raises are plain single-class selectors
+   defined further up, so it has to come after them to win.
+   ========================================================================== */
+@media (max-width:900px){
+  .eyebrow,.chip,.stair__k,.stair__pct,.lay__hint,.comb__k,
+  .dl__k,.dl__hint,.rst__tag,.sel__ht,.sel__clr,.prow__n,.prow__s,
+  .cvid__cap span,.introv__cap span,.intro__sub,.lecflag,
+  .revrack__tag,.rc__k,.cue span{font-size:.7rem;letter-spacing:.13em}
+  .deck__code{font-size:.68rem;letter-spacing:.1em}
+  /* these sit inside containers that scale them down again, so they need
+     naming directly rather than inheriting the bump above */
+  .chip--gold,.note span,.cvid__cap span,.introv__cap span,
+  .lecmeta span,.prow span{font-size:.7rem}
+  /* inline text buttons and the footer links are a finger's target too */
+  .note button,.ftr__c a{padding-block:5px;display:inline-block}
 }
 </style>
 <script type="importmap">
@@ -4115,32 +4202,37 @@ body{overflow-x:clip;max-width:100%}
     <div class="eyebrow">Where he teaches</div>
     <h2 data-rv>Seven campuses across Karachi</h2>
     <p class="lede" data-rv style="--d:1;margin-bottom:26px">Morning college programmes, evening academy batches, and live online worldwide.</p>
+  </div>
 
-    <!-- The campuses on film. It only starts downloading when the section is
-         near the screen, and the poster stands in until the first frame is
-         ready, so nothing is paid for by someone who never scrolls this far. -->
-    <figure class="cvid" id="cvid">
-      <video id="cvidEl" class="cvid__v" poster="campus-poster.jpg"
-             muted loop playsinline preload="none" disablepictureinpicture
-             aria-label="The campuses across Karachi">
-        <source data-src="campus.webm" type="video/webm">
-        <source data-src="campus.mp4"  type="video/mp4">
-      </video>
-      <div class="cvid__sh" aria-hidden="true"></div>
-      <button class="cvid__b" id="cvidBtn" aria-label="Play">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <polygon class="cvp" points="8 5.5 18.5 12 8 18.5" fill="currentColor"/>
-          <g class="cvs" style="display:none">
-            <rect x="7.6" y="5.5" width="3.1" height="13" rx="1.1" fill="currentColor"/>
-            <rect x="13.3" y="5.5" width="3.1" height="13" rx="1.1" fill="currentColor"/>
-          </g>
-        </svg>
-      </button>
-      <figcaption class="cvid__cap">
-        <b>Seven campuses across Karachi</b>
-        <span>Gulshan-e-Iqbal &middot; North Nazimabad &middot; Gulistan-e-Johar</span>
-      </figcaption>
-    </figure>
+  <!-- The campuses on film. It only starts downloading when the section is
+       near the screen, and the poster stands in until the first frame is
+       ready, so nothing is paid for by someone who never scrolls this far. -->
+  <figure class="cvid" id="cvid">
+    <video id="cvidEl" class="cvid__v" poster="campus-poster.jpg"
+           muted loop playsinline preload="none" disablepictureinpicture
+           aria-label="The campuses across Karachi"
+           data-w="1280" data-h="720"
+           data-sm="campus-540.webm|campus-540.mp4"
+           data-xs="campus-360.webm|campus-360.mp4"
+           data-lg="campus-720.webm|campus-720.mp4"></video>
+    <div class="cvid__sh" aria-hidden="true"></div>
+    <button class="cvid__b" id="cvidBtn" aria-label="Play">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <polygon class="cvp" points="8 5.5 18.5 12 8 18.5" fill="currentColor"/>
+        <g class="cvs" style="display:none">
+          <rect x="7.6" y="5.5" width="3.1" height="13" rx="1.1" fill="currentColor"/>
+          <rect x="13.3" y="5.5" width="3.1" height="13" rx="1.1" fill="currentColor"/>
+        </g>
+      </svg>
+    </button>
+    <figcaption class="cvid__cap">
+      <b>Seven campuses across Karachi</b>
+      <span>Gulshan-e-Iqbal &middot; North Nazimabad &middot; Gulistan-e-Johar</span>
+    </figcaption>
+  </figure>
+
+  <div class="wrap">
+
 
     <div class="konline" data-rv>
       <span class="konline__i" aria-hidden="true">
@@ -7763,6 +7855,51 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   /* the notes cards lying on their surface */
   pressGroup('#lay', '.lay__c');
 
+  /* ----------------------------------------------------------------------
+     Size the notes cards to the words, at whatever width they are being read.
+     The same three paragraphs wrap to twice the depth on a phone as they do
+     in a desktop column, so a hard slot height either cuts the text there or
+     leaves a hole here. Measuring the longest of the three and giving all
+     three that height keeps them level — so opening one still moves nothing —
+     and guarantees the words fit.
+     ---------------------------------------------------------------------- */
+  (function () {
+    var lay = $('#lay'); if (!lay) return;
+    var cards = $$('.lay__c', lay);
+    if (!cards.length) return;
+
+    function fit() {
+      /* clear both floors first, or this measures its own last answer */
+      lay.style.removeProperty('--slot-h');
+      lay.style.removeProperty('--card-h');
+
+      var slot = 0;
+      cards.forEach(function (c) {
+        var para = $('.lay__p', c);
+        if (para) slot = Math.max(slot, Math.ceil(para.getBoundingClientRect().height));
+      });
+      if (slot > 0) lay.style.setProperty('--slot-h', slot + 'px');
+
+      var need = 0;
+      cards.forEach(function (c) {
+        var face = $('.lay__f', c), z = $('.lay__z', c);
+        if (!face || !z) return;
+        var cs = getComputedStyle(face);
+        need = Math.max(need, z.scrollHeight +
+          parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom) + 2);
+      });
+      if (need > 0) lay.style.setProperty('--card-h', Math.ceil(need) + 'px');
+    }
+
+    fit();
+    /* the web fonts land after first paint and change every wrap */
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit).catch(function () { });
+    addEventListener('load', fit);
+
+    var t;
+    addEventListener('resize', function () { clearTimeout(t); t = setTimeout(fit, 160); });
+  })();
+
   /* the method comb — the hex is the control, the panel is where it is read */
   (function () {
     var comb = $('#comb'); if (!comb) return;
@@ -8168,14 +8305,48 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     var box = $('#cvid'); if (!box) return;
     var v = $('#cvidEl'), btn = $('#cvidBtn'), armed = false, manual = false;
 
+    /* Pick the file that suits the screen before a byte is fetched. The player
+       is muted and never unmutes, so every rendition ships without an audio
+       track — that alone took the download from 11MB to under 3MB, and a
+       phone gets 0.6MB of it. Chosen in script rather than with <source
+       media>, because the media attribute is only read once at load time and
+       support for it is uneven. */
     function arm() {
       if (armed) return; armed = true;
-      $$('source', v).forEach(function (src) {
-        if (src.dataset.src) src.src = src.dataset.src;
+      /* Decided on the viewport alone, deliberately. Weighting it by pixel
+         ratio pushed every retina phone up a tier, which is the wrong trade
+         for footage that plays behind a dark gradient and a caption: the
+         sharpness is invisible, the extra megabyte is not. */
+      var conn = navigator.connection || {};
+      var thin = conn.saveData === true ||
+                 /^(slow-2g|2g|3g)$/.test(conn.effectiveType || '');
+      /* The band is full bleed now, so the file is judged against the whole
+         screen rather than a small framed box — a phone showing 390px of
+         video edge to edge needs more than the 360 file that was fine inside
+         a card. The smallest one is kept for Data Saver and slow radios,
+         where a soft picture beats a stalled one. */
+      var w = innerWidth;
+      var pick = thin ? v.dataset.xs
+               : w < 700 ? v.dataset.sm
+               : v.dataset.lg;
+      (pick || v.dataset.lg).split('|').forEach(function (file) {
+        var el = document.createElement('source');
+        el.src = file;
+        el.type = /\.webm$/.test(file) ? 'video/webm' : 'video/mp4';
+        v.appendChild(el);
       });
       v.preload = 'auto';
       v.load();
     }
+
+    /* Hold the frame's real shape so nothing is ever cropped. The markup
+       carries the dimensions for the very first paint, and the metadata
+       overrides them once it lands, so a re-cut video needs no CSS change. */
+    function shape(w, h) {
+      if (w > 0 && h > 0) box.style.setProperty('--vid-ar', w + ' / ' + h);
+    }
+    shape(+v.dataset.w, +v.dataset.h);
+    v.addEventListener('loadedmetadata', function () { shape(v.videoWidth, v.videoHeight); });
 
     /* The observers are held back until the page has laid itself out. Set up
        any earlier and every section is still stacked at the top of the
