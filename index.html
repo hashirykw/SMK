@@ -3296,7 +3296,9 @@ body.pv-lock{overflow:hidden}
     border-color:var(--gold-400);z-index:5;
     box-shadow:0 40px 90px rgba(8,18,38,.26)}
   .deck.in .deck__c.on .deck__glass{opacity:.25}
-  .deck.in .deck__c.on .deck__more{max-height:520px;opacity:1}
+  /* headroom for thirteen topics plus the button, even when a long title
+     wraps onto a second line — a cap that fits exactly is a cap that clips */
+  .deck.in .deck__c.on .deck__more{max-height:720px;opacity:1}
   .deck.in .deck__c.on .deck__in{min-height:0}
   /* the others fall back and dim so the chosen one is the only thing in focus */
   .deck.in.picked .deck__c:not(.on){opacity:.42;filter:saturate(.7)}
@@ -4313,6 +4315,63 @@ body.selopen #register{overflow-y:auto;max-height:100svh;touch-action:pan-y}
 .deck__c.on .deck__in{overflow:visible;min-height:0}
 .deck__c.on{height:auto}
 .deck__more .btn{margin-top:4px}
+
+/* ==========================================================================
+   COURSE DECK — THE OPEN CARD FITS THE PHONE  (last word on the deck)
+   Three things were cutting the cards off on a phone, and they stacked:
+
+   1. The fold-out was capped at 480px. A2 carries thirteen topics, which in
+      one column needs a shade over 600px — so its last topics and the button
+      were simply cropped away.
+   2. The rail is a horizontal scroller, which means overflow-y is a clip, and
+      it only carried 8px of vertical padding. The open card was pushed
+      forward with translateZ(40px) under a 1000px perspective, so it PAINTED
+      about 4% larger than the box it was laid out in — the extra sat outside
+      the clip and its top and bottom edges were shaved.
+   3. The rail was pinned to a 300px floor with the cards centred inside it,
+      so a card that unfolded to 600px+ hung out of a 300px window.
+
+   Fixed by letting the fold run to its natural height, flattening the lift so
+   the painted box matches the laid-out box, and letting the rail grow with
+   whichever card is open.
+   ========================================================================== */
+@media (max-width:900px){
+  /* the rail follows the tallest card instead of holding a fixed window,
+     and carries enough padding for the lift and shadow to survive the clip */
+  .deck__rail{align-items:flex-start;min-height:0;
+    padding-top:20px;padding-bottom:24px}
+  /* the open card throws a 60px shadow, and the rail clips vertically — so
+     the extra room is added only while a card is actually open, rather than
+     leaving dead space under the deck the rest of the time */
+  .deck.picked .deck__rail{padding-bottom:52px}
+
+  /* the lift is done with border and shadow, not depth: translateZ under a
+     perspective scales the paint without moving the layout box, and it is
+     that mismatch the rail was clipping */
+  .deck.in .deck__c.mid{transform:rotateY(0deg) scale(1) translateZ(0);z-index:3}
+  .deck.in .deck__c.on{transform:rotateY(0deg) scale(1) translateZ(0);z-index:5;
+    border-color:var(--gold-400)}
+
+  /* room for all thirteen, in one column or two, with the button below them */
+  .deck__c.on .deck__more{max-height:900px;opacity:1}
+  .deck__c.on .deck__in{min-height:0;overflow:visible}
+  .deck__c.on{height:auto;align-self:flex-start}
+}
+
+/* the narrowest phones read the list in a single column, so it runs longest */
+@media (max-width:420px){
+  .deck__c.on .deck__more{max-height:1000px}
+}
+
+/* The touch-target pass gave each swipe dot a 42px hit area with
+   `background:none`, which also erased the 6px dot it was meant to be
+   wrapping — so the deck gave no sign it had three cards to swipe through.
+   The hit area stays 42px; the mark is drawn inside it instead. */
+.deck__dots i{background:none}
+.deck__dots i::after{content:'';display:block;width:6px;height:6px;
+  border-radius:50%;background:var(--line-soft);
+  transition:width .3s var(--ease),background-color .3s var(--ease)}
+.deck__dots i.on::after{background:var(--gold-500);width:18px;border-radius:99px}
 
 /* ==========================================================================
    SMOOTH THROUGHOUT
@@ -8035,6 +8094,48 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       io.observe(deck);
     } else { deck.classList.add('in'); settle(); }
 
+    /* ---- keep an opened card on screen ----
+       Once A2 unfolds it is taller than a phone viewport, and the browser has
+       no reason to follow it: the press happened at the top of the card, so
+       everything below the fold just hangs there. scrollIntoView on its own
+       cannot help, because at the moment of the press the card is still
+       folded and its real height is not known yet. So we come back after the
+       fold has run: if the card is taller than the screen we pin its top just
+       under the header and let the page scroll from there, and if it fits we
+       nudge it up only far enough to bring its bottom into view. */
+    var fitT, fitT2;
+
+    /* Waiting a fixed number of milliseconds measured the card halfway
+       through its unfold, so it scrolled to a height the card no longer had.
+       Wait for the fold to actually report finished instead, then take one
+       more pass once the horizontal snap has stopped easing. */
+    function scheduleFit(card) {
+      var more = card.querySelector('.deck__more');
+      clearTimeout(fitT); clearTimeout(fitT2);
+      function done(e) {
+        if (e && e.target !== more) return;
+        if (more) more.removeEventListener('transitionend', done);
+        clearTimeout(fitT);
+        fitCard(card);
+        fitT2 = setTimeout(function () { fitCard(card); }, 420);
+      }
+      if (more) more.addEventListener('transitionend', done);
+      fitT = setTimeout(done, 900);   /* if the transition never reports back */
+    }
+
+    function fitCard(card) {
+      if (!card.classList.contains('on')) return;
+      var hdr = document.querySelector('.hdr');
+      var top = (hdr ? hdr.getBoundingClientRect().height : 0) + 12;
+      var r = card.getBoundingClientRect(), d;
+      if (r.height > innerHeight - top - 12) d = r.top - top;   /* pin the top */
+      else if (r.bottom > innerHeight - 12)  d = r.bottom - innerHeight + 12;
+      else if (r.top < top)                  d = r.top - top;
+      else return;
+      if (Math.abs(d) < 4) return;
+      if (window.scrollBy) window.scrollBy({ top: d, behavior: 'smooth' });
+    }
+
     function choose(card) {
       deck.classList.add('set');          /* impatient press — answer at once */
       var already = card.classList.contains('on');
@@ -8044,7 +8145,10 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
         card.classList.add('on');
         if (window.SMKsfx) window.SMKsfx.card();
         if (matchMedia('(max-width:900px)').matches) {
+          /* centre it in the rail straight away, then fit it vertically once
+             the fold has finished and its full height is measurable */
           card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          scheduleFit(card);
         }
       } else if (window.SMKsfx) window.SMKsfx.fold();
     }
