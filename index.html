@@ -4307,6 +4307,180 @@ body{overflow-x:clip;max-width:100%}
    ========================================================================== */
 .cvid__b{display:none!important}
 .cvid{cursor:default}
+
+/* Scenery, not a player. pointer-events off means a right-click lands on the
+   page rather than on the element, so the browser's own video menu — show
+   controls, loop, save video as — never appears over it. The webkit rules
+   are for the mobile browsers that draw a control bar regardless of the
+   controls attribute. */
+.cvid__v{pointer-events:none;user-select:none;-webkit-user-select:none;
+  -webkit-touch-callout:none}
+.cvid__v::-webkit-media-controls,
+.cvid__v::-webkit-media-controls-enclosure,
+.cvid__v::-webkit-media-controls-panel,
+.cvid__v::-webkit-media-controls-start-playback-button,
+.cvid__v::-webkit-media-controls-overlay-play-button{
+  display:none!important;-webkit-appearance:none;opacity:0}
+
+/* ==========================================================================
+   7. THE SYLLABUS CARD FITS ON THE SCREEN
+   Measured at 400x616, the open A2 card was 681px tall — 65px past the bottom
+   of the phone — and its unfold was capped by a guessed max-height of 480px
+   against 683px of content. The topic list ran 130px below the card's own
+   edge and the "See every lecture" button landed 188px below it, outside the
+   card entirely. It escaped the rail's clip because a card carrying a
+   translateZ in a preserve-3d parent is not clipped by that parent's
+   overflow, so nothing was holding it in.
+
+   Three things change. The unfold is measured rather than guessed, so it can
+   never cut its own content off. The open card is bounded by the screen it
+   has to fit on, and the topic list — the only part that can be arbitrarily
+   long — takes the scrolling, with the button pinned to the bottom of the
+   card where it belongs. And the rail grows to hold the card instead of
+   letting it hang over the section underneath.
+   ========================================================================== */
+
+/* ---- the unfold, measured ----
+   0fr to 1fr resolves to the content's own height, so the panel opens to
+   exactly what is in it. On the older browsers that cannot interpolate a
+   track size this snaps instead of gliding — the layout is still right,
+   which the fixed max-height never was. */
+.deck .deck__more{
+  display:grid;grid-template-rows:0fr;
+  max-height:none;overflow:hidden;opacity:0;
+  transition:grid-template-rows .62s cubic-bezier(.22,.9,.28,1),
+             opacity .38s var(--ease);
+  will-change:grid-template-rows}
+.deck .deck__mi{min-height:0;overflow:hidden;
+  display:flex;flex-direction:column}
+.deck .deck__c.on .deck__more{grid-template-rows:1fr;opacity:1}
+
+/* the rows arrive rather than appearing, a few milliseconds apart */
+.deck .deck__list button{
+  opacity:0;transform:translateY(7px);
+  transition:opacity .34s var(--ease),transform .42s var(--ease),
+             color .2s var(--ease),border-color .2s var(--ease)}
+.deck .deck__c.on .deck__list button{
+  opacity:1;transform:none;
+  transition-delay:calc(90ms + var(--r,0) * 26ms)}
+
+@media (max-width:900px){
+  /* ---- bounded by the screen ---- */
+  .deck.in .deck__c.on{
+    display:flex;
+    max-height:min(78vh,540px);
+    max-height:min(78svh,540px)}
+  /* Once the card is open the topic list is what is being read, so the sales
+     line steps aside for it rather than holding 90px of the only part that
+     can scroll. It is clamped rather than removed — the card would jump if
+     it vanished mid-transition. */
+  /* -webkit-line-clamp cannot do this job here: the open card makes .deck__in
+     a flex container, flex items blockify their display, and a blockified
+     -webkit-box is no longer a clamping box — it silently kept one line.
+     A height cut does the same work without depending on that, and the fade
+     is what stops it reading as a bug. */
+  .deck.in .deck__c.on .deck__d{
+    flex:0 0 auto;
+    font-size:.75rem;line-height:1.45;margin:0 0 10px;
+    max-height:2.9em;overflow:hidden;
+    -webkit-mask-image:linear-gradient(to bottom,#000 52%,transparent);
+    mask-image:linear-gradient(to bottom,#000 52%,transparent)}
+  .deck.in .deck__c.on .deck__list button{padding:7px 0}
+  .deck.in .deck__c.on .deck__in{
+    display:flex;flex-direction:column;
+    flex:1 1 auto;min-height:0;width:100%}
+  .deck.in .deck__c.on .deck__more{
+    flex:1 1 auto;min-height:0}
+  .deck.in .deck__c.on .deck__mi{height:100%}
+
+  /* the list is the only part that can run long, so it is the part that
+     scrolls — inside the card, not past it */
+  .deck.in .deck__c.on .deck__list{
+    flex:1 1 auto;min-height:0;
+    overflow-y:auto;overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+    margin:12px 0 0;padding-right:8px;
+    scrollbar-width:thin;
+    scrollbar-color:color-mix(in srgb,var(--gold-500) 45%,transparent) transparent;
+    /* the last row fades out, so it reads as more-below rather than as the
+       end of the list. It lifts once there is nothing left to scroll to. */
+    -webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 18px),transparent);
+    mask-image:linear-gradient(to bottom,#000 calc(100% - 18px),transparent);
+    transition:-webkit-mask-image .3s var(--ease),mask-image .3s var(--ease)}
+  .deck.in .deck__c.on .deck__list.at-end{
+    -webkit-mask-image:none;mask-image:none}
+  .deck.in .deck__c.on .deck__list::-webkit-scrollbar{width:4px}
+  .deck.in .deck__c.on .deck__list::-webkit-scrollbar-thumb{
+    background:color-mix(in srgb,var(--gold-500) 45%,transparent);border-radius:99px}
+  .deck.in .deck__c.on .deck__list::-webkit-scrollbar-track{background:transparent}
+
+  /* the button is part of the card, so it sits at the bottom of the card */
+  .deck.in .deck__c.on .deck__mi > .btn{
+    flex:0 0 auto;margin-top:12px;width:100%}
+
+  /* the rail makes room instead of letting the card overhang the section */
+  .deck__rail{transition:min-height .5s cubic-bezier(.22,.9,.28,1)}
+  .deck.picked .deck__rail{
+    min-height:min(78vh,540px);
+    min-height:min(78svh,540px)}
+}
+
+/* ---- smoother all round ----
+   One easing curve across lift, fade and border so the card moves as a
+   single object, and the depth work is declared up front only while a card
+   is actually open. */
+.deck .deck__c{
+  transition-timing-function:cubic-bezier(.22,.9,.28,1);
+  backface-visibility:hidden}
+.deck .deck__c.on{will-change:transform}
+.deck .deck__glass{transition:opacity .55s cubic-bezier(.22,.9,.28,1)}
+
+@media (prefers-reduced-motion:reduce){
+  .deck .deck__more{transition:none}
+  .deck .deck__list button{opacity:1;transform:none;transition:none}
+  .deck .deck__c.on .deck__list button{transition-delay:0s}
+  .deck__rail{transition:none}
+}
+
+/* ==========================================================================
+   8. THE MAP KEEPS MOVING EVEN WHEN THE FILM IS NOT THERE
+   campus.mp4 and campus.webm are fetched next to the page. Opened straight
+   from a downloads folder with only the HTML in it, there is nothing to
+   fetch, the poster is all that ever appears, and the section reads as a
+   still photograph. The controller now falls back to the same repository the
+   introduction video is served from; if that is unreachable too, the poster
+   is promoted to a real image and given a slow drift, so the section is
+   never a frozen picture.
+   ========================================================================== */
+.cvid__still{position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;z-index:1;pointer-events:none;user-select:none;
+  will-change:transform;
+  animation:cvidDrift 30s cubic-bezier(.4,0,.5,1) infinite alternate}
+/* the same dissolving edge the film has, so the fallback merges identically */
+.cvid__still,.cvid__v{
+  -webkit-mask-image:
+    linear-gradient(to right,transparent,#000 13%,#000 87%,transparent),
+    linear-gradient(to bottom,transparent,#000 15%,#000 84%,transparent);
+  mask-image:
+    linear-gradient(to right,transparent,#000 13%,#000 87%,transparent),
+    linear-gradient(to bottom,transparent,#000 15%,#000 84%,transparent);
+  -webkit-mask-composite:source-in;mask-composite:intersect}
+.cvid.no-film .cvid__v{display:none}
+@keyframes cvidDrift{
+  from{transform:scale(1.05) translate3d(-1.4%,-.9%,0)}
+  to  {transform:scale(1.13) translate3d(1.4%,.9%,0)}}
+@media (max-width:860px){
+  .cvid__still{
+    -webkit-mask-image:
+      linear-gradient(to right,transparent,#000 9%,#000 91%,transparent),
+      linear-gradient(to bottom,transparent,#000 11%,#000 88%,transparent);
+    mask-image:
+      linear-gradient(to right,transparent,#000 9%,#000 91%,transparent),
+      linear-gradient(to bottom,transparent,#000 11%,#000 88%,transparent)}
+}
+@media (prefers-reduced-motion:reduce){
+  .cvid__still{animation:none}
+}
 </style>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -4545,7 +4719,9 @@ body{overflow-x:clip;max-width:100%}
          ready, so nothing is paid for by someone who never scrolls this far. -->
     <figure class="cvid" id="cvid">
       <video id="cvidEl" class="cvid__v" poster="campus-poster.jpg"
-             muted loop playsinline autoplay preload="none" disablepictureinpicture
+             muted loop playsinline autoplay preload="none"
+             disablepictureinpicture disableremoteplayback
+             controlslist="nodownload noplaybackrate noremoteplayback nofullscreen"
              tabindex="-1" aria-hidden="true">
         <source data-src="campus.webm" type="video/webm">
         <source data-src="campus.mp4"  type="video/mp4">
@@ -4594,8 +4770,10 @@ body{overflow-x:clip;max-width:100%}
           <div class="deck__chips"><span class="chip" data-course-count="O">9 topics</span><span class="chip">Live + recorded</span></div>
           <span class="deck__n">01</span>
           <div class="deck__more">
-            <div class="deck__list" data-course-list="O"></div>
-            <button class="btn btn--gold btn--wide" data-course="O">See every lecture</button>
+            <div class="deck__mi">
+              <div class="deck__list" data-course-list="O"></div>
+              <button class="btn btn--gold btn--wide" data-course="O">See every lecture</button>
+            </div>
           </div>
         </div>
       </article>
@@ -4609,8 +4787,10 @@ body{overflow-x:clip;max-width:100%}
           <div class="deck__chips"><span class="chip" data-course-count="AS">9 topics</span><span class="chip">Live + recorded</span></div>
           <span class="deck__n">02</span>
           <div class="deck__more">
-            <div class="deck__list" data-course-list="AS"></div>
-            <button class="btn btn--gold btn--wide" data-course="AS">See every lecture</button>
+            <div class="deck__mi">
+              <div class="deck__list" data-course-list="AS"></div>
+              <button class="btn btn--gold btn--wide" data-course="AS">See every lecture</button>
+            </div>
           </div>
         </div>
       </article>
@@ -4624,8 +4804,10 @@ body{overflow-x:clip;max-width:100%}
           <div class="deck__chips"><span class="chip" data-course-count="A2">13 topics</span><span class="chip chip--gold">Paper 5 track</span></div>
           <span class="deck__n">03</span>
           <div class="deck__more">
-            <div class="deck__list" data-course-list="A2"></div>
-            <button class="btn btn--gold btn--wide" data-course="A2">See every lecture</button>
+            <div class="deck__mi">
+              <div class="deck__list" data-course-list="A2"></div>
+              <button class="btn btn--gold btn--wide" data-course="A2">See every lecture</button>
+            </div>
           </div>
         </div>
       </article>
@@ -7589,8 +7771,12 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   function fillCourseCards() {
     $$('[data-course-list]').forEach(function (el) {
       var lvl = el.dataset.courseList;
-      el.innerHTML = (TOPICS[lvl] || []).map(function (t) {
-        return '<button data-topic-open="' + t.n + '" data-topic-lvl="' + lvl + '">' +
+      el.innerHTML = (TOPICS[lvl] || []).map(function (t, i) {
+        /* --r is what the arrival stagger counts; it is capped so a
+           thirteen-topic list does not take a third of a second longer to
+           finish arriving than a nine-topic one */
+        return '<button style="--r:' + Math.min(i, 8) + '" data-topic-open="' + t.n +
+               '" data-topic-lvl="' + lvl + '">' +
                '<b>' + t.n + '</b>' + esc(t.name) + '</button>';
       }).join('');
     });
@@ -7947,6 +8133,19 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       io.observe(deck);
     } else { deck.classList.add('in'); settle(); }
 
+    /* The open card bounds its own height and hands the overflow to the topic
+       list, so on a long syllabus that list scrolls inside the card. The fade
+       on its last row says so — and lifts once there is nothing left below,
+       rather than sitting there implying content that has already ended. */
+    function markEnd(list) {
+      if (!list) return;
+      var end = list.scrollTop + list.clientHeight >= list.scrollHeight - 2;
+      list.classList.toggle('at-end', end);
+    }
+    $$('.deck__list', deck).forEach(function (list) {
+      list.addEventListener('scroll', function () { markEnd(list); }, { passive: true });
+    });
+
     function choose(card) {
       deck.classList.add('set');          /* impatient press — answer at once */
       var already = card.classList.contains('on');
@@ -7955,8 +8154,32 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       if (!already) {
         card.classList.add('on');
         if (window.SMKsfx) window.SMKsfx.card();
+        var list = $('.deck__list', card);
+        if (list) { list.scrollTop = 0; markEnd(list); }
         if (matchMedia('(max-width:900px)').matches) {
           card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          /* the unfold changes how tall the card is, so where it should sit
+             on screen is only knowable once that has finished */
+          setTimeout(function () {
+            if (!card.classList.contains('on')) return;
+            markEnd($('.deck__list', card));
+
+            /* block:'center' centres in the viewport, and the bottom of the
+               viewport is not free — the theme pill and the assistant sit
+               over it, and the card's own button was landing underneath
+               them. The card is centred in what is actually clear instead. */
+            var dock = $('.dock');
+            var pad = dock ? Math.max(0, innerHeight - dock.getBoundingClientRect().top) + 14 : 16;
+            var top = 0;
+            var hdr = $('.hdr');
+            if (hdr) top = hdr.getBoundingClientRect().bottom + 10;
+
+            var r = card.getBoundingClientRect();
+            if (r.top < top || r.bottom > innerHeight - pad) {
+              var want = Math.max(top, top + (innerHeight - pad - top - r.height) / 2);
+              scrollBy({ top: r.top - want, behavior: 'smooth' });
+            }
+          }, 680);
         }
       } else if (window.SMKsfx) window.SMKsfx.fold();
     }
@@ -8575,16 +8798,27 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   })();
 
   /* ----------------------------------------------------------------------
-     THE CAMPUS FILM
+     THE CAMPUS FILM — scenery, not a player
+     Nothing about this is operable: no disc over the frame, no controls, no
+     seeking, no context menu. It loops for as long as it is on screen and
+     picks up from the same frame when it comes back, so it reads as motion
+     in the page rather than as something a visitor is meant to start.
+
      The sources carry data-src rather than src, so nothing is fetched until
      the section is near the screen: a visitor who never scrolls this far pays
-     nothing for it. It plays by itself while genuinely on screen and pauses
-     when it is not, because a video running behind you is battery spent for
-     no reason.
+     nothing for it. It pauses off screen because a video running behind you
+     is battery spent for no reason — which no one sees, since it resumes on
+     the frame it stopped on.
      ---------------------------------------------------------------------- */
   (function () {
     var box = $('#cvid'); if (!box) return;
     var v = $('#cvidEl'), armed = false;
+
+    /* the attribute is never set, but some embedded browsers turn it on by
+       themselves, so it is held down rather than merely left alone */
+    v.controls = false;
+    v.removeAttribute('controls');
+    v.addEventListener('contextmenu', function (e) { e.preventDefault(); });
 
     function arm() {
       if (armed) return; armed = true;
@@ -8593,7 +8827,62 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       });
       v.preload = 'auto';
       v.load();
+      guard();
     }
+
+    /* ---- where the film is actually served from ----
+       campus.webm and campus.mp4 are asked for next to the page. Opened as a
+       loose file out of a downloads folder there is nothing beside it, so the
+       same repository the introduction video comes from is tried next. */
+    var C = window.SMK_CONFIG || {};
+    var REMOTE = C.CAMPUS_VIDEO || window.CAMPUS_VIDEO ||
+      ((C.FILES_BASE || 'https://raw.githubusercontent.com/hashirykw/SMK/main/') +
+       'campus.mp4');
+    var stage = 0;              /* 0 local · 1 remote · 2 no film */
+
+    function fallback() {
+      if (stage === 0) {
+        stage = 1;
+        $$('source', v).forEach(function (s) { s.remove(); });
+        v.src = REMOTE;
+        v.load();
+        v.play().catch(function () { });
+        guard();
+        return;
+      }
+      if (stage === 1) { stage = 2; still(); }
+    }
+
+    /* A poster cannot be animated, so when there is no film to play it is
+       promoted to a real image and given a slow drift. The section keeps
+       moving; it just moves less. */
+    function still() {
+      if (box.querySelector('.cvid__still')) return;
+      var p = v.getAttribute('poster');
+      if (!p) return;
+      var img = new Image();
+      img.className = 'cvid__still';
+      img.alt = '';
+      img.setAttribute('aria-hidden', 'true');
+      img.onload = function () { box.classList.add('no-film'); };
+      img.src = p;
+      box.insertBefore(img, v.nextSibling);
+    }
+
+    /* An element that never resolves a source fires no error in every browser
+       and can sit on preload for ever, so readiness is also checked on a
+       clock rather than waited for. */
+    var timer = null;
+    function guard() {
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        if (v.readyState >= 2) return;      /* it has frames — leave it alone */
+        fallback();
+      }, stage === 0 ? 4500 : 9000);
+    }
+    v.addEventListener('error', fallback);
+    v.addEventListener('loadeddata', function () { clearTimeout(timer); });
+    v.addEventListener('stalled', guard);
 
     /* The observers are held back until the page has laid itself out. Set up
        any earlier and every section is still stacked at the top of the
