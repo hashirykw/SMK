@@ -4271,48 +4271,69 @@ body.selopen #register{overflow-y:auto;max-height:100svh;touch-action:pan-y}
 .comb__h[aria-pressed="true"]{z-index:4}
 @media (prefers-reduced-motion:reduce){.aff.lit,.bookrow.lit{transform:none}}
 
+
 /* ==========================================================================
-   THE FLOATING BAR
-   A single dark pill that rises when the screen is touched and settles back
-   when it is not. It carries the places worth reaching quickly, the theme
-   switch and sound, so the corners are no longer holding separate controls.
+   CARDS, LARGER — ESPECIALLY ON A LAPTOP
+   Everything was tuned down for the phone and the desktop inherited it, so a
+   1280px screen showed the same small cards with acres of space around them.
+   The notes stack and the deck grow with the screen now, and the deck card is
+   tall enough that its button is never cut off.
    ========================================================================== */
-/* Just the theme switch and sound. The row of links across the middle was
-   doing what the page already does, so it went; these two have nowhere else
-   to live, and the pill suits them. */
-.fbar{position:fixed;left:14px;bottom:14px;translate:none;z-index:820;
-  display:flex;align-items:center;gap:2px;padding:7px 8px;border-radius:99px;
-  background:linear-gradient(150deg,#22242A,#121317);
-  border:1px solid rgba(255,255,255,.09);
-  box-shadow:0 18px 44px rgba(0,0,0,.44),inset 0 1px 0 rgba(255,255,255,.1);
-  opacity:0;transform:translateY(18px) scale(.95);pointer-events:none;
-  transition:opacity .38s var(--ease),transform .52s var(--spring)}
-.fbar.on{opacity:1;transform:none;pointer-events:auto}
-.fbar__b{position:relative;display:grid;place-items:center;gap:2px;
-  min-width:56px;min-height:52px;padding:6px 10px;border-radius:99px;
-  color:rgba(240,240,245,.62);background:none;border:0;cursor:pointer;
-  transition:color .28s var(--ease),background .28s var(--ease)}
-.fbar__b svg{width:20px;height:20px;fill:none;stroke:currentColor;
-  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;display:block}
-.fbar__b span{font-size:.56rem;letter-spacing:.03em;font-weight:600}
-.fbar__b:hover{color:#fff}
-.fbar__b.on{color:var(--gold-300)}
-.fbar__b.on::after{content:"";position:absolute;inset:0;border-radius:99px;
-  border:1px solid var(--gold-500);opacity:.5}
-.fbar__b i{position:absolute;top:7px;right:12px;width:7px;height:7px;
-  border-radius:50%;background:var(--bad);display:none}
-.fbar__b.alert i{display:block}
-.fbar__sep{width:1px;height:26px;background:rgba(255,255,255,.1);margin:0 4px}
-@media (max-width:520px){
-  .fbar{gap:0;padding:6px 6px;bottom:12px;left:12px}
-  .fbar__b{min-width:50px;min-height:48px;padding:5px 7px}
-  .fbar__b svg{width:18px;height:18px}
-  .fbar__b span{font-size:.5rem}
+@media (min-width:901px){
+  .nstack{height:clamp(300px,26vw,380px);margin-top:30px}
+  .nstack__c{width:min(560px,72%);margin-left:calc(min(560px,72%) / -2);
+    height:clamp(260px,23vw,340px);border-radius:22px}
+  .nstack__in{padding:30px 32px 26px}
+  .nstack__i{width:42px;height:42px;border-radius:12px}
+  .nstack__i svg{width:22px;height:22px}
+  .nstack__t{font-size:1.34rem;margin:16px 0 9px}
+  .nstack__d{font-size:.94rem;line-height:1.62;max-width:44ch}
+  .nstack__k{font-size:.62rem}
+
+  /* the deck: taller cards, and room under the list for the button */
+  .deck__rail{min-height:520px}
+  .deck__c{width:min(360px,30vw)}
+  .deck__in{min-height:470px;padding:28px 26px 24px}
+  .deck__t{font-size:1.36rem;margin:18px 0 12px}
+  .deck__d{font-size:.94rem;line-height:1.6;max-width:36ch}
+  .deck__code{font-size:.68rem;padding:7px 14px}
+  .deck__n{font-size:3.4rem}
+  .deck__list{font-size:.86rem;margin:16px 0 16px}
+  .deck__list button{min-height:34px}
+  .deck.in .deck__c.on .deck__more{max-height:none}
+  .deck.in .deck__c.on{width:min(420px,34vw)}
 }
-@media (prefers-reduced-motion:reduce){.fbar{transition:opacity .2s linear}}
-/* the old corner controls step aside for it */
-.dock__b{display:none}
-.dock{transition:opacity .35s var(--ease)}
+@media (min-width:1400px){
+  .deck__c{width:390px}
+  .deck.in .deck__c.on{width:460px}
+  .nstack__c{width:620px;margin-left:-310px}
+}
+
+/* the open card must never clip its own button */
+.deck__c.on .deck__in{overflow:visible;min-height:0}
+.deck__c.on{height:auto}
+.deck__more .btn{margin-top:4px}
+
+/* ==========================================================================
+   SMOOTH THROUGHOUT
+   A theme change used to repaint instantly, which reads as a flicker rather
+   than a change. Colour, background and border now ease across the whole page
+   together — briefly, so it never feels sluggish.
+   ========================================================================== */
+html.theming *,html.theming *::before,html.theming *::after{
+  transition:background-color .42s var(--ease),
+             color .42s var(--ease),
+             border-color .42s var(--ease),
+             fill .42s var(--ease),
+             stroke .42s var(--ease),
+             box-shadow .42s var(--ease)!important}
+/* anything already moving keeps its own timing */
+html.theming .tpill2__k,html.theming .deck__c,html.theming .nstack__c,
+html.theming .revrack__c,html.theming .comb__h{transition-property:all!important}
+
+@media (prefers-reduced-motion:reduce){
+  html.theming *{transition:none!important}
+}
 </style>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -5082,15 +5103,6 @@ body.selopen #register{overflow-y:auto;max-height:100svh;touch-action:pan-y}
   </div>
 </section>
 
-<nav class="fbar" aria-label="Theme and sound">
-      <button class="fbar__b" data-fbar-theme aria-label="Theme">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.8v2.2M12 19v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.8 12H5M19 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg><span>Theme</span><i></i>
-      </button>
-      <button class="fbar__b" data-fbar-sound aria-label="Sound">
-        <svg viewBox="0 0 24 24"><path d="M4 9.4h3.2L12 5.3v13.4L7.2 14.6H4z"/><path d="M15.6 9.8a3.2 3.2 0 0 1 0 4.4"/></svg><span>Sound</span><i></i>
-      </button>
-</nav>
-
 <footer class="ftr">
   <div class="wrap">
     <div class="ftr__g">
@@ -5763,7 +5775,13 @@ const SYN = {
   const tBtn = $('[data-theme-btn]');
   if (tBtn) {
     const setTheme = (t, say) => {
-      document.documentElement.setAttribute('data-theme', t);
+      /* The page-wide fade is switched on only for the moment it takes, so
+         ordinary hovers are never slowed by a transition rule that broad. */
+      const root = document.documentElement;
+      root.classList.add('theming');
+      clearTimeout(root._themeT);
+      root._themeT = setTimeout(() => root.classList.remove('theming'), 480);
+      root.setAttribute('data-theme', t);
       tBtn.setAttribute('aria-checked', t !== 'light');
       tBtn.setAttribute('aria-label', t === 'light' ? 'Switch to dark mode' : 'Switch to light mode');
       try { localStorage.setItem('smk_theme', t); } catch (e) { }
@@ -8961,54 +8979,6 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   })();
 
 
-  /* ----------------------------------------------------------------------
-     THE FLOATING BAR
-     Hidden until the screen is touched, then it stays while there is
-     activity and slips away after a few seconds of stillness. It is a
-     shortcut, never the only way to reach anything — every destination on it
-     is also reachable from the page itself.
-     ---------------------------------------------------------------------- */
-  (function () {
-    var bar = document.querySelector('.fbar'); if (!bar) return;
-    var idle = null;
-
-    function show() {
-      bar.classList.add('on');
-      clearTimeout(idle);
-      idle = setTimeout(function () { bar.classList.remove('on'); }, 4200);
-    }
-    function hide() { clearTimeout(idle); bar.classList.remove('on'); }
-
-    ['pointerdown', 'touchstart', 'keydown'].forEach(function (ev) {
-      document.addEventListener(ev, function (e) {
-        if (e.target.closest && e.target.closest('.fbar')) { show(); return; }
-        show();
-      }, { passive: true });
-    });
-    /* scrolling counts as activity, but only downward-then-stopped */
-    var lastY = 0;
-    addEventListener('scroll', function () {
-      if (Math.abs(scrollY - lastY) > 40) { lastY = scrollY; show(); }
-    }, { passive: true });
-
-    bar.addEventListener('pointerenter', function () { clearTimeout(idle); });
-    bar.addEventListener('pointerleave', show);
-
-    /* the theme and sound buttons on the bar drive the existing controls, so
-       there is one source of truth rather than two that can disagree */
-    var t = bar.querySelector('[data-fbar-theme]');
-    if (t) t.addEventListener('click', function () {
-      var real = document.querySelector('[data-theme-btn]');
-      if (real) real.click();
-      t.classList.toggle('on', document.documentElement.dataset.theme !== 'light');
-    });
-    var s2 = bar.querySelector('[data-fbar-sound]');
-    if (s2) s2.addEventListener('click', function () {
-      var real = document.querySelector('[data-sound]');
-      if (real) real.click();
-      s2.classList.toggle('on', real && real.classList.contains('snd-on'));
-    });
-  })();
 
   /* ---------- 15. headings assemble, sections drop ---------- */
   (function () {
