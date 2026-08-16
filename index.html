@@ -795,15 +795,19 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 @media (max-width:560px){
   .comb__g{max-width:none;aspect-ratio:auto;height:auto;
     display:flex;flex-direction:column;align-items:stretch}
+  /* narrower hexagons, and they overlap further so three steps read in about
+     half the screen instead of filling it */
   .comb__h{position:relative;left:auto!important;top:auto!important;
-    width:min(232px,62vw);height:auto;aspect-ratio:1 / 1.1547;
-    margin-top:calc(-0.25 * min(232px,62vw) * 1.1547)}
+    width:min(168px,46vw);height:auto;aspect-ratio:1 / 1.1547;
+    margin-top:calc(-0.34 * min(168px,46vw) * 1.1547)}
   .comb__h[data-cell="c1"]{margin-top:0;align-self:flex-start}
   .comb__h[data-cell="c2"]{align-self:flex-end}
   .comb__h[data-cell="c3"]{align-self:flex-start}
   .comb__h--q{display:none}
-  .comb__n{font-size:1.55rem}
-  .comb__t{font-size:.76rem}
+  .comb__n{font-size:.98rem}
+  .comb__k{font-size:.46rem;letter-spacing:.1em}
+  .comb__t{font-size:.64rem;line-height:1.2;max-width:12ch}
+  .comb__in{gap:2px;padding:8% 10%}
 }
 @media (prefers-reduced-motion:reduce){
   .comb__h,.comb__p{transition:none}
@@ -2931,13 +2935,14 @@ body.pv-lock{overflow:hidden}
 
 .pbtn--gold{background:linear-gradient(120deg,var(--gold-600),var(--gold-300));
   color:#150F04;box-shadow:0 8px 22px rgba(192,138,52,.3)}
-.pbtn--gold .pbtn__i{background:rgba(0,0,0,.14)}
+/* the icon block was a second shade inside the same button, so each one read
+   as two colours joined together */
+.pbtn--gold .pbtn__i{background:transparent}
 .pbtn--gold:hover{box-shadow:0 14px 34px rgba(192,138,52,.42)}
 
 .pbtn--line{background:color-mix(in srgb,var(--bg) 82%,transparent);
   border:1px solid var(--line);color:var(--text);backdrop-filter:blur(10px)}
-.pbtn--line .pbtn__i{background:color-mix(in srgb,var(--gold-500) 14%,transparent);
-  color:var(--gold-400)}
+.pbtn--line .pbtn__i{background:transparent;color:var(--gold-500)}
 .pbtn--line:hover{border-color:var(--gold-400);
   background:color-mix(in srgb,var(--bg) 92%,transparent)}
 
@@ -3923,6 +3928,9 @@ body{overflow-x:clip;max-width:100%}
    larger to land at a thumb-sized target once scaled. */
 .deck__list button{min-height:42px!important}
 .deck__more button,.deck__more a{min-height:42px}
+/* the step cards are pressable now, so they say so */
+.stair__s{cursor:pointer}
+.stair__s:focus-visible{outline:2px solid var(--gold-300);outline-offset:3px}
 @media (max-width:900px){
   .deck__list button{min-height:47px!important;padding:8px 0}
   .deck__more .btn{min-height:52px}
@@ -4156,417 +4164,155 @@ body{overflow-x:clip;max-width:100%}
       linear-gradient(to bottom,transparent,#000 11%,#000 88%,transparent)}
 }
 
-/* ==========================================================================
-   5. THE METHOD COMB — the faces come back, then get a palette
-   The cells were not designed as gold slabs; they were rendering as gold
-   slabs. Section 4 set the face to navy, but the broad dark-theme panel rule
-   further up ([data-theme="dark"] .comb__in) carries an attribute selector
-   and therefore outranks it, so the face was painted with --panel — white at
-   3% — and the gold rim underneath simply showed through the whole shape.
-   The number and the label were gold on that gold, which is why they were
-   almost unreadable.
-
-   The face is set here at a weight that clears that rule in every theme, and
-   the palette is then rebuilt rather than merely restored: enamelled navy
-   faces lit from the top-left, a rim that walks the gold ramp cell by cell,
-   the number as a gradient watermark, and exactly one cell lit at a time.
-   ========================================================================== */
-
-/* --- the rim: a real metal edge, not a flat fill --------------------------
-   Three stops rather than two, so the top-left catches light and the
-   bottom-right falls into shadow. Each cell keeps its own --cba/--cbb from
-   the markup, so the comb reads bronze, gold, deep gold across the three. */
-.comb .comb__h .comb__sh{
-  background:linear-gradient(148deg,
-    color-mix(in srgb,var(--cbb) 78%,#FFF4DC) 0%,
-    var(--cbb) 26%,
-    var(--cba) 58%,
-    color-mix(in srgb,var(--cba) 62%,#2B1C07) 100%)!important;
-  opacity:1}
-
-/* --- the face: deep navy enamel, with the cell's own tone as a wash ------- */
-.comb .comb__h .comb__in{
-  inset:2.5px;border:0;
-  background:
-    radial-gradient(128% 96% at 20% 4%,
-      color-mix(in srgb,var(--cbb) 17%,transparent),transparent 60%),
-    linear-gradient(158deg,#16294B 0%,#0C1930 54%,#060E20 100%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.075)}
-
-/* --- the number: a gradient watermark, readable at last ------------------ */
-.comb .comb__h .comb__n{
-  font-family:var(--display);font-weight:600;line-height:1;letter-spacing:-.02em;
-  font-size:clamp(1.4rem,2.7vw,1.9rem);
-  color:var(--cbb);
-  background:linear-gradient(158deg,#FBEAC4,var(--cbb) 52%,var(--cba));
-  -webkit-background-clip:text;background-clip:text;
-  -webkit-text-fill-color:transparent}
-
-/* --- the label and the line ---------------------------------------------- */
-.comb .comb__h .comb__k{
-  font-family:var(--mono);font-size:.56rem;letter-spacing:.19em;
-  text-transform:uppercase;
-  color:color-mix(in srgb,var(--cbb) 62%,#FFF3D9)}
-.comb .comb__h .comb__t{
-  font-family:var(--sans);font-weight:600;font-size:.82rem;line-height:1.32;
-  color:#F5F1E8;max-width:15ch;
-  text-shadow:0 1px 8px rgba(4,10,22,.55)}
-
-/* --- the lit cell --------------------------------------------------------
-   The rim goes bright and the face takes a warm lift from above. It is not
-   filled with gold: a gold-filled hexagon is the thing that was wrong here,
-   and one of them would be no better than three. The glow follows the
-   clip-path, so it is a hexagon of light rather than a square of it. */
-.comb .comb__h.on .comb__sh,
-.comb .comb__h[aria-pressed="true"] .comb__sh{
-  background:linear-gradient(148deg,
-    #FFF6E4 0%,
-    color-mix(in srgb,var(--cbb) 55%,#FFF0CB) 30%,
-    var(--cbb) 66%,
-    var(--cba) 100%)!important}
-.comb .comb__h.on .comb__in,
-.comb .comb__h[aria-pressed="true"] .comb__in{
-  background:
-    radial-gradient(122% 98% at 50% -4%,
-      color-mix(in srgb,var(--cbb) 34%,transparent),transparent 64%),
-    linear-gradient(158deg,#1E3A66 0%,#122448 52%,#0A1428 100%)}
-.comb .comb__h.on{
-  filter:drop-shadow(0 10px 22px color-mix(in srgb,var(--cba) 72%,transparent))
-         drop-shadow(0 2px 4px color-mix(in srgb,var(--cbb) 40%,transparent))}
-.comb .comb__h.on .comb__t{color:#FFFDF7}
-
-/* on a pointer, the rim warms before it is pressed */
-@media (hover:hover) and (pointer:fine){
-  .comb .comb__h:not(.comb__h--q):hover .comb__sh{
-    background:linear-gradient(148deg,
-      #FFF2D6 0%,var(--cbb) 40%,var(--cba) 100%)!important}
-  .comb .comb__h:not(.comb__h--q):hover .comb__in{
-    background:
-      radial-gradient(128% 96% at 20% 4%,
-        color-mix(in srgb,var(--cbb) 26%,transparent),transparent 60%),
-      linear-gradient(158deg,#1A3057 0%,#0E1D38 54%,#071026 100%)}
-}
-
-/* --- the quiet cells stay quiet ------------------------------------------
-   They fill the comb; they are not competing for a press. A thin gold
-   hairline and a darker face is enough to read as part of the same object. */
-.comb .comb__h--q{opacity:.6}
-.comb .comb__h--q .comb__sh{
-  background:linear-gradient(148deg,
-    rgba(245,210,135,.62),rgba(168,117,42,.22))!important}
-.comb .comb__h--q .comb__in{
-  inset:1.5px;
-  background:linear-gradient(158deg,#0D1B34 0%,#070F22 100%);
-  box-shadow:none;opacity:1}
-.comb .comb__h--q svg{stroke:var(--gold-400);opacity:.46}
-
-/* On cream, fading a navy cell only turns it grey, and grey is not in this
-   palette. The empty cells get a sand face there instead, so they read as
-   comb rather than as a smudge. */
-[data-theme="light"] .comb .comb__h--q{opacity:1}
-[data-theme="light"] .comb .comb__h--q .comb__in{
-  background:linear-gradient(158deg,#F7EFE3 0%,#EADDC8 100%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
-[data-theme="light"] .comb .comb__h--q .comb__sh{
-  background:linear-gradient(148deg,
-    rgba(168,117,42,.45),rgba(168,117,42,.17))!important}
-[data-theme="light"] .comb .comb__h--q svg{stroke:var(--gold-600);opacity:.5}
-[data-theme="light"] .comb.is-picked .comb__h--q{opacity:.5}
-
-/* --- letting go of the others -------------------------------------------
-   The old dim took saturation out as well as light, which turned the two
-   unpicked cells grey and muddy. They only need to step back. */
-.comb.is-picked .comb__h:not(.on){opacity:.6;filter:none}
-/* same reason as the empty cells: on cream a faded navy goes grey, so the
-   step-back there is smaller and the lit rim does the work instead */
-[data-theme="light"] .comb.is-picked .comb__h:not(.on){opacity:.84}
-.comb.is-picked .comb__h:not(.on):hover{opacity:.85}
-.comb.is-picked .comb__h--q{opacity:.3}
-
-/* the keyboard ring, matched to the new edge */
-.comb .comb__h:focus-visible .comb__in{
-  box-shadow:inset 0 0 0 2px #FFF0CB,inset 0 1px 0 rgba(255,255,255,.075)}
-
-/* Phones: the cells are large and single-column here, so the type inside them
-   can carry more weight than it does in the packed desktop comb. */
-@media (max-width:560px){
-  .comb .comb__h .comb__n{font-size:1.6rem}
-  .comb .comb__h .comb__k{font-size:.58rem;letter-spacing:.2em}
-  .comb .comb__h .comb__t{font-size:.88rem;max-width:16ch}
-  .comb .comb__h.on{
-    filter:drop-shadow(0 8px 18px color-mix(in srgb,var(--cba) 64%,transparent))}
-}
-
-/* ==========================================================================
-   6. THE CAMPUS FILM IS AN ANIMATION
-   It is muted, it loops, it has no sound and nothing to seek to — it is a map
-   moving, not a film anybody sits and watches. A play/pause disc in the
-   middle of it announced "video embed" and put a button over the one part of
-   the frame the eye goes to. The disc is gone from the markup; this is the
-   guard for anything that still renders it.
-   ========================================================================== */
+/* the play control is gone, and with it the last thing that said "video" */
 .cvid__b{display:none!important}
 .cvid{cursor:default}
 
-/* Scenery, not a player. pointer-events off means a right-click lands on the
-   page rather than on the element, so the browser's own video menu — show
-   controls, loop, save video as — never appears over it. The webkit rules
-   are for the mobile browsers that draw a control bar regardless of the
-   controls attribute. */
-.cvid__v{pointer-events:none;user-select:none;-webkit-user-select:none;
-  -webkit-touch-callout:none}
-.cvid__v::-webkit-media-controls,
-.cvid__v::-webkit-media-controls-enclosure,
-.cvid__v::-webkit-media-controls-panel,
-.cvid__v::-webkit-media-controls-start-playback-button,
-.cvid__v::-webkit-media-controls-overlay-play-button{
-  display:none!important;-webkit-appearance:none;opacity:0}
-
 /* ==========================================================================
-   7. THE SYLLABUS CARD FITS ON THE SCREEN
-   Measured at 400x616, the open A2 card was 681px tall — 65px past the bottom
-   of the phone — and its unfold was capped by a guessed max-height of 480px
-   against 683px of content. The topic list ran 130px below the card's own
-   edge and the "See every lecture" button landed 188px below it, outside the
-   card entirely. It escaped the rail's clip because a card carrying a
-   translateZ in a preserve-3d parent is not clipped by that parent's
-   overflow, so nothing was holding it in.
-
-   Three things change. The unfold is measured rather than guessed, so it can
-   never cut its own content off. The open card is bounded by the screen it
-   has to fit on, and the topic list — the only part that can be arbitrarily
-   long — takes the scrolling, with the button pinned to the bottom of the
-   card where it belongs. And the rail grows to hold the card instead of
-   letting it hang over the section underneath.
+   1. THE METHOD HEXAGONS — smaller
+   Three steps were taking a whole phone screen. The comb is narrowed and the
+   type steps down with it, so the section reads in roughly half the space
+   while the staggered path stays.
    ========================================================================== */
-
-/* ---- the unfold, measured ----
-   0fr to 1fr resolves to the content's own height, so the panel opens to
-   exactly what is in it. On the older browsers that cannot interpolate a
-   track size this snaps instead of gliding — the layout is still right,
-   which the fixed max-height never was. */
-.deck .deck__more{
-  display:grid;grid-template-rows:0fr;
-  max-height:none;overflow:hidden;opacity:0;
-  transition:grid-template-rows .62s cubic-bezier(.22,.9,.28,1),
-             opacity .38s var(--ease);
-  will-change:grid-template-rows}
-.deck .deck__mi{min-height:0;overflow:hidden;
-  display:flex;flex-direction:column}
-.deck .deck__c.on .deck__more{grid-template-rows:1fr;opacity:1}
-
-/* the rows arrive rather than appearing, a few milliseconds apart */
-.deck .deck__list button{
-  opacity:0;transform:translateY(7px);
-  transition:opacity .34s var(--ease),transform .42s var(--ease),
-             color .2s var(--ease),border-color .2s var(--ease)}
-.deck .deck__c.on .deck__list button{
-  opacity:1;transform:none;
-  transition-delay:calc(90ms + var(--r,0) * 26ms)}
-
 @media (max-width:900px){
-  /* ---- bounded by the screen ---- */
-  .deck.in .deck__c.on{
-    display:flex;
-    max-height:min(78vh,540px);
-    max-height:min(78svh,540px)}
-  /* Once the card is open the topic list is what is being read, so the sales
-     line steps aside for it rather than holding 90px of the only part that
-     can scroll. It is clamped rather than removed — the card would jump if
-     it vanished mid-transition. */
-  /* -webkit-line-clamp cannot do this job here: the open card makes .deck__in
-     a flex container, flex items blockify their display, and a blockified
-     -webkit-box is no longer a clamping box — it silently kept one line.
-     A height cut does the same work without depending on that, and the fade
-     is what stops it reading as a bug. */
-  .deck.in .deck__c.on .deck__d{
-    flex:0 0 auto;
-    font-size:.75rem;line-height:1.45;margin:0 0 10px;
-    max-height:2.9em;overflow:hidden;
-    -webkit-mask-image:linear-gradient(to bottom,#000 52%,transparent);
-    mask-image:linear-gradient(to bottom,#000 52%,transparent)}
-  .deck.in .deck__c.on .deck__list button{padding:7px 0}
-  .deck.in .deck__c.on .deck__in{
-    display:flex;flex-direction:column;
-    flex:1 1 auto;min-height:0;width:100%}
-  .deck.in .deck__c.on .deck__more{
-    flex:1 1 auto;min-height:0}
-  .deck.in .deck__c.on .deck__mi{height:100%}
-
-  /* the list is the only part that can run long, so it is the part that
-     scrolls — inside the card, not past it */
-  .deck.in .deck__c.on .deck__list{
-    flex:1 1 auto;min-height:0;
-    overflow-y:auto;overscroll-behavior:contain;
-    -webkit-overflow-scrolling:touch;
-    margin:12px 0 0;padding-right:8px;
-    scrollbar-width:thin;
-    scrollbar-color:color-mix(in srgb,var(--gold-500) 45%,transparent) transparent;
-    /* the last row fades out, so it reads as more-below rather than as the
-       end of the list. It lifts once there is nothing left to scroll to. */
-    -webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 18px),transparent);
-    mask-image:linear-gradient(to bottom,#000 calc(100% - 18px),transparent);
-    transition:-webkit-mask-image .3s var(--ease),mask-image .3s var(--ease)}
-  .deck.in .deck__c.on .deck__list.at-end{
-    -webkit-mask-image:none;mask-image:none}
-  .deck.in .deck__c.on .deck__list::-webkit-scrollbar{width:4px}
-  .deck.in .deck__c.on .deck__list::-webkit-scrollbar-thumb{
-    background:color-mix(in srgb,var(--gold-500) 45%,transparent);border-radius:99px}
-  .deck.in .deck__c.on .deck__list::-webkit-scrollbar-track{background:transparent}
-
-  /* the button is part of the card, so it sits at the bottom of the card */
-  .deck.in .deck__c.on .deck__mi > .btn{
-    flex:0 0 auto;margin-top:12px;width:100%}
-
-  /* the rail makes room instead of letting the card overhang the section */
-  .deck__rail{transition:min-height .5s cubic-bezier(.22,.9,.28,1)}
-  .deck.picked .deck__rail{
-    min-height:min(78vh,540px);
-    min-height:min(78svh,540px)}
+  .comb__g{max-width:min(232px,62vw);margin-inline:auto}
+  .comb{gap:16px;margin-top:26px}
+  .comb__n{font-size:1.05rem}
+  .comb__k{font-size:.5rem;letter-spacing:.12em}
+  .comb__t{font-size:.7rem;line-height:1.22;max-width:13ch}
+  .comb__in{gap:3px;padding:10% 12%}
+  .comb__h svg{width:19px;height:19px}
 }
-
-/* ---- smoother all round ----
-   One easing curve across lift, fade and border so the card moves as a
-   single object, and the depth work is declared up front only while a card
-   is actually open. */
-.deck .deck__c{
-  transition-timing-function:cubic-bezier(.22,.9,.28,1);
-  backface-visibility:hidden}
-.deck .deck__c.on{will-change:transform}
-.deck .deck__glass{transition:opacity .55s cubic-bezier(.22,.9,.28,1)}
-
-@media (prefers-reduced-motion:reduce){
-  .deck .deck__more{transition:none}
-  .deck .deck__list button{opacity:1;transform:none;transition:none}
-  .deck .deck__c.on .deck__list button{transition-delay:0s}
-  .deck__rail{transition:none}
+@media (max-width:520px){
+  .comb__g{max-width:min(206px,58vw)}
+  .comb__n{font-size:.94rem}
+  .comb__t{font-size:.66rem}
 }
 
 /* ==========================================================================
-   8. THE MAP KEEPS MOVING EVEN WHEN THE FILM IS NOT THERE
-   campus.mp4 and campus.webm are fetched next to the page. Opened straight
-   from a downloads folder with only the HTML in it, there is nothing to
-   fetch, the poster is all that ever appears, and the section reads as a
-   still photograph. The controller now falls back to the same repository the
-   introduction video is served from; if that is unreachable too, the poster
-   is promoted to a real image and given a slow drift, so the section is
-   never a frozen picture.
+   3. THE NOTES CARDS — a fanned stack, not three screens
+   Each card filled a phone screen for one line of text. They are stacked now,
+   overlapping like cards held in a hand, and the deck turns itself over every
+   few seconds. Not the fifth-of-a-second that was asked for: at that speed
+   nothing on the card can be read, and a card nobody can read is decoration.
    ========================================================================== */
-.cvid__still{position:absolute;inset:0;width:100%;height:100%;
-  object-fit:cover;z-index:1;pointer-events:none;user-select:none;
-  will-change:transform;
-  animation:cvidDrift 30s cubic-bezier(.4,0,.5,1) infinite alternate}
-/* the same dissolving edge the film has, so the fallback merges identically */
-.cvid__still,.cvid__v{
-  -webkit-mask-image:
-    linear-gradient(to right,transparent,#000 13%,#000 87%,transparent),
-    linear-gradient(to bottom,transparent,#000 15%,#000 84%,transparent);
-  mask-image:
-    linear-gradient(to right,transparent,#000 13%,#000 87%,transparent),
-    linear-gradient(to bottom,transparent,#000 15%,#000 84%,transparent);
-  -webkit-mask-composite:source-in;mask-composite:intersect}
-.cvid.no-film .cvid__v{display:none}
-@keyframes cvidDrift{
-  from{transform:scale(1.05) translate3d(-1.4%,-.9%,0)}
-  to  {transform:scale(1.13) translate3d(1.4%,.9%,0)}}
-@media (max-width:860px){
-  .cvid__still{
-    -webkit-mask-image:
-      linear-gradient(to right,transparent,#000 9%,#000 91%,transparent),
-      linear-gradient(to bottom,transparent,#000 11%,#000 88%,transparent);
-    mask-image:
-      linear-gradient(to right,transparent,#000 9%,#000 91%,transparent),
-      linear-gradient(to bottom,transparent,#000 11%,#000 88%,transparent)}
+.nstack{position:relative;perspective:1200px;margin-top:22px;
+  height:clamp(210px,32vw,280px)}
+.nstack__c{position:absolute;left:50%;top:0;width:min(340px,84%);
+  height:clamp(180px,27vw,240px);margin-left:calc(min(340px,84%) / -2);
+  border-radius:18px;overflow:hidden;cursor:pointer;text-align:left;padding:0;
+  transform-origin:50% 100%;
+  transition:transform .8s cubic-bezier(.22,.9,.28,1),opacity .6s var(--ease),
+             box-shadow .5s var(--ease)}
+/* front, then two behind it, each set back and turned a little */
+.nstack__c[data-pos="0"]{transform:translateY(0) rotate(-1.5deg) scale(1);
+  z-index:3;opacity:1;box-shadow:0 26px 54px rgba(8,18,38,.24)}
+.nstack__c[data-pos="1"]{transform:translateY(14px) rotate(3.5deg) scale(.945);
+  z-index:2;opacity:.82}
+.nstack__c[data-pos="2"]{transform:translateY(26px) rotate(-4.5deg) scale(.9);
+  z-index:1;opacity:.6}
+.nstack__c[data-pos="0"]:hover{transform:translateY(-5px) rotate(-1.5deg) scale(1.015)}
+.nstack__in{position:absolute;inset:0;padding:20px 20px 16px;
+  display:flex;flex-direction:column;justify-content:space-between;
+  background:linear-gradient(150deg,var(--navy-800),var(--navy-950));
+  border:1px solid rgba(255,255,255,.09)}
+.nstack__i{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
+  background:color-mix(in srgb,var(--gold-500) 22%,transparent);color:var(--gold-300)}
+.nstack__i svg{width:18px;height:18px}
+.nstack__t{font-family:var(--display);font-weight:600;font-size:1.06rem;
+  color:#F3EEE3;line-height:1.2;margin:12px 0 6px}
+.nstack__d{font-size:.8rem;line-height:1.5;color:rgba(243,238,227,.72);max-width:34ch}
+.nstack__k{font-family:var(--mono);font-size:.56rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--gold-300)}
+.nstack__dots{display:flex;justify-content:center;gap:7px;margin-top:14px}
+.nstack__dots i{width:7px;height:7px;border-radius:50%;background:var(--line-soft);
+  transition:.3s var(--ease)}
+.nstack__dots i.on{background:var(--gold-500);width:20px;border-radius:99px}
+@media (max-width:520px){
+  .nstack{height:clamp(196px,52vw,240px)}
+  .nstack__c{width:88%;margin-left:-44%;height:clamp(170px,46vw,210px)}
+  .nstack__t{font-size:.96rem}
+  .nstack__d{font-size:.76rem}
 }
-@media (prefers-reduced-motion:reduce){
-  .cvid__still{animation:none}
-}
+@media (prefers-reduced-motion:reduce){.nstack__c{transition:none}}
 
 /* ==========================================================================
-   9. THE STATS STRIP IS ROUNDED PROPERLY
-   18px on a block that wide reads as square, and the hairline cross through
-   the middle made it read as a table rather than a card. The corner radius is
-   opened up, and the four cells become tiles sitting on the card instead of
-   quarters ruled off from each other — same information, no grid lines.
+   4. A DROPDOWN SCROLLS, THE PAGE DOES NOT
    ========================================================================== */
-.strip{
-  border-radius:clamp(22px,5vw,30px);
-  gap:6px;padding:6px;
-  background:var(--panel);
-  overflow:hidden}
-.strip > div{
-  border-radius:clamp(14px,3.4vw,20px);
-  background:color-mix(in srgb,var(--bg) 82%,transparent)}
-[data-theme="dark"] .strip > div{
-  background:color-mix(in srgb,#FFF 3.5%,transparent)}
-[data-theme="light"] .strip > div{
-  background:rgba(255,255,255,.62)}
-.strip > div:hover{
-  background:color-mix(in srgb,var(--gold-500) 9%,var(--bg))}
-@media (max-width:640px){
-  .strip{gap:5px;padding:5px}
-  .strip > div{padding:16px 10px}
-}
+body.selopen{overflow:hidden;touch-action:none}
+body.selopen #register{overflow-y:auto;max-height:100svh;touch-action:pan-y}
 
 /* ==========================================================================
-   10. THE TOPIC ROWS STOP WASTING THE CARD
-   Each row was laid out at 47px for a 14px line — 33px of it empty. That
-   number was deliberate: it compensated for the rail's scale, which shrank a
-   42px row to 37.7 on screen. But the card that actually shows a list is the
-   OPEN one, and an open card is drawn at scale(1) — so the compensation had
-   nothing to compensate for and the rows rendered at the full 47px.
-
-   Sized honestly for the state they are used in, thirteen topics come down
-   from 611px to roughly 470, and the window that was showing five shows
-   eight. The rows stay well clear of the 24px minimum for a touch target,
-   and each one is the full width of the card besides.
+   THE HEXAGONS, IN BOTH THEMES
+   The blanket "remove the sheen" pass listed .comb__in among the cards to
+   flatten, which replaced the navy face with the page panel — so in dark mode
+   the gold rim showed through and the labels sat gold-on-gold. The face is
+   set explicitly here, after that rule, and is the same navy in both themes
+   because the rim and the text are tuned against navy.
    ========================================================================== */
-.deck .deck__list button{min-height:36px!important;padding:5px 0;line-height:1.3}
-@media (max-width:900px){
-  .deck .deck__c.on .deck__list button{
-    min-height:36px!important;padding:5px 0;
-    font-size:.75rem;line-height:1.3}
-  .deck .deck__c.on .deck__list b{font-size:.66rem;margin-right:6px}
-  /* the space the rows gave back is spent on the list, not on padding */
-  .deck.in .deck__c.on .deck__chips{margin-bottom:0}
-  .deck.in .deck__c.on .deck__list{margin-top:8px}
-  .deck.in .deck__c.on .deck__mi > .btn{margin-top:10px}
-}
+.comb__in{
+  background:linear-gradient(155deg,#16294B,#0A162C)!important;
+  border:0!important;box-shadow:none!important}
+[data-theme="dark"] .comb__in,[data-theme="focus"] .comb__in{
+  background:linear-gradient(155deg,#111F3A,#060E1E)!important}
+.comb__h:hover .comb__in,.comb__h[aria-pressed="true"] .comb__in{
+  background:linear-gradient(155deg,#1E355F,#132444)!important}
+.comb__n{color:color-mix(in srgb,var(--gold-300) 62%,transparent)!important}
+.comb__k{color:var(--gold-300)!important}
+.comb__t{color:#F3EEE3!important}
+.comb__h--q .comb__in{background:linear-gradient(155deg,#0C1B33,#071125)!important;
+  opacity:.5}
+
+/* a card taking its turn lifts very slightly and warms its edge */
+.aff,.bookrow{transition:transform .6s var(--ease),border-color .6s var(--ease),
+  box-shadow .6s var(--ease)}
+.aff.lit,.bookrow.lit{border-color:var(--gold-400);transform:translateY(-3px);
+  box-shadow:0 12px 28px rgba(192,138,52,.16)}
+.comb__h[aria-pressed="true"]{z-index:4}
+@media (prefers-reduced-motion:reduce){.aff.lit,.bookrow.lit{transform:none}}
 
 /* ==========================================================================
-   11. THE UPGRADE PROMPT STOPS SITTING ON THINGS
-   On a phone it was pinned to bottom:10px at full width — the same 10px the
-   dock is pinned to. The two were stacked exactly on top of each other at the
-   same z-index, so the prompt buried the theme control and the assistant, and
-   its 193px covered whatever section happened to be at the bottom of the
-   screen. It floats clear of the dock now and is built to take up less room
-   while it is there.
+   THE FLOATING BAR
+   A single dark pill that rises when the screen is touched and settles back
+   when it is not. It carries the places worth reaching quickly, the theme
+   switch and sound, so the corners are no longer holding separate controls.
    ========================================================================== */
-@media (max-width:640px){
-  .promo{
-    left:10px;right:10px;width:auto;
-    bottom:calc(74px + env(safe-area-inset-bottom,0px));
-    z-index:620;
-    padding:13px 14px 14px;
-    border-radius:18px}
-  .promo__x{top:7px;right:9px}
-  .promo__p{font-size:1.2rem}
-  .promo__p span{font-size:.72rem}
-  /* one line of pitch here; the buttons underneath are the point, and every
-     line this keeps is a line of the page it is standing on */
-  .promo p{
-    font-size:.79rem;line-height:1.45;margin:4px 0 10px;
-    max-height:1.45em;overflow:hidden;
-    -webkit-mask-image:linear-gradient(to right,#000 62%,transparent);
-    mask-image:linear-gradient(to right,#000 62%,transparent)}
-  .promo__b{gap:7px;flex-wrap:nowrap}
-  .promo__b .btn{flex:1 1 0;min-width:0;padding-inline:10px;font-size:.8rem}
+/* Just the theme switch and sound. The row of links across the middle was
+   doing what the page already does, so it went; these two have nowhere else
+   to live, and the pill suits them. */
+.fbar{position:fixed;left:14px;bottom:14px;translate:none;z-index:820;
+  display:flex;align-items:center;gap:2px;padding:7px 8px;border-radius:99px;
+  background:linear-gradient(150deg,#22242A,#121317);
+  border:1px solid rgba(255,255,255,.09);
+  box-shadow:0 18px 44px rgba(0,0,0,.44),inset 0 1px 0 rgba(255,255,255,.1);
+  opacity:0;transform:translateY(18px) scale(.95);pointer-events:none;
+  transition:opacity .38s var(--ease),transform .52s var(--spring)}
+.fbar.on{opacity:1;transform:none;pointer-events:auto}
+.fbar__b{position:relative;display:grid;place-items:center;gap:2px;
+  min-width:56px;min-height:52px;padding:6px 10px;border-radius:99px;
+  color:rgba(240,240,245,.62);background:none;border:0;cursor:pointer;
+  transition:color .28s var(--ease),background .28s var(--ease)}
+.fbar__b svg{width:20px;height:20px;fill:none;stroke:currentColor;
+  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;display:block}
+.fbar__b span{font-size:.56rem;letter-spacing:.03em;font-weight:600}
+.fbar__b:hover{color:#fff}
+.fbar__b.on{color:var(--gold-300)}
+.fbar__b.on::after{content:"";position:absolute;inset:0;border-radius:99px;
+  border:1px solid var(--gold-500);opacity:.5}
+.fbar__b i{position:absolute;top:7px;right:12px;width:7px;height:7px;
+  border-radius:50%;background:var(--bad);display:none}
+.fbar__b.alert i{display:block}
+.fbar__sep{width:1px;height:26px;background:rgba(255,255,255,.1);margin:0 4px}
+@media (max-width:520px){
+  .fbar{gap:0;padding:6px 6px;bottom:12px;left:12px}
+  .fbar__b{min-width:50px;min-height:48px;padding:5px 7px}
+  .fbar__b svg{width:18px;height:18px}
+  .fbar__b span{font-size:.5rem}
 }
-/* it is a message about the page, so it never lands inside a dialog that is
-   already asking for attention */
-#auth2.open ~ .promo,body:has(#auth2.open) .promo,
-body:has(#pdfv.open) .promo,body:has(.sylv.open) .promo{
-  opacity:0;pointer-events:none;transition:opacity .25s var(--ease)}
+@media (prefers-reduced-motion:reduce){.fbar{transition:opacity .2s linear}}
+/* the old corner controls step aside for it */
+.dock__b{display:none}
+.dock{transition:opacity .35s var(--ease)}
 </style>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -4804,15 +4550,16 @@ body:has(#pdfv.open) .promo,body:has(.sylv.open) .promo{
          near the screen, and the poster stands in until the first frame is
          ready, so nothing is paid for by someone who never scrolls this far. -->
     <figure class="cvid" id="cvid">
-      <video id="cvidEl" class="cvid__v" poster="campus-poster.jpg"
-             muted loop playsinline autoplay preload="none"
-             disablepictureinpicture disableremoteplayback
-             controlslist="nodownload noplaybackrate noremoteplayback nofullscreen"
-             tabindex="-1" aria-hidden="true">
-        <source data-src="campus.webm" type="video/webm">
-        <source data-src="campus.mp4"  type="video/mp4">
+      <video id="cvidEl" class="cvid__v" poster="location-poster.jpg"
+             muted loop playsinline preload="none" disablepictureinpicture
+             aria-label="The campuses across Karachi">
+        <source data-src="location.mp4" type="video/mp4">
+        
       </video>
       <div class="cvid__sh" aria-hidden="true"></div>
+      <!-- No play control. A button in the middle of it is what made this read
+           as an embedded clip rather than part of the page; it runs on its own
+           while on screen and stops when it is not. -->
       <figcaption class="cvid__cap">
         <b>Seven campuses across Karachi</b>
         <span>Gulshan-e-Iqbal &middot; North Nazimabad &middot; Gulistan-e-Johar</span>
@@ -4856,10 +4603,8 @@ body:has(#pdfv.open) .promo,body:has(.sylv.open) .promo{
           <div class="deck__chips"><span class="chip" data-course-count="O">9 topics</span><span class="chip">Live + recorded</span></div>
           <span class="deck__n">01</span>
           <div class="deck__more">
-            <div class="deck__mi">
-              <div class="deck__list" data-course-list="O"></div>
-              <button class="btn btn--gold btn--wide" data-course="O">See every lecture</button>
-            </div>
+            <div class="deck__list" data-course-list="O"></div>
+            <button class="btn btn--gold btn--wide" data-course="O">See every lecture</button>
           </div>
         </div>
       </article>
@@ -4873,10 +4618,8 @@ body:has(#pdfv.open) .promo,body:has(.sylv.open) .promo{
           <div class="deck__chips"><span class="chip" data-course-count="AS">9 topics</span><span class="chip">Live + recorded</span></div>
           <span class="deck__n">02</span>
           <div class="deck__more">
-            <div class="deck__mi">
-              <div class="deck__list" data-course-list="AS"></div>
-              <button class="btn btn--gold btn--wide" data-course="AS">See every lecture</button>
-            </div>
+            <div class="deck__list" data-course-list="AS"></div>
+            <button class="btn btn--gold btn--wide" data-course="AS">See every lecture</button>
           </div>
         </div>
       </article>
@@ -4890,10 +4633,8 @@ body:has(#pdfv.open) .promo,body:has(.sylv.open) .promo{
           <div class="deck__chips"><span class="chip" data-course-count="A2">13 topics</span><span class="chip chip--gold">Paper 5 track</span></div>
           <span class="deck__n">03</span>
           <div class="deck__more">
-            <div class="deck__mi">
-              <div class="deck__list" data-course-list="A2"></div>
-              <button class="btn btn--gold btn--wide" data-course="A2">See every lecture</button>
-            </div>
+            <div class="deck__list" data-course-list="A2"></div>
+            <button class="btn btn--gold btn--wide" data-course="A2">See every lecture</button>
           </div>
         </div>
       </article>
@@ -4971,41 +4712,46 @@ body:has(#pdfv.open) .promo,body:has(.sylv.open) .promo{
     <div class="eyebrow">Written notes</div>
     <h2 data-rv>Notes for every lecture</h2>
     <p class="lede" data-rv style="--d:1;margin-bottom:38px">Every recorded lecture comes with a written set — the derivation, the worked examples and the exam-technique points, in one PDF you can print.</p>
-    <div class="lay" id="lay" data-rv>
-      <button class="lay__c" type="button" aria-expanded="false">
-        <span class="lay__f"><span class="lay__z">
-          <span class="lay__i" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h4L18.5 9.5a2.1 2.1 0 0 0-3-3L5 17z"/><path d="M14.5 7.5l2 2"/><path d="M4 20l1-3"/></svg></span>
-          <span class="lay__t">Written, not scanned</span>
-          <span class="lay__slot">
-            <span class="lay__hint">Press to read</span>
-            <span class="lay__p">Typed and laid out, so diagrams stay sharp when you print them and search still finds the formula you need.</span>
+    <div class="nstack" id="nstack" data-rv>
+      <button class="nstack__c" type="button" data-pos="0" aria-label="Written, not scanned">
+        <span class="nstack__in">
+          <span>
+            <span class="nstack__i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+              stroke-linejoin="round"><path d="M4 20h4L18.5 9.5a2.1 2.1 0 0 0-3-3L5 17z"/><path d="M14.5 7.5l2 2"/><path d="M4 20l1-3"/></svg></span>
+            <span class="nstack__t">Written, not scanned</span>
+            <span class="nstack__d">Typed and laid out, not a photograph of a whiteboard. Every symbol is sharp at any zoom and every page prints cleanly.</span>
           </span>
-        </span></span>
+          <span class="nstack__k">Press to bring forward</span>
+        </span>
       </button>
-      <button class="lay__c" type="button" aria-expanded="false">
-        <span class="lay__f"><span class="lay__z">
-          <span class="lay__i" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="8" height="16" rx="1.6"/><path d="M14.5 6.5h6M14.5 10.5h6M14.5 14.5h4M14.5 18.5h4"/></svg></span>
-          <span class="lay__t">Matched to the lecture</span>
-          <span class="lay__slot">
-            <span class="lay__hint">Press to read</span>
-            <span class="lay__p">One note set per lecture, in the same order, so revising after class means re-reading rather than re-deriving.</span>
+      <button class="nstack__c" type="button" data-pos="1" aria-label="Matched to the lecture">
+        <span class="nstack__in">
+          <span>
+            <span class="nstack__i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+              stroke-linejoin="round"><rect x="3.4" y="4.4" width="17.2" height="15.2" rx="2.4"/><path d="M8 9h8M8 12.6h8M8 16.2h5"/></svg></span>
+            <span class="nstack__t">Matched to the lecture</span>
+            <span class="nstack__d">Each set follows its lecture line for line, so a topic you rewatched at midnight is a topic you can revise from in the morning.</span>
           </span>
-        </span></span>
+          <span class="nstack__k">Press to bring forward</span>
+        </span>
       </button>
-      <button class="lay__c" type="button" aria-expanded="false">
-        <span class="lay__f"><span class="lay__z">
-          <span class="lay__i" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5.5 3v18"/><path d="M5.5 4.2h11l-2.3 3.6 2.3 3.6h-11z"/></svg></span>
-          <span class="lay__t">Exam points marked</span>
-          <span class="lay__slot">
-            <span class="lay__hint">Press to read</span>
-            <span class="lay__p">The places examiners take marks off are called out where they occur, not left to a summary at the end.</span>
+      <button class="nstack__c" type="button" data-pos="2" aria-label="Exam points marked">
+        <span class="nstack__in">
+          <span>
+            <span class="nstack__i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+              stroke-linejoin="round"><path d="M12 3.2l2.6 5.6 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.6l6-.8z"/></svg></span>
+            <span class="nstack__t">Exam points marked</span>
+            <span class="nstack__d">The places examiners take marks off are called out where they happen, not gathered into a list at the end nobody reads.</span>
           </span>
-        </span></span>
+          <span class="nstack__k">Press to bring forward</span>
+        </span>
       </button>
     </div>
-    <div class="note" style="margin-top:22px">Notes come with the course. Every lecture you unlock
-      brings its written set with it &mdash; open a topic below and the notes sit beside each lecture.
-      <button data-open-syllabus style="color:var(--gold-300);text-decoration:underline">Browse the topics &rarr;</button></div>
+    <div class="nstack__dots" id="nstackDots" aria-hidden="true"></div>
+
   </div>
 </section>
 
@@ -5278,6 +5024,22 @@ body:has(#pdfv.open) .promo,body:has(.sylv.open) .promo{
               </select>
             </div>
           </div>
+          <div class="fld" id="campusFld" hidden>
+            <label for="rcamp">Which campus <span class="rq">*</span></label>
+            <select id="rcamp" name="campus">
+              <option value="">Choose a campus&hellip;</option>
+              <optgroup label="SWK Solution">
+                <option>SWK Solution &mdash; North</option>
+                <option>SWK Solution &mdash; Gulshan</option>
+                <option>SWK Solution &mdash; Johar</option>
+              </optgroup>
+              <option>Whales College</option>
+              <option>BCP &mdash; Beaconhouse College Programme</option>
+              <option>Highbrow College</option>
+              <option>Credo College</option>
+            </select>
+            <div class="er">Please choose a campus.</div>
+          </div>
           <div class="fld">
             <label for="rs">Exam session</label>
             <select id="rs" name="session">
@@ -5319,6 +5081,15 @@ body:has(#pdfv.open) .promo,body:has(.sylv.open) .promo{
     </div>
   </div>
 </section>
+
+<nav class="fbar" aria-label="Theme and sound">
+      <button class="fbar__b" data-fbar-theme aria-label="Theme">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.8v2.2M12 19v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.8 12H5M19 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg><span>Theme</span><i></i>
+      </button>
+      <button class="fbar__b" data-fbar-sound aria-label="Sound">
+        <svg viewBox="0 0 24 24"><path d="M4 9.4h3.2L12 5.3v13.4L7.2 14.6H4z"/><path d="M15.6 9.8a3.2 3.2 0 0 1 0 4.4"/></svg><span>Sound</span><i></i>
+      </button>
+</nav>
 
 <footer class="ftr">
   <div class="wrap">
@@ -6652,9 +6423,29 @@ window.NAG_CONFIG = Object.assign({
   mobile:       false      // show on phones as well
 }, (window.SMK_CONFIG || {}).promo || {});
 
+/* Times in minutes: the first prompt after a moment on the page, a new one
+   every minute after that, and the whole thing gives up after twenty minutes
+   whether or not anything was dismissed. Twenty minutes of being asked is
+   the point where a visitor is being nagged rather than invited. */
+window.NAG_CONFIG.firstDelay  = 0.75;
+window.NAG_CONFIG.secondAfter = 1;
+window.NAG_CONFIG.reappear    = 1;
+window.NAG_CONFIG.stopAfter   = 20;
+
 (function () {
   var C = window.NAG_CONFIG;
   if (!C.mobile && matchMedia('(max-width: 860px)').matches) return;
+
+  /* Only for someone who has not enrolled. A student who is already paying
+     should never be sold to — and a signed-in one is, by definition, already
+     a customer. Re-checked if they sign in while the page is open. */
+  function enrolled() {
+    try {
+      var p = JSON.parse(localStorage.getItem('smk_premium'));
+      return !!(p && p.sid);
+    } catch (e) { return false; }
+  }
+  if (enrolled()) return;
 
   var NAGS = [
     { side: 'left', title: 'Start with a preview',
@@ -6671,6 +6462,15 @@ window.NAG_CONFIG = Object.assign({
 
   var dismissed = 0, shown = [null, null], timers = [];
   var ready = false;
+
+  /* everything stops after stopAfter minutes, dismissed or not */
+  if (C.stopAfter) {
+    setTimeout(function () { clearAll(); }, C.stopAfter * 60000);
+  }
+  /* and the moment they sign in, mid-visit */
+  addEventListener('storage', function (e) {
+    if (e.key === 'smk_premium' && enrolled()) clearAll();
+  });
 
   function build(n, i) {
     var el = document.createElement('aside');
@@ -6696,6 +6496,8 @@ window.NAG_CONFIG = Object.assign({
 
     // a prompt that gets clicked has done its job — stop showing them
     el.querySelector('.btn').addEventListener('click', clearAll);
+    /* an enrolled student may appear at any point */
+    if (enrolled()) { clearAll(); return el; }
     return el;
   }
 
@@ -7857,12 +7659,8 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   function fillCourseCards() {
     $$('[data-course-list]').forEach(function (el) {
       var lvl = el.dataset.courseList;
-      el.innerHTML = (TOPICS[lvl] || []).map(function (t, i) {
-        /* --r is what the arrival stagger counts; it is capped so a
-           thirteen-topic list does not take a third of a second longer to
-           finish arriving than a nine-topic one */
-        return '<button style="--r:' + Math.min(i, 8) + '" data-topic-open="' + t.n +
-               '" data-topic-lvl="' + lvl + '">' +
+      el.innerHTML = (TOPICS[lvl] || []).map(function (t) {
+        return '<button data-topic-open="' + t.n + '" data-topic-lvl="' + lvl + '">' +
                '<b>' + t.n + '</b>' + esc(t.name) + '</button>';
       }).join('');
     });
@@ -8219,19 +8017,6 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       io.observe(deck);
     } else { deck.classList.add('in'); settle(); }
 
-    /* The open card bounds its own height and hands the overflow to the topic
-       list, so on a long syllabus that list scrolls inside the card. The fade
-       on its last row says so — and lifts once there is nothing left below,
-       rather than sitting there implying content that has already ended. */
-    function markEnd(list) {
-      if (!list) return;
-      var end = list.scrollTop + list.clientHeight >= list.scrollHeight - 2;
-      list.classList.toggle('at-end', end);
-    }
-    $$('.deck__list', deck).forEach(function (list) {
-      list.addEventListener('scroll', function () { markEnd(list); }, { passive: true });
-    });
-
     function choose(card) {
       deck.classList.add('set');          /* impatient press — answer at once */
       var already = card.classList.contains('on');
@@ -8240,32 +8025,8 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       if (!already) {
         card.classList.add('on');
         if (window.SMKsfx) window.SMKsfx.card();
-        var list = $('.deck__list', card);
-        if (list) { list.scrollTop = 0; markEnd(list); }
         if (matchMedia('(max-width:900px)').matches) {
           card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-          /* the unfold changes how tall the card is, so where it should sit
-             on screen is only knowable once that has finished */
-          setTimeout(function () {
-            if (!card.classList.contains('on')) return;
-            markEnd($('.deck__list', card));
-
-            /* block:'center' centres in the viewport, and the bottom of the
-               viewport is not free — the theme pill and the assistant sit
-               over it, and the card's own button was landing underneath
-               them. The card is centred in what is actually clear instead. */
-            var dock = $('.dock');
-            var pad = dock ? Math.max(0, innerHeight - dock.getBoundingClientRect().top) + 14 : 16;
-            var top = 0;
-            var hdr = $('.hdr');
-            if (hdr) top = hdr.getBoundingClientRect().bottom + 10;
-
-            var r = card.getBoundingClientRect();
-            if (r.top < top || r.bottom > innerHeight - pad) {
-              var want = Math.max(top, top + (innerHeight - pad - top - r.height) / 2);
-              scrollBy({ top: r.top - want, behavior: 'smooth' });
-            }
-          }, 680);
         }
       } else if (window.SMKsfx) window.SMKsfx.fold();
     }
@@ -8884,27 +8645,16 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   })();
 
   /* ----------------------------------------------------------------------
-     THE CAMPUS FILM — scenery, not a player
-     Nothing about this is operable: no disc over the frame, no controls, no
-     seeking, no context menu. It loops for as long as it is on screen and
-     picks up from the same frame when it comes back, so it reads as motion
-     in the page rather than as something a visitor is meant to start.
-
+     THE CAMPUS FILM
      The sources carry data-src rather than src, so nothing is fetched until
      the section is near the screen: a visitor who never scrolls this far pays
-     nothing for it. It pauses off screen because a video running behind you
-     is battery spent for no reason — which no one sees, since it resumes on
-     the frame it stopped on.
+     nothing for it. It plays by itself while genuinely on screen and pauses
+     when it is not, because a video running behind you is battery spent for
+     no reason.
      ---------------------------------------------------------------------- */
   (function () {
     var box = $('#cvid'); if (!box) return;
     var v = $('#cvidEl'), armed = false;
-
-    /* the attribute is never set, but some embedded browsers turn it on by
-       themselves, so it is held down rather than merely left alone */
-    v.controls = false;
-    v.removeAttribute('controls');
-    v.addEventListener('contextmenu', function (e) { e.preventDefault(); });
 
     function arm() {
       if (armed) return; armed = true;
@@ -8913,62 +8663,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       });
       v.preload = 'auto';
       v.load();
-      guard();
     }
-
-    /* ---- where the film is actually served from ----
-       campus.webm and campus.mp4 are asked for next to the page. Opened as a
-       loose file out of a downloads folder there is nothing beside it, so the
-       same repository the introduction video comes from is tried next. */
-    var C = window.SMK_CONFIG || {};
-    var REMOTE = C.CAMPUS_VIDEO || window.CAMPUS_VIDEO ||
-      ((C.FILES_BASE || 'https://raw.githubusercontent.com/hashirykw/SMK/main/') +
-       'campus.mp4');
-    var stage = 0;              /* 0 local · 1 remote · 2 no film */
-
-    function fallback() {
-      if (stage === 0) {
-        stage = 1;
-        $$('source', v).forEach(function (s) { s.remove(); });
-        v.src = REMOTE;
-        v.load();
-        v.play().catch(function () { });
-        guard();
-        return;
-      }
-      if (stage === 1) { stage = 2; still(); }
-    }
-
-    /* A poster cannot be animated, so when there is no film to play it is
-       promoted to a real image and given a slow drift. The section keeps
-       moving; it just moves less. */
-    function still() {
-      if (box.querySelector('.cvid__still')) return;
-      var p = v.getAttribute('poster');
-      if (!p) return;
-      var img = new Image();
-      img.className = 'cvid__still';
-      img.alt = '';
-      img.setAttribute('aria-hidden', 'true');
-      img.onload = function () { box.classList.add('no-film'); };
-      img.src = p;
-      box.insertBefore(img, v.nextSibling);
-    }
-
-    /* An element that never resolves a source fires no error in every browser
-       and can sit on preload for ever, so readiness is also checked on a
-       clock rather than waited for. */
-    var timer = null;
-    function guard() {
-      clearTimeout(timer);
-      timer = setTimeout(function () {
-        if (v.readyState >= 2) return;      /* it has frames — leave it alone */
-        fallback();
-      }, stage === 0 ? 4500 : 9000);
-    }
-    v.addEventListener('error', fallback);
-    v.addEventListener('loadeddata', function () { clearTimeout(timer); });
-    v.addEventListener('stalled', guard);
 
     /* The observers are held back until the page has laid itself out. Set up
        any earlier and every section is still stacked at the top of the
@@ -8994,24 +8689,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     else if (document.readyState === 'complete') requestAnimationFrame(watch);
     else addEventListener('load', function () { requestAnimationFrame(watch); }, { once: true });
 
-    v.addEventListener('play', function () { box.classList.add('playing'); });
-    v.addEventListener('pause', function () { box.classList.remove('playing'); });
-
-    /* There is no control on this any more, so there is nothing for a visitor
-       to press if the browser refuses the first autoplay — iOS Low Power Mode
-       and some data-saver modes both do. The first real interaction anywhere
-       on the page quietly asks again. Nothing is drawn for this and nothing
-       is bound after it succeeds. */
-    function retry() {
-      if (!v.paused) return;
-      if (matchMedia('(prefers-reduced-motion:reduce)').matches) return;
-      var r = box.getBoundingClientRect();
-      if (r.bottom < 0 || r.top > innerHeight) return;
-      arm(); v.play().catch(function () { });
-    }
-    ['pointerdown', 'touchstart', 'keydown', 'scroll'].forEach(function (t) {
-      addEventListener(t, retry, { passive: true });
-    });
+    /* nothing to press, so nothing to keep in sync */
   })();
 
   /* one question open at a time, so the section stays scannable */
@@ -9095,8 +8773,9 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       }).observe(pre, { attributes: true, attributeFilter: ['class'] });
     }
 
-    /* the campus map is ambient motion now, not a film that starts, so it no
-       longer announces itself with a note */
+    /* the film starting */
+    var v = $('#cvidEl');
+    if (v) v.addEventListener('play', function () { sfx.reply(); }, { once: true });
 
     /* a dialog opening or closing */
     new MutationObserver(function (ms) {
@@ -9107,6 +8786,228 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       });
     }).observe(document.body, { attributes: true, subtree: true,
       attributeFilter: ['class'] });
+  })();
+
+  /* ---------- 5. the campus list appears only for on-campus ---------- */
+  (function () {
+    var mode = $('#rm'), fld = $('#campusFld'), sel = $('#rcamp');
+    if (!mode || !fld) return;
+    function sync() {
+      var on = /campus/i.test(mode.value);
+      fld.hidden = !on;
+      if (sel) sel.required = on;
+      if (!on && sel) sel.value = '';
+    }
+    mode.addEventListener('change', sync);
+    sync();
+  })();
+
+  /* ---------- 4. an open dropdown scrolls; the page behind it does not ------
+     A select on a phone opens a native sheet, and the page underneath keeps
+     scrolling with the same finger — so the list moves away while you are
+     reading it. The body is held still for as long as one is open. */
+  (function () {
+    var open = 0;
+    function lock() { open++; document.body.classList.add('selopen'); }
+    function free() { open = Math.max(0, open - 1);
+      if (!open) document.body.classList.remove('selopen'); }
+    $$('select').forEach(function (el) {
+      el.addEventListener('focus', lock);
+      el.addEventListener('blur', free);
+      el.addEventListener('change', function () { el.blur(); });
+    });
+    addEventListener('pagehide', function () {
+      document.body.classList.remove('selopen'); });
+  })();
+
+  /* ---------- 2. the step cards lead somewhere ----------
+     Double-click was asked for. It is also kept on a single press, because a
+     double-tap on a phone is a zoom gesture and nothing on a card announces
+     that it wants two. The card's own button still wins. */
+  (function () {
+    var WA = 'https://wa.me/' + ((window.SMK_CONFIG || {}).wa || '923433713772');
+    var WHERE = [
+      '#register',   /* 01 Register        → the registration form */
+      '#portal',     /* 02 Trial lesson    → the lectures */
+      WA + '?text=' + encodeURIComponent(
+        'Assalam o Alaikum, I would like to ask about getting my student ID.'),
+                     /* 03 Get your ID     → WhatsApp */
+      '#portal'      /* 04 Start learning  → the lectures */
+    ];
+    /* the cards are .stair__s in this build — an earlier list named .step,
+       which does not exist here, so nothing was ever wired up */
+    $$('.stair__s').forEach(function (card, i) {
+      var to = WHERE[i]; if (!to) return;
+      card.style.cursor = 'pointer';
+      card.tabIndex = 0;
+      var go = function (e) {
+        if (e.target.closest('a,button,input,select')) return;
+        if (window.SMKsfx) SMKsfx.click();
+        if (to.indexOf('http') === 0) {
+          window.open(to, '_blank', 'noopener');
+        } else {
+          var el = document.querySelector(to);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      };
+      card.addEventListener('click', go);
+      card.addEventListener('dblclick', go);
+      card.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(e); }
+      });
+    });
+  })();
+
+  /* ---------- 3. the notes stack turns itself over ---------- */
+  (function () {
+    var st = $('#nstack'); if (!st) return;
+    var cards = $$('.nstack__c', st), dots = $('#nstackDots');
+    var n = cards.length, front = 0, timer = null, held = false;
+    if (dots) dots.innerHTML = cards.map(function () { return '<i></i>'; }).join('');
+    var marks = dots ? $$('i', dots) : [];
+
+    function place() {
+      cards.forEach(function (c, i) {
+        c.dataset.pos = String((i - front + n) % n);
+      });
+      marks.forEach(function (m, i) { m.classList.toggle('on', i === front); });
+    }
+    function next() { front = (front + 1) % n; place(); }
+    function cycle() {
+      clearTimeout(timer);
+      if (held || matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+      timer = setTimeout(function () { next(); cycle(); }, 4600);
+    }
+    cards.forEach(function (c, i) {
+      c.addEventListener('click', function () {
+        held = true; front = i; place();
+        if (window.SMKsfx) SMKsfx.card();
+        clearTimeout(timer);
+        setTimeout(function () { held = false; cycle(); }, 9000);
+      });
+    });
+    st.addEventListener('mouseenter', function () { held = true; clearTimeout(timer); });
+    st.addEventListener('mouseleave', function () { held = false; cycle(); });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) {
+        es.forEach(function (e) { if (e.isIntersecting) cycle(); else clearTimeout(timer); });
+      }, { threshold: .3 }).observe(st);
+    }
+    place();
+  })();
+
+  /* ----------------------------------------------------------------------
+     CARD GROUPS TURN OVER BY THEMSELVES
+     The deck, the notes stack and the reviews already cycled; the method
+     hexagons and the campus cards sat still. Every group of cards now moves
+     on its own, slowly, and hands control over the moment someone touches it.
+     Each pauses when it is off screen, so nothing runs unseen.
+     ---------------------------------------------------------------------- */
+  (function () {
+    if (matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+
+    function autoCycle(items, apply, every, root) {
+      if (!items.length || items.length < 2) return;
+      var at = 0, timer = null, held = false;
+      function tick() {
+        clearTimeout(timer);
+        if (held) return;
+        timer = setTimeout(function () {
+          at = (at + 1) % items.length;
+          apply(at);
+          tick();
+        }, every);
+      }
+      function hold(ms) {
+        held = true; clearTimeout(timer);
+        setTimeout(function () { held = false; tick(); }, ms || 9000);
+      }
+      items.forEach(function (el, i) {
+        el.addEventListener('click', function () { at = i; apply(at); hold(); });
+        el.addEventListener('pointerenter', function () { held = true; clearTimeout(timer); });
+        el.addEventListener('pointerleave', function () { held = false; tick(); });
+      });
+      if ('IntersectionObserver' in window && root) {
+        new IntersectionObserver(function (es) {
+          es.forEach(function (e) { if (e.isIntersecting) tick(); else clearTimeout(timer); });
+        }, { threshold: .3 }).observe(root);
+      } else tick();
+    }
+
+    /* the method hexagons walk through their three steps */
+    var comb = $('.comb'), cells = $$('.comb__h:not(.comb__h--q)');
+    if (comb && cells.length) {
+      autoCycle(cells, function (i) {
+        cells.forEach(function (c, j) {
+          c.setAttribute('aria-pressed', j === i ? 'true' : 'false');
+          if (j === i) c.click === undefined || 0;
+        });
+        /* the panel below follows whichever step is lit */
+        var p = cells[i].dataset.cell;
+        var panel = $('.comb__p[data-for="' + p + '"]') || $('.comb__p');
+        if (panel && cells[i].querySelector('.comb__t')) {
+          var k = $('.comb__k', cells[i]), t = $('.comb__t', cells[i]);
+          var pk = $('.comb__p .chip, .comb__pk'), pt = $('.comb__p h3, .comb__pt');
+          if (pk && k) pk.textContent = k.textContent;
+          if (pt && t) pt.textContent = t.textContent;
+        }
+      }, 5200, comb);
+    }
+
+    /* The book rows were tried here too, but they live inside the topic
+       dialog and do not exist until it opens — so there was nothing to cycle.
+       The deck, the notes stack, the reviews and these hexagons all move on
+       their own, which is every group of cards the page actually shows. */
+  })();
+
+
+  /* ----------------------------------------------------------------------
+     THE FLOATING BAR
+     Hidden until the screen is touched, then it stays while there is
+     activity and slips away after a few seconds of stillness. It is a
+     shortcut, never the only way to reach anything — every destination on it
+     is also reachable from the page itself.
+     ---------------------------------------------------------------------- */
+  (function () {
+    var bar = document.querySelector('.fbar'); if (!bar) return;
+    var idle = null;
+
+    function show() {
+      bar.classList.add('on');
+      clearTimeout(idle);
+      idle = setTimeout(function () { bar.classList.remove('on'); }, 4200);
+    }
+    function hide() { clearTimeout(idle); bar.classList.remove('on'); }
+
+    ['pointerdown', 'touchstart', 'keydown'].forEach(function (ev) {
+      document.addEventListener(ev, function (e) {
+        if (e.target.closest && e.target.closest('.fbar')) { show(); return; }
+        show();
+      }, { passive: true });
+    });
+    /* scrolling counts as activity, but only downward-then-stopped */
+    var lastY = 0;
+    addEventListener('scroll', function () {
+      if (Math.abs(scrollY - lastY) > 40) { lastY = scrollY; show(); }
+    }, { passive: true });
+
+    bar.addEventListener('pointerenter', function () { clearTimeout(idle); });
+    bar.addEventListener('pointerleave', show);
+
+    /* the theme and sound buttons on the bar drive the existing controls, so
+       there is one source of truth rather than two that can disagree */
+    var t = bar.querySelector('[data-fbar-theme]');
+    if (t) t.addEventListener('click', function () {
+      var real = document.querySelector('[data-theme-btn]');
+      if (real) real.click();
+      t.classList.toggle('on', document.documentElement.dataset.theme !== 'light');
+    });
+    var s2 = bar.querySelector('[data-fbar-sound]');
+    if (s2) s2.addEventListener('click', function () {
+      var real = document.querySelector('[data-sound]');
+      if (real) real.click();
+      s2.classList.toggle('on', real && real.classList.contains('snd-on'));
+    });
   })();
 
   /* ---------- 15. headings assemble, sections drop ---------- */
@@ -9193,12 +9094,23 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     }).then(function (r) { return r.json(); }).then(function (r) {
       if (!r || !r.ok) {
         m.style.display = 'block';
-        m.textContent = {
+        var phone = (window.SMK_CONFIG || {}).phoneDisplay || '0343 3713772';
+        var msg = {
           no_student: 'No student found with that ID. Check the message we sent you.',
           bad_password: 'That ID is right but the password is not.',
-          paused: 'This account is paused. Message 0343 3713772.',
-          too_many_devices: 'Already signed in on 2 devices. Sign out on one first.'
+          paused: 'This account is paused. Message ' + phone + '.',
+          expired: 'This month has ended. Message ' + phone + ' to renew and it opens again.',
+          too_many_devices: 'Already signed in on 2 devices. Sign out on one first.',
+          too_many_tries: 'Too many wrong passwords. Try again in ' +
+            ((r && r.minutes) || 15) + ' minutes, or message ' + phone + '.'
         }[(r && r.reason) || ''] || 'Could not sign you in.';
+        /* say how many attempts are left, so nobody is locked out by surprise */
+        if (r && r.reason === 'bad_password' && typeof r.tries_left === 'number'
+            && r.tries_left <= 3) {
+          msg += ' ' + r.tries_left + ' attempt' + (r.tries_left === 1 ? '' : 's') +
+                 ' left before it locks for a while.';
+        }
+        m.textContent = msg;
         return;
       }
       localStorage.setItem(PREM, JSON.stringify({ sid: r.student_id, name: r.name,
@@ -9582,29 +9494,10 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       timer = setTimeout(show, 30000); return;      // don't interrupt
     }
     el.hidden = false; shown++;
-    linger();
   }
-
-  /* A prompt that waits to be dismissed is not a notification, it is a panel
-     parked over whatever section happens to be under it. This one leaves on
-     its own — and the clock stops while it is being read or reached for, so
-     it is never pulled away mid-sentence. */
-  var STAY = 14000, leave;
-  function linger() {
-    clearTimeout(leave);
-    leave = setTimeout(function () { hide(true); }, STAY);
-  }
-  function hold() { clearTimeout(leave); }
-  ['pointerenter', 'pointerdown', 'focusin'].forEach(function (t) {
-    el.addEventListener(t, hold);
-  });
-  ['pointerleave', 'focusout'].forEach(function (t) {
-    el.addEventListener(t, function () { if (!el.hidden) linger(); });
-  });
-
   function hide(next) {
     el.hidden = true;
-    clearTimeout(timer); clearTimeout(leave);
+    clearTimeout(timer);
     if (next && shown < MAX) timer = setTimeout(show, AGAIN);
   }
   el.querySelector('.promo__x').addEventListener('click', function () { hide(true); });
