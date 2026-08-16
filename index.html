@@ -4634,7 +4634,9 @@ html.theming .revrack__c,html.theming .comb__h{transition-property:all!important
              muted loop playsinline preload="none" disablepictureinpicture
              aria-label="The campuses across Karachi">
         <source data-src="location.mp4" type="video/mp4">
-        
+        <!-- the copy in the SMK repo, the same base the intro video uses. The
+             browser moves to it on its own if the local file is missing. -->
+        <source data-remote="location.mp4" type="video/mp4">
       </video>
       <div class="cvid__sh" aria-hidden="true"></div>
       <!-- No play control. A button in the middle of it is what made this read
@@ -8780,8 +8782,16 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
 
     function arm() {
       if (armed) return; armed = true;
+      /* BACKEND: the campus map, uploaded to the same repo the papers and the
+         course introduction use. The local file is tried first and the repo
+         copy is the fallback, so the page still plays it either way. */
+      var C = window.SMK_CONFIG || {};
+      var base = C.FILES_BASE || 'https://raw.githubusercontent.com/hashirykw/SMK/main/';
       $$('source', v).forEach(function (src) {
         if (src.dataset.src) src.src = src.dataset.src;
+        if (src.dataset.remote) {
+          src.src = C.LOCATION_VIDEO || (base + src.dataset.remote);
+        }
       });
       v.preload = 'auto';
       v.load();
