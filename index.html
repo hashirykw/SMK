@@ -564,17 +564,12 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 .dl__panel h3{margin:14px 0 10px}
 .dl__panel p{font-size:.94rem;color:var(--muted);margin:0;max-width:60ch}
 
-.dl__dots{display:flex;gap:1px;margin-top:12px;flex-wrap:wrap}
-/* the dot is 7px of paint inside a 30px button — a finger needs the second
-   number, the eye only ever sees the first */
-.dl__dots button{width:32px;height:32px;display:grid;place-items:center;
-  background:none;border:0;padding:0;cursor:pointer}
-.dl__dots button::before{content:"";display:block;width:7px;height:7px;
-  border-radius:50%;background:var(--line-soft);transition:.3s var(--ease)}
-.dl__dots button:hover::before{background:var(--gold-600)}
-.dl__dots button.on::before{background:var(--gold-400);width:22px;border-radius:99px}
-.dl__dots button:focus-visible{outline:0}
-.dl__dots button:focus-visible::before{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--gold-300)}
+.dl__dots{display:flex;gap:7px;margin-top:16px;flex-wrap:wrap}
+.dl__dots button{width:7px;height:7px;border-radius:50%;background:var(--line-soft);
+  border:0;padding:0;cursor:pointer;transition:.3s var(--ease)}
+.dl__dots button:hover{background:var(--gold-600)}
+.dl__dots button.on{background:var(--gold-400);width:22px;border-radius:99px}
+.dl__dots button:focus-visible{outline:2px solid var(--gold-300);outline-offset:3px}
 
 @media (max-width:860px){
   .dl{grid-template-columns:1fr;gap:26px;justify-items:center}
@@ -600,10 +595,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
    ========================================================================== */
 .lay{position:relative;display:grid;grid-template-columns:repeat(3,1fr);
   gap:clamp(14px,2.4vw,32px);perspective:1500px;perspective-origin:50% 26%;
-  /* the side room is not decoration: the cards are turned on Z, so their
-     corners reach past the box the grid gives them, and without it the
-     outermost card is shaved off at the edge of the screen */
-  padding:30px clamp(20px,1.6vw,26px) 40px;transform-style:preserve-3d;
+  padding:30px 0 40px;transform-style:preserve-3d;
   /* The container is a flat plane at z=0 while the tilted cards lean partly
      behind it, so it wins the hit test over its own children and presses land
      on nothing. Same trap as the course deck rail. Nothing here scrolls, so
@@ -627,9 +619,8 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 .lay__f{position:relative;overflow:hidden;border-radius:16px;
   padding:20px 20px 18px;display:flex;flex-direction:column;
   /* fixed, so the icon can sit at the top and the words at the foot the way a
-     printed card is laid out — and so nothing reflows when one opens. The
-     floor comes from the measured slot, so the words can never be cut. */
-  height:max(clamp(244px,19vw,272px),var(--card-h,244px));
+     printed card is laid out — and so nothing reflows when one opens */
+  height:clamp(244px,19vw,272px);
   background:linear-gradient(140deg,#0E1B36,#081226 52%,#16294B);
   border:1px solid rgba(224,169,76,.26);color:#F3EEE3;
   box-shadow:0 26px 44px -16px rgba(5,11,24,.55);
@@ -669,13 +660,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
   line-height:1.2;margin:22px 0 0;letter-spacing:-.01em}
 
 /* the hint and the paragraph share one slot, so nothing reflows on press */
-/* --slot-h is measured at runtime from the longest of the three paragraphs at
-   the current width. A hard 104px fitted the desktop column and cut three
-   lines off the bottom on a phone, where the same words wrap to twice the
-   depth. Measuring keeps every card the same height — so opening one still
-   moves nothing — while guaranteeing the words fit at any width. */
-.lay__slot{position:relative;display:grid;align-items:start;margin-top:10px;
-  min-height:var(--slot-h,104px)}
+.lay__slot{position:relative;display:grid;margin-top:10px;min-height:104px}
 .lay__slot > *{grid-area:1/1;margin:0;
   transition:opacity .4s var(--ease),transform .5s var(--ease)}
 /* the hint sits at the foot of the slot, so a closed card reads as a printed
@@ -707,14 +692,9 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 
 @media (max-width:820px){
   .lay{grid-template-columns:1fr;gap:16px;perspective:1100px;
-    perspective-origin:50% 50%;
-    /* one column means near-full-width cards, so the turned corners swing
-       much further out than they do in a narrow desktop column */
-    padding:18px clamp(20px,5vw,34px) 26px}
-  /* a gentler turn on a phone: at -5deg the corners of a full-width card
-     reached past the edge of the screen and were shaved off */
+    perspective-origin:50% 50%;padding:18px 0 26px}
   .lay__c,.lay__c:nth-child(2),.lay__c:nth-child(3){
-    transform:rotateX(26deg) rotateZ(-2.4deg)}
+    transform:rotateX(26deg) rotateZ(-5deg)}
   .lay__c.on,.lay__c:nth-child(2).on,.lay__c:nth-child(3).on{
     transform:rotateX(0deg) rotateZ(0deg) translateZ(40px)}
   .lay__slot{min-height:92px}
@@ -1147,27 +1127,10 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
   .ftr__g{grid-template-columns:1fr 1fr}
 }
 @media (max-width:900px){
-  .mob{display:block}
-  .cue{display:none}
-}
-/* The bar carries a 711px nav, a 184px pair of buttons and a 42px account
-   button. With the logo and the gaps that needs about 1100px. It used to hand
-   over to the burger at 900, so from 901 to ~1090 the row overflowed and the
-   logo — the one flexible item — was crushed to nothing: the site name simply
-   vanished on every small laptop. The handover now happens where the row
-   actually stops fitting. */
-@media (max-width:1100px){
   .nav,.hdr__cta{display:none}
   .burger{display:flex}
-}
-/* Just above the handover the row fits but only by eating the brand name.
-   Tightening the link spacing here buys back the ~90px the name needs, so it
-   reads in full from the moment the desktop bar appears. */
-@media (min-width:1101px) and (max-width:1299px){
-  .nav{gap:17px}
-  .nav a{font-size:.83rem}
-  .hdr__cta{margin-left:12px;gap:8px}
-  .hdr__in{gap:12px}
+  .mob{display:block}
+  .cue{display:none}
 }
 @media (max-width:680px){
   body{font-size:16px}
@@ -2455,10 +2418,7 @@ body.pv-lock{overflow:hidden}
    HEADER — the logo cannot overlap the name whatever mark.png turns out to be
    ========================================================================== */
 .hdr__in{gap:14px}
-/* flex-shrink stays, but the name keeps a floor: it may ellipsis, never
-   collapse to zero the way it did between 900 and 1100 */
 .logo{min-width:0;flex:0 1 auto;gap:9px;align-items:center;min-height:42px}
-.logo b{min-width:3.5ch}
 .logo img{height:32px;width:auto;max-width:42px;object-fit:contain;flex:0 0 auto;display:block}
 .logo b{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   letter-spacing:.02em}
@@ -3298,14 +3258,14 @@ body.pv-lock{overflow:hidden}
 /* what unfolds when a card is chosen */
 .deck__more{max-height:0;overflow:hidden;opacity:0;
   transition:max-height .6s var(--ease),opacity .4s var(--ease)}
-/* columns and a column-gap overrun their container by the gap itself unless
-   the box is told to keep the padding inside its own width */
-.deck__list{columns:2;column-gap:14px;margin:14px 0 12px;font-size:.79rem;
-  box-sizing:border-box;max-width:100%;overflow:hidden}
-.deck__list button{display:block;width:100%;text-align:left;padding:7px 0;
-  min-height:34px;
+/* A multi-column container fragments its children, and min-height is ignored
+   during that fragmentation — the rows measured 36px however tall they were
+   told to be. A grid gives the same two columns and honours the height. */
+.deck__list{display:grid;grid-template-columns:1fr 1fr;gap:0 14px;
+  margin:14px 0 12px;font-size:.79rem}
+.deck__list button{display:flex;align-items:center;width:100%;text-align:left;padding:5px 0;
   color:var(--text);line-height:1.3;border-bottom:1px solid transparent;
-  break-inside:avoid;transition:.2s var(--ease)}
+  transition:.2s var(--ease)}
 .deck__list button:hover{color:var(--gold-600);border-bottom-color:var(--gold-500)}
 .deck__list b{color:var(--gold-600);font-family:var(--mono);font-size:.7rem;margin-right:5px}
 
@@ -3382,7 +3342,7 @@ body.pv-lock{overflow:hidden}
   /* the unchosen ones step back so the open card is the only thing reading */
   .deck.in.picked .deck__c:not(.on){
     opacity:.5;filter:saturate(.7);transform:scale(.965)}
-  .deck__list{columns:1}
+  .deck__list{grid-template-columns:1fr}
   .deck__dots{display:flex;justify-content:center;gap:6px;margin-top:2px}
   .deck__dots i{width:6px;height:6px;border-radius:50%;background:var(--line-soft);
     transition:.3s var(--ease)}
@@ -3466,7 +3426,7 @@ body{overflow-x:clip;max-width:100%}
   .deck__n{font-size:2rem;right:12px;top:10px}
   .deck__c.on .deck__in{min-height:0}
   .deck__c.on .deck__more{max-height:460px;opacity:1}
-  .deck__list{columns:2;font-size:.72rem;column-gap:10px}
+  .deck__list{grid-template-columns:1fr 1fr;font-size:.72rem;gap:0 10px}
   .deck__dots{margin-top:8px}
 }
 @media (max-width:400px){
@@ -3897,31 +3857,13 @@ body{overflow-x:clip;max-width:100%}
 .deck__c.on,.revrack__c.on{will-change:auto}
 
 /* ---------- the campuses on film ---------- */
-/* Full bleed. The figure sits outside .wrap rather than breaking out of it
-   with a 100vw trick, because 100vw counts the scrollbar and would leave the
-   band a few pixels wider than the screen and fractionally off centre. Out
-   here it is simply as wide as the section, which is as wide as the page. */
-.cvid{position:relative;margin:clamp(18px,3vw,34px) 0 0;width:100%;
-  border:0;border-radius:0;box-shadow:none;overflow:hidden;
-  background:var(--navy-900);
-  /* the frame's own shape, so object-fit:cover has nothing left to crop */
-  aspect-ratio:var(--vid-ar,16/9);
-  /* A 16:9 film shown edge to edge is 56% of the screen's width tall, which on
-     a wide monitor is a very deep band. The only ceiling is one screenful —
-     so the band never runs past the fold, and below that nothing is cropped
-     at all. Past the ceiling it crops from the centre, keeping the buildings
-     in shot. */
-  max-height:100svh}
+.cvid{position:relative;margin:6px 0 0;border-radius:22px;overflow:hidden;
+  border:1px solid var(--line-soft);background:var(--navy-900);
+  aspect-ratio:16/9;box-shadow:0 20px 50px rgba(8,18,38,.16)}
 .cvid__v{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-/* The footage carries its own burnt-in label in the bottom left, and it runs
-   bright besides. The scrim is weighted to the TOP now, where the caption has
-   moved to — reading over the film without covering the map's own titling or
-   fighting the glare off the middle of the frame. */
 .cvid__sh{position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(180deg,rgba(4,10,22,.88) 0%,rgba(4,10,22,.5) 26%,transparent 58%),
-             linear-gradient(90deg,rgba(4,10,22,.4),transparent 54%),
-             linear-gradient(0deg,rgba(4,10,22,.4),transparent 22%)}
-.cvid__cap b,.cvid__cap span{text-shadow:0 1px 12px rgba(4,10,22,.8)}
+  background:linear-gradient(0deg,rgba(4,10,22,.62),transparent 42%),
+             linear-gradient(90deg,rgba(4,10,22,.3),transparent 46%)}
 .cvid__b{position:absolute;left:50%;top:50%;translate:-50% -50%;z-index:3;
   width:74px;height:74px;border-radius:50%;display:grid;place-items:center;
   color:#150F04;background:linear-gradient(135deg,var(--gold-600),var(--gold-300));
@@ -3931,45 +3873,440 @@ body{overflow-x:clip;max-width:100%}
 .cvid__b:hover{transform:translate(-50%,-50%) scale(1.07)}
 .cvid.playing .cvid__b{opacity:0;pointer-events:none}
 .cvid:hover .cvid__b,.cvid.playing:hover .cvid__b{opacity:1;pointer-events:auto}
-.cvid__cap{position:absolute;left:50%;translate:-50% 0;top:0;z-index:2;
-  width:100%;max-width:var(--max);
-  padding:26px clamp(18px,4vw,40px);pointer-events:none}
+.cvid__cap{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:20px 22px;
+  pointer-events:none}
 .cvid__cap b{display:block;font-family:var(--display);font-weight:600;
   font-size:1.14rem;color:#F3EEE3}
 .cvid__cap span{display:block;font-family:var(--mono);font-size:.66rem;
   letter-spacing:.1em;color:rgba(243,238,227,.7);margin-top:4px}
 @media (max-width:860px){
-  /* the 16/10 that used to be here cropped a tenth off the sides of a 16:9
-     frame on every phone; the shape now follows the file at every width */
-  .cvid{max-height:none}
+  .cvid{border-radius:15px;aspect-ratio:16/10}
   .cvid__b{width:58px;height:58px}
   .cvid__b svg{width:24px;height:24px}
-  .cvid__cap{padding:16px clamp(18px,4vw,40px)}
+  .cvid__cap{padding:14px 15px}
   .cvid__cap b{font-size:.98rem}
   .cvid__cap span{font-size:.6rem}
 }
 
 /* ==========================================================================
-   READABLE FLOOR ON PHONES
-   The mono micro-labels sit at 9.3-9.6px. Small caps with wide tracking stop
-   being comfortable well before that on a handheld, so they are nudged up to
-   ~11px on narrow screens only — the desktop scale is untouched. This block
-   sits last on purpose: the rules it raises are plain single-class selectors
-   defined further up, so it has to come after them to win.
+   TOUCH TARGETS — the last four
+   Found by auditing nine screen sizes across six states rather than one.
+   ========================================================================== */
+/* the topic list inside a deck card: two columns squeezed each row to 35px */
+.deck__list button{min-height:40px;display:flex;align-items:center;
+  padding:6px 0;line-height:1.25}
+@media (max-width:420px){
+  .deck__list{grid-template-columns:1fr}
+  .deck__list button{min-height:42px}
+}
+
+/* the carousel dots were 7px — the dot stays small, the hit area does not */
+.dl__dots i,.dl__dots button,.deck__dots i,.rst__dots i{position:relative}
+.dl__dots button,.deck__dots button,.dl__dots i,.deck__dots i{
+  min-width:42px;min-height:42px;display:grid;place-items:center;
+  padding:0;background:none;border:0}
+/* the visible dot stays small inside a target that is not */
+.dl__dots i::before,.deck__dots i::before{content:"";width:7px;height:7px;
+  border-radius:50%;background:var(--line-soft);transition:.3s var(--ease)}
+.dl__dots i.on::before,.deck__dots i.on::before{background:var(--gold-500);
+  width:18px;border-radius:99px}
+.dl__dots i,.deck__dots i{background:none!important;width:auto;height:auto}
+.rst__dots i::after{content:"";position:absolute;left:50%;top:50%;
+  translate:-50% -50%;width:42px;height:42px}
+
+/* the review arrows */
+.rst__nav button{width:44px;height:44px;min-width:44px;min-height:44px}
+
+/* the last few, found at 360px with the account panel open */
+/* The open deck card is drawn at scale(1) but the rail still applies a small
+   transform, so a 42px row measures 37.7 on screen — the row must be laid out
+   larger to land at a thumb-sized target once scaled. */
+.deck__list button{min-height:42px!important}
+.deck__more button,.deck__more a{min-height:42px}
+@media (max-width:900px){
+  .deck__list button{min-height:47px!important;padding:8px 0}
+  .deck__more .btn{min-height:52px}
+}
+.deck__more .btn,.deck__more .btn--wide{min-height:46px;
+  display:inline-flex;align-items:center;justify-content:center}
+/* an inline link inside a paragraph still needs a thumb-sized target */
+.muted a,.accban a,p a:not(.btn):not(.pbtn){display:inline-block;
+  min-height:38px;line-height:38px;padding-inline:2px}
+/* This used to switch the larger target off above 900px, which also switched
+   it off on an iPad in landscape — a touchscreen. Keyed to the pointer now,
+   so a mouse gets the tidy inline link and a finger gets the target. */
+@media (pointer:fine){
+  .muted a,.accban a,p a:not(.btn):not(.pbtn){min-height:0;line-height:inherit}
+}
+@media (pointer:coarse){
+  .muted a,.accban a,p a:not(.btn):not(.pbtn){min-height:40px;
+    display:inline-flex;align-items:center}
+}
+
+/* ==========================================================================
+   TOUCH ON A LARGE SCREEN
+   An iPad in landscape is 1024px wide, so it gets the desktop layout — but it
+   is still a touchscreen. Everything the mobile rules enlarge was left at
+   pointer size here. Keyed to whether the device actually has a coarse
+   pointer, rather than to width.
+   ========================================================================== */
+@media (pointer:coarse){
+  /* the dialog close button and any link inside a dialog */
+  .auth2__x,.modal__x,#notesClose{width:44px;height:44px;min-width:44px;min-height:44px;
+    display:grid;place-items:center}
+  .auth2__p a,.acctv__p a,.sylv__p a{min-height:40px;
+    display:inline-flex;align-items:center}
+  .nav a{min-height:42px;display:inline-flex;align-items:center;padding-inline:9px}
+  .hdr__cta .btn,.btn--sm{min-height:42px}
+  .btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+  .note button,.note a{min-height:40px;display:inline-flex;align-items:center}
+  .ftr__l a,.ftr__c a,.ftr__g a:not(.sico){min-height:42px;
+    display:flex;align-items:center}
+  .sico{width:44px;height:44px}
+  .tabs2 button,.tabsA button{min-height:46px}
+  .plink{min-height:42px}
+  .deck__list button{min-height:42px}
+}
+
+/* ==========================================================================
+   1. THE ONLINE CARD
+   Its styles were removed along with the map they used to sit beside, which
+   left the globe with no size at all — an SVG with nothing constraining it
+   grows to fill whatever holds it, so a 44px badge became a 400px panel.
+   ========================================================================== */
+.konline{display:flex;align-items:center;gap:15px;flex-wrap:wrap;margin-top:12px;
+  padding:16px 18px;border-radius:16px;border:1px solid var(--line-soft)}
+.konline__i{width:46px;height:46px;min-width:46px;flex:0 0 46px;
+  display:grid;place-items:center;border-radius:13px;
+  background:color-mix(in srgb,var(--gold-500) 15%,transparent);
+  color:var(--gold-600)}
+.konline__i svg{width:24px;height:24px;min-width:24px;flex:none;display:block}
+.konline__t{flex:1;min-width:190px}
+.konline__t b{display:block;font-family:var(--display);font-weight:600;font-size:1.04rem}
+.konline__t span{display:block;font-size:.85rem;color:var(--muted);
+  line-height:1.5;margin-top:3px;max-width:62ch}
+@media (max-width:860px){
+  .konline{padding:13px 14px;gap:12px}
+  .konline__i{width:40px;height:40px;min-width:40px;flex:0 0 40px}
+  .konline__i svg{width:21px;height:21px}
+  .konline__t b{font-size:.95rem}
+  .konline__t span{font-size:.8rem}
+}
+
+/* ==========================================================================
+   4 + 5. NO MORE SHEEN
+   Each card carried a diagonal white-to-transparent wash. On its own it read
+   as glass; stacked, one card's faded bottom met the next card's bright top
+   and drew a hard grey seam across the page that nobody asked for. Every card
+   type gets a flat surface and one clean hairline instead — applied by the
+   same broad selector that caused it, so nothing is left behind.
+   ========================================================================== */
+.tile,.aff,.step,.mcard,.strip,.prow,.bookrow,.plrow,.accrow,.showall,
+.faqs details,.deck__c,.revrack__c,.xp__in,.konline,.two__c,.rpane,.rc,
+.note,.lay__c,.comb__in,.mats .strip,.yrdrop__in,.kcard,.lec2,.topic,
+.yr,.nag,.auth2__p,.sylv__p,.acctv__p{
+  background:var(--panel);
+  border:1px solid var(--line-soft);
+  box-shadow:none}
+
+[data-theme="dark"] .tile,[data-theme="dark"] .aff,[data-theme="dark"] .step,
+[data-theme="dark"] .mcard,[data-theme="dark"] .strip,[data-theme="dark"] .prow,
+[data-theme="dark"] .bookrow,[data-theme="dark"] .plrow,[data-theme="dark"] .accrow,
+[data-theme="dark"] .showall,[data-theme="dark"] .faqs details,
+[data-theme="dark"] .deck__c,[data-theme="dark"] .revrack__c,
+[data-theme="dark"] .xp__in,[data-theme="dark"] .konline,[data-theme="dark"] .two__c,
+[data-theme="dark"] .rpane,[data-theme="dark"] .rc,[data-theme="dark"] .note,
+[data-theme="dark"] .lay__c,[data-theme="dark"] .comb__in,[data-theme="dark"] .kcard,
+[data-theme="dark"] .lec2,[data-theme="dark"] .topic,[data-theme="dark"] .yr,
+[data-theme="dark"] .auth2__p,[data-theme="dark"] .sylv__p,[data-theme="dark"] .acctv__p,
+[data-theme="focus"] .tile,[data-theme="focus"] .deck__c,[data-theme="focus"] .faqs details{
+  background:var(--panel);
+  border-color:rgba(255,255,255,.08);
+  box-shadow:none}
+
+/* the few that genuinely lift off the page keep a shadow, and only those */
+.auth2__p,.sylv__p,.acctv__p,.kcard,.bot,.nag{
+  box-shadow:0 22px 60px rgba(8,18,38,.18)}
+[data-theme="dark"] .auth2__p,[data-theme="dark"] .sylv__p,
+[data-theme="dark"] .acctv__p,[data-theme="dark"] .kcard,[data-theme="dark"] .bot{
+  box-shadow:0 22px 60px rgba(0,0,0,.5)}
+.deck__c.on{box-shadow:0 26px 60px rgba(8,18,38,.2)}
+[data-theme="dark"] .deck__c.on{box-shadow:0 26px 60px rgba(0,0,0,.5)}
+
+/* the deck keeps a faint gold wash — it is a single card, never stacked */
+.deck__c{background:linear-gradient(155deg,
+  color-mix(in srgb,var(--gold-500) 9%,var(--panel)),var(--panel))}
+
+/* the pointer highlight went with it: it was the same sheen, following a mouse */
+.tilt::after{display:none}
+
+/* ==========================================================================
+   2. THE DECK SWIPES AGAIN
+   Making the cards absolutely positioned gave the raked perspective but took
+   them out of the flow, so the rail had nothing left to scroll and the swipe
+   died. They are back in the flow inside a real scroll container, with the
+   rake applied per card — the same look, and the finger works again.
    ========================================================================== */
 @media (max-width:900px){
-  .eyebrow,.chip,.stair__k,.stair__pct,.lay__hint,.comb__k,
-  .dl__k,.dl__hint,.rst__tag,.sel__ht,.sel__clr,.prow__n,.prow__s,
-  .cvid__cap span,.introv__cap span,.intro__sub,.lecflag,
-  .revrack__tag,.rc__k,.cue span{font-size:.7rem;letter-spacing:.13em}
-  .deck__code{font-size:.68rem;letter-spacing:.1em}
-  /* these sit inside containers that scale them down again, so they need
-     naming directly rather than inheriting the bump above */
-  .chip--gold,.note span,.cvid__cap span,.introv__cap span,
-  .lecmeta span,.prow span{font-size:.7rem}
-  /* inline text buttons and the footer links are a finger's target too */
-  .note button,.ftr__c a{padding-block:5px;display:inline-block}
+  .deck{perspective:1000px;perspective-origin:50% 44%;padding:2px 0}
+  .deck__rail{position:relative;display:flex;align-items:center;
+    justify-content:flex-start;gap:10px;min-height:300px;
+    overflow-x:auto;overflow-y:hidden;
+    scroll-snap-type:x mandatory;scroll-behavior:smooth;
+    -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+    scrollbar-width:none;
+    padding:8px calc(50% - min(116px,31vw));margin-inline:0;
+    transform-style:preserve-3d}
+  .deck__rail::-webkit-scrollbar{display:none}
+
+  /* back in the flow, so the rail can scroll them */
+  .deck__c{position:relative;flex:0 0 min(232px,62vw);width:min(232px,62vw);
+    scroll-snap-align:center;
+    transform:rotateY(-20deg) scale(.9) translateZ(-40px);
+    opacity:0;transition:transform .6s var(--ease),opacity .5s var(--ease),
+      border-color .35s var(--ease),box-shadow .4s var(--ease)}
+  .deck.in .deck__c{opacity:1;transition-delay:calc(var(--i) * 90ms)}
+  /* whichever card is centred stands up square and comes forward */
+  .deck.in .deck__c.mid{transform:rotateY(0deg) scale(1) translateZ(30px);z-index:3}
+  .deck.in .deck__c.on{flex:0 0 min(300px,86vw);width:min(300px,86vw);
+    transform:rotateY(0deg) scale(1) translateZ(40px);z-index:5}
+  .deck.in.picked .deck__c:not(.on){opacity:.32}
+  .deck__in{min-height:264px;padding:15px 14px 14px}
+  .deck__c.on .deck__in{min-height:0}
+  .deck__c.on .deck__more{max-height:480px;opacity:1}
 }
+@media (max-width:400px){
+  .deck__rail{min-height:280px;padding:8px calc(50% - min(104px,30vw))}
+  .deck__c{flex-basis:min(208px,60vw);width:min(208px,60vw)}
+  .deck.in .deck__c.on{flex-basis:min(286px,88vw);width:min(286px,88vw)}
+  .deck__in{min-height:246px}
+}
+
+/* ==========================================================================
+   4. THE METHOD HEXAGONS
+   Navy faces with a gold rim, rather than solid gold slabs that shouted over
+   everything near them. The rim is a second hexagon sitting a hair larger
+   behind the first — a clip-path cannot take a border, so the shape is drawn
+   twice and the gold shows through as an edge.
+   ========================================================================== */
+.comb__h{--cba:var(--navy-800);--cbb:var(--navy-700)}
+.comb__sh{background:linear-gradient(150deg,var(--gold-500),var(--gold-300))!important;
+  opacity:1}
+.comb__in{position:absolute;inset:2px;z-index:2;
+  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+  background:linear-gradient(155deg,var(--navy-800),var(--navy-950));
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:5px;padding:12% 14%;text-align:center;
+  transition:background .4s var(--ease)}
+[data-theme="light"] .comb__in{
+  background:linear-gradient(155deg,#132241,#0B1730)}
+.comb__n{font-family:var(--display);font-weight:600;font-size:1.5rem;
+  color:color-mix(in srgb,var(--gold-300) 60%,transparent);line-height:1}
+.comb__k{font-family:var(--mono);font-size:.56rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--gold-300)}
+.comb__t{font-size:.82rem;line-height:1.3;color:#F3EEE3;font-weight:600;max-width:15ch}
+.comb__h svg{stroke:var(--gold-300);fill:none;stroke-width:1.4;width:26px;height:26px}
+.comb__h--q .comb__in{background:linear-gradient(155deg,#0D1A33,#081326);opacity:.55}
+.comb__h--q .comb__sh{
+  background:linear-gradient(150deg,
+    color-mix(in srgb,var(--gold-500) 40%,transparent),
+    color-mix(in srgb,var(--gold-300) 25%,transparent))!important}
+.comb__h:hover .comb__in,.comb__h[aria-pressed="true"] .comb__in{
+  background:linear-gradient(155deg,#1A2C50,#101F3C)}
+.comb__h[aria-pressed="true"] .comb__sh{
+  background:linear-gradient(150deg,var(--gold-300),var(--gold-100))!important}
+@media (max-width:900px){
+  .comb__n{font-size:1.25rem}
+  .comb__t{font-size:.78rem}
+  .comb__in{gap:4px}
+}
+
+/* ==========================================================================
+   3. THE FILM, NOT A CLIP PASTED ON
+   No frame, no corner radius, no caption: the edges dissolve into the page so
+   it reads as part of the design rather than an embed. The mask is the same
+   shape in both themes — it fades to transparent, so whatever colour is
+   behind it comes through, which is what makes it merge in either one.
+   ========================================================================== */
+.cvid{border:0;border-radius:0;background:transparent;box-shadow:none;
+  overflow:visible;margin:0}
+.cvid__v{
+  -webkit-mask-image:
+    linear-gradient(to right,transparent,#000 13%,#000 87%,transparent),
+    linear-gradient(to bottom,transparent,#000 15%,#000 84%,transparent);
+  mask-image:
+    linear-gradient(to right,transparent,#000 13%,#000 87%,transparent),
+    linear-gradient(to bottom,transparent,#000 15%,#000 84%,transparent);
+  -webkit-mask-composite:source-in;mask-composite:intersect;
+  border-radius:0}
+.cvid__sh{display:none}
+.cvid__cap{display:none}
+.cvid__b{box-shadow:0 10px 40px rgba(192,138,52,.5)}
+/* the heading belongs to the same block of motion, so it is centred over it */
+#affiliations .wrap{text-align:center}
+#affiliations .lede{margin-inline:auto}
+#affiliations .konline{text-align:left;max-width:760px;margin-inline:auto}
+@media (max-width:860px){
+  .cvid__v{
+    -webkit-mask-image:
+      linear-gradient(to right,transparent,#000 9%,#000 91%,transparent),
+      linear-gradient(to bottom,transparent,#000 11%,#000 88%,transparent);
+    mask-image:
+      linear-gradient(to right,transparent,#000 9%,#000 91%,transparent),
+      linear-gradient(to bottom,transparent,#000 11%,#000 88%,transparent)}
+}
+
+/* ==========================================================================
+   5. THE METHOD COMB — the faces come back, then get a palette
+   The cells were not designed as gold slabs; they were rendering as gold
+   slabs. Section 4 set the face to navy, but the broad dark-theme panel rule
+   further up ([data-theme="dark"] .comb__in) carries an attribute selector
+   and therefore outranks it, so the face was painted with --panel — white at
+   3% — and the gold rim underneath simply showed through the whole shape.
+   The number and the label were gold on that gold, which is why they were
+   almost unreadable.
+
+   The face is set here at a weight that clears that rule in every theme, and
+   the palette is then rebuilt rather than merely restored: enamelled navy
+   faces lit from the top-left, a rim that walks the gold ramp cell by cell,
+   the number as a gradient watermark, and exactly one cell lit at a time.
+   ========================================================================== */
+
+/* --- the rim: a real metal edge, not a flat fill --------------------------
+   Three stops rather than two, so the top-left catches light and the
+   bottom-right falls into shadow. Each cell keeps its own --cba/--cbb from
+   the markup, so the comb reads bronze, gold, deep gold across the three. */
+.comb .comb__h .comb__sh{
+  background:linear-gradient(148deg,
+    color-mix(in srgb,var(--cbb) 78%,#FFF4DC) 0%,
+    var(--cbb) 26%,
+    var(--cba) 58%,
+    color-mix(in srgb,var(--cba) 62%,#2B1C07) 100%)!important;
+  opacity:1}
+
+/* --- the face: deep navy enamel, with the cell's own tone as a wash ------- */
+.comb .comb__h .comb__in{
+  inset:2.5px;border:0;
+  background:
+    radial-gradient(128% 96% at 20% 4%,
+      color-mix(in srgb,var(--cbb) 17%,transparent),transparent 60%),
+    linear-gradient(158deg,#16294B 0%,#0C1930 54%,#060E20 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.075)}
+
+/* --- the number: a gradient watermark, readable at last ------------------ */
+.comb .comb__h .comb__n{
+  font-family:var(--display);font-weight:600;line-height:1;letter-spacing:-.02em;
+  font-size:clamp(1.4rem,2.7vw,1.9rem);
+  color:var(--cbb);
+  background:linear-gradient(158deg,#FBEAC4,var(--cbb) 52%,var(--cba));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent}
+
+/* --- the label and the line ---------------------------------------------- */
+.comb .comb__h .comb__k{
+  font-family:var(--mono);font-size:.56rem;letter-spacing:.19em;
+  text-transform:uppercase;
+  color:color-mix(in srgb,var(--cbb) 62%,#FFF3D9)}
+.comb .comb__h .comb__t{
+  font-family:var(--sans);font-weight:600;font-size:.82rem;line-height:1.32;
+  color:#F5F1E8;max-width:15ch;
+  text-shadow:0 1px 8px rgba(4,10,22,.55)}
+
+/* --- the lit cell --------------------------------------------------------
+   The rim goes bright and the face takes a warm lift from above. It is not
+   filled with gold: a gold-filled hexagon is the thing that was wrong here,
+   and one of them would be no better than three. The glow follows the
+   clip-path, so it is a hexagon of light rather than a square of it. */
+.comb .comb__h.on .comb__sh,
+.comb .comb__h[aria-pressed="true"] .comb__sh{
+  background:linear-gradient(148deg,
+    #FFF6E4 0%,
+    color-mix(in srgb,var(--cbb) 55%,#FFF0CB) 30%,
+    var(--cbb) 66%,
+    var(--cba) 100%)!important}
+.comb .comb__h.on .comb__in,
+.comb .comb__h[aria-pressed="true"] .comb__in{
+  background:
+    radial-gradient(122% 98% at 50% -4%,
+      color-mix(in srgb,var(--cbb) 34%,transparent),transparent 64%),
+    linear-gradient(158deg,#1E3A66 0%,#122448 52%,#0A1428 100%)}
+.comb .comb__h.on{
+  filter:drop-shadow(0 10px 22px color-mix(in srgb,var(--cba) 72%,transparent))
+         drop-shadow(0 2px 4px color-mix(in srgb,var(--cbb) 40%,transparent))}
+.comb .comb__h.on .comb__t{color:#FFFDF7}
+
+/* on a pointer, the rim warms before it is pressed */
+@media (hover:hover) and (pointer:fine){
+  .comb .comb__h:not(.comb__h--q):hover .comb__sh{
+    background:linear-gradient(148deg,
+      #FFF2D6 0%,var(--cbb) 40%,var(--cba) 100%)!important}
+  .comb .comb__h:not(.comb__h--q):hover .comb__in{
+    background:
+      radial-gradient(128% 96% at 20% 4%,
+        color-mix(in srgb,var(--cbb) 26%,transparent),transparent 60%),
+      linear-gradient(158deg,#1A3057 0%,#0E1D38 54%,#071026 100%)}
+}
+
+/* --- the quiet cells stay quiet ------------------------------------------
+   They fill the comb; they are not competing for a press. A thin gold
+   hairline and a darker face is enough to read as part of the same object. */
+.comb .comb__h--q{opacity:.6}
+.comb .comb__h--q .comb__sh{
+  background:linear-gradient(148deg,
+    rgba(245,210,135,.62),rgba(168,117,42,.22))!important}
+.comb .comb__h--q .comb__in{
+  inset:1.5px;
+  background:linear-gradient(158deg,#0D1B34 0%,#070F22 100%);
+  box-shadow:none;opacity:1}
+.comb .comb__h--q svg{stroke:var(--gold-400);opacity:.46}
+
+/* On cream, fading a navy cell only turns it grey, and grey is not in this
+   palette. The empty cells get a sand face there instead, so they read as
+   comb rather than as a smudge. */
+[data-theme="light"] .comb .comb__h--q{opacity:1}
+[data-theme="light"] .comb .comb__h--q .comb__in{
+  background:linear-gradient(158deg,#F7EFE3 0%,#EADDC8 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
+[data-theme="light"] .comb .comb__h--q .comb__sh{
+  background:linear-gradient(148deg,
+    rgba(168,117,42,.45),rgba(168,117,42,.17))!important}
+[data-theme="light"] .comb .comb__h--q svg{stroke:var(--gold-600);opacity:.5}
+[data-theme="light"] .comb.is-picked .comb__h--q{opacity:.5}
+
+/* --- letting go of the others -------------------------------------------
+   The old dim took saturation out as well as light, which turned the two
+   unpicked cells grey and muddy. They only need to step back. */
+.comb.is-picked .comb__h:not(.on){opacity:.6;filter:none}
+/* same reason as the empty cells: on cream a faded navy goes grey, so the
+   step-back there is smaller and the lit rim does the work instead */
+[data-theme="light"] .comb.is-picked .comb__h:not(.on){opacity:.84}
+.comb.is-picked .comb__h:not(.on):hover{opacity:.85}
+.comb.is-picked .comb__h--q{opacity:.3}
+
+/* the keyboard ring, matched to the new edge */
+.comb .comb__h:focus-visible .comb__in{
+  box-shadow:inset 0 0 0 2px #FFF0CB,inset 0 1px 0 rgba(255,255,255,.075)}
+
+/* Phones: the cells are large and single-column here, so the type inside them
+   can carry more weight than it does in the packed desktop comb. */
+@media (max-width:560px){
+  .comb .comb__h .comb__n{font-size:1.6rem}
+  .comb .comb__h .comb__k{font-size:.58rem;letter-spacing:.2em}
+  .comb .comb__h .comb__t{font-size:.88rem;max-width:16ch}
+  .comb .comb__h.on{
+    filter:drop-shadow(0 8px 18px color-mix(in srgb,var(--cba) 64%,transparent))}
+}
+
+/* ==========================================================================
+   6. THE CAMPUS FILM IS AN ANIMATION
+   It is muted, it loops, it has no sound and nothing to seek to — it is a map
+   moving, not a film anybody sits and watches. A play/pause disc in the
+   middle of it announced "video embed" and put a button over the one part of
+   the frame the eye goes to. The disc is gone from the markup; this is the
+   guard for anything that still renders it.
+   ========================================================================== */
+.cvid__b{display:none!important}
+.cvid{cursor:default}
 </style>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -4202,37 +4539,23 @@ body{overflow-x:clip;max-width:100%}
     <div class="eyebrow">Where he teaches</div>
     <h2 data-rv>Seven campuses across Karachi</h2>
     <p class="lede" data-rv style="--d:1;margin-bottom:26px">Morning college programmes, evening academy batches, and live online worldwide.</p>
-  </div>
 
-  <!-- The campuses on film. It only starts downloading when the section is
-       near the screen, and the poster stands in until the first frame is
-       ready, so nothing is paid for by someone who never scrolls this far. -->
-  <figure class="cvid" id="cvid">
-    <video id="cvidEl" class="cvid__v" poster="campus-poster.jpg"
-           muted loop playsinline preload="none" disablepictureinpicture
-           aria-label="The campuses across Karachi"
-           data-w="1280" data-h="720"
-           data-sm="campus-540.webm|campus-540.mp4"
-           data-xs="campus-360.webm|campus-360.mp4"
-           data-lg="campus-720.webm|campus-720.mp4"></video>
-    <div class="cvid__sh" aria-hidden="true"></div>
-    <button class="cvid__b" id="cvidBtn" aria-label="Play">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <polygon class="cvp" points="8 5.5 18.5 12 8 18.5" fill="currentColor"/>
-        <g class="cvs" style="display:none">
-          <rect x="7.6" y="5.5" width="3.1" height="13" rx="1.1" fill="currentColor"/>
-          <rect x="13.3" y="5.5" width="3.1" height="13" rx="1.1" fill="currentColor"/>
-        </g>
-      </svg>
-    </button>
-    <figcaption class="cvid__cap">
-      <b>Seven campuses across Karachi</b>
-      <span>Gulshan-e-Iqbal &middot; North Nazimabad &middot; Gulistan-e-Johar</span>
-    </figcaption>
-  </figure>
-
-  <div class="wrap">
-
+    <!-- The campuses on film. It only starts downloading when the section is
+         near the screen, and the poster stands in until the first frame is
+         ready, so nothing is paid for by someone who never scrolls this far. -->
+    <figure class="cvid" id="cvid">
+      <video id="cvidEl" class="cvid__v" poster="campus-poster.jpg"
+             muted loop playsinline autoplay preload="none" disablepictureinpicture
+             tabindex="-1" aria-hidden="true">
+        <source data-src="campus.webm" type="video/webm">
+        <source data-src="campus.mp4"  type="video/mp4">
+      </video>
+      <div class="cvid__sh" aria-hidden="true"></div>
+      <figcaption class="cvid__cap">
+        <b>Seven campuses across Karachi</b>
+        <span>Gulshan-e-Iqbal &middot; North Nazimabad &middot; Gulistan-e-Johar</span>
+      </figcaption>
+    </figure>
 
     <div class="konline" data-rv>
       <span class="konline__i" aria-hidden="true">
@@ -4442,15 +4765,6 @@ body{overflow-x:clip;max-width:100%}
         <span class="comb__sh"></span>
         <span class="comb__in"><svg viewBox="0 0 24 24"><path d="M5 19V6.5A1.5 1.5 0 0 1 6.5 5H17l2 2v12z"/><path d="M8.5 9.5h7M8.5 13h7M8.5 16.5h4"/></svg></span>
       </div>
-      <button class="comb__h" type="button" data-cell="c3"
-              style="--cba:#8F6322;--cbb:#C08A34" aria-pressed="false">
-        <span class="comb__sh"></span>
-        <span class="comb__in">
-          <span class="comb__n">03</span>
-          <span class="comb__k">Success</span>
-          <span class="comb__t">Until exam day is routine</span>
-        </span>
-      </button>
       <button class="comb__h" type="button" data-cell="c2"
               style="--cba:#A8752A;--cbb:#D49C42" aria-pressed="false">
         <span class="comb__sh"></span>
@@ -4458,6 +4772,15 @@ body{overflow-x:clip;max-width:100%}
           <span class="comb__n">02</span>
           <span class="comb__k">Clarity</span>
           <span class="comb__t">Then the awkward case</span>
+        </span>
+      </button>
+      <button class="comb__h" type="button" data-cell="c3"
+              style="--cba:#8F6322;--cbb:#C08A34" aria-pressed="false">
+        <span class="comb__sh"></span>
+        <span class="comb__in">
+          <span class="comb__n">03</span>
+          <span class="comb__k">Success</span>
+          <span class="comb__t">Until exam day is routine</span>
         </span>
       </button>
       <div class="comb__h comb__h--q" data-cell="qb" aria-hidden="true">
@@ -7711,17 +8034,20 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       var marks = $$('i', dots);
       marks[0].classList.add('on');
       var t;
+      var centre = function () {
+        var mid = rail.scrollLeft + rail.clientWidth / 2, best = 0, gap = 1e9;
+        cards.forEach(function (c, i) {
+          var d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid);
+          if (d < gap) { gap = d; best = i; }
+        });
+        marks.forEach(function (m, i) { m.classList.toggle('on', i === best); });
+        /* the card under the thumb stands square while the rest stay raked */
+        cards.forEach(function (c, i) { c.classList.toggle('mid', i === best); });
+      };
       rail.addEventListener('scroll', function () {
-        clearTimeout(t);
-        t = setTimeout(function () {
-          var mid = rail.scrollLeft + rail.clientWidth / 2, best = 0, gap = 1e9;
-          cards.forEach(function (c, i) {
-            var d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid);
-            if (d < gap) { gap = d; best = i; }
-          });
-          marks.forEach(function (m, i) { m.classList.toggle('on', i === best); });
-        }, 80);
+        clearTimeout(t); t = setTimeout(centre, 60);
       }, { passive: true });
+      centre();
     }
   })();
 
@@ -7854,51 +8180,6 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
 
   /* the notes cards lying on their surface */
   pressGroup('#lay', '.lay__c');
-
-  /* ----------------------------------------------------------------------
-     Size the notes cards to the words, at whatever width they are being read.
-     The same three paragraphs wrap to twice the depth on a phone as they do
-     in a desktop column, so a hard slot height either cuts the text there or
-     leaves a hole here. Measuring the longest of the three and giving all
-     three that height keeps them level — so opening one still moves nothing —
-     and guarantees the words fit.
-     ---------------------------------------------------------------------- */
-  (function () {
-    var lay = $('#lay'); if (!lay) return;
-    var cards = $$('.lay__c', lay);
-    if (!cards.length) return;
-
-    function fit() {
-      /* clear both floors first, or this measures its own last answer */
-      lay.style.removeProperty('--slot-h');
-      lay.style.removeProperty('--card-h');
-
-      var slot = 0;
-      cards.forEach(function (c) {
-        var para = $('.lay__p', c);
-        if (para) slot = Math.max(slot, Math.ceil(para.getBoundingClientRect().height));
-      });
-      if (slot > 0) lay.style.setProperty('--slot-h', slot + 'px');
-
-      var need = 0;
-      cards.forEach(function (c) {
-        var face = $('.lay__f', c), z = $('.lay__z', c);
-        if (!face || !z) return;
-        var cs = getComputedStyle(face);
-        need = Math.max(need, z.scrollHeight +
-          parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom) + 2);
-      });
-      if (need > 0) lay.style.setProperty('--card-h', Math.ceil(need) + 'px');
-    }
-
-    fit();
-    /* the web fonts land after first paint and change every wrap */
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit).catch(function () { });
-    addEventListener('load', fit);
-
-    var t;
-    addEventListener('resize', function () { clearTimeout(t); t = setTimeout(fit, 160); });
-  })();
 
   /* the method comb — the hex is the control, the panel is where it is read */
   (function () {
@@ -8303,50 +8584,16 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
      ---------------------------------------------------------------------- */
   (function () {
     var box = $('#cvid'); if (!box) return;
-    var v = $('#cvidEl'), btn = $('#cvidBtn'), armed = false, manual = false;
+    var v = $('#cvidEl'), armed = false;
 
-    /* Pick the file that suits the screen before a byte is fetched. The player
-       is muted and never unmutes, so every rendition ships without an audio
-       track — that alone took the download from 11MB to under 3MB, and a
-       phone gets 0.6MB of it. Chosen in script rather than with <source
-       media>, because the media attribute is only read once at load time and
-       support for it is uneven. */
     function arm() {
       if (armed) return; armed = true;
-      /* Decided on the viewport alone, deliberately. Weighting it by pixel
-         ratio pushed every retina phone up a tier, which is the wrong trade
-         for footage that plays behind a dark gradient and a caption: the
-         sharpness is invisible, the extra megabyte is not. */
-      var conn = navigator.connection || {};
-      var thin = conn.saveData === true ||
-                 /^(slow-2g|2g|3g)$/.test(conn.effectiveType || '');
-      /* The band is full bleed now, so the file is judged against the whole
-         screen rather than a small framed box — a phone showing 390px of
-         video edge to edge needs more than the 360 file that was fine inside
-         a card. The smallest one is kept for Data Saver and slow radios,
-         where a soft picture beats a stalled one. */
-      var w = innerWidth;
-      var pick = thin ? v.dataset.xs
-               : w < 700 ? v.dataset.sm
-               : v.dataset.lg;
-      (pick || v.dataset.lg).split('|').forEach(function (file) {
-        var el = document.createElement('source');
-        el.src = file;
-        el.type = /\.webm$/.test(file) ? 'video/webm' : 'video/mp4';
-        v.appendChild(el);
+      $$('source', v).forEach(function (src) {
+        if (src.dataset.src) src.src = src.dataset.src;
       });
       v.preload = 'auto';
       v.load();
     }
-
-    /* Hold the frame's real shape so nothing is ever cropped. The markup
-       carries the dimensions for the very first paint, and the metadata
-       overrides them once it lands, so a re-cut video needs no CSS change. */
-    function shape(w, h) {
-      if (w > 0 && h > 0) box.style.setProperty('--vid-ar', w + ' / ' + h);
-    }
-    shape(+v.dataset.w, +v.dataset.h);
-    v.addEventListener('loadedmetadata', function () { shape(v.videoWidth, v.videoHeight); });
 
     /* The observers are held back until the page has laid itself out. Set up
        any earlier and every section is still stacked at the top of the
@@ -8360,7 +8607,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       new IntersectionObserver(function (es) {
         es.forEach(function (e) {
           if (e.isIntersecting) {
-            if (!manual && !matchMedia('(prefers-reduced-motion:reduce)').matches) {
+            if (!matchMedia('(prefers-reduced-motion:reduce)').matches) {
               arm(); v.play().catch(function () { });
             }
           } else if (!v.paused) v.pause();
@@ -8372,22 +8619,23 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     else if (document.readyState === 'complete') requestAnimationFrame(watch);
     else addEventListener('load', function () { requestAnimationFrame(watch); }, { once: true });
 
-    function icon() {
-      box.classList.toggle('playing', !v.paused);
-      $('.cvp', btn).style.display = v.paused ? '' : 'none';
-      $('.cvs', btn).style.display = v.paused ? 'none' : '';
-      btn.setAttribute('aria-label', v.paused ? 'Play' : 'Pause');
-    }
-    v.addEventListener('play', icon);
-    v.addEventListener('pause', icon);
+    v.addEventListener('play', function () { box.classList.add('playing'); });
+    v.addEventListener('pause', function () { box.classList.remove('playing'); });
 
-    function toggle() {
-      manual = true; arm();
-      if (v.paused) v.play().catch(function () { }); else v.pause();
+    /* There is no control on this any more, so there is nothing for a visitor
+       to press if the browser refuses the first autoplay — iOS Low Power Mode
+       and some data-saver modes both do. The first real interaction anywhere
+       on the page quietly asks again. Nothing is drawn for this and nothing
+       is bound after it succeeds. */
+    function retry() {
+      if (!v.paused) return;
+      if (matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+      var r = box.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > innerHeight) return;
+      arm(); v.play().catch(function () { });
     }
-    btn.addEventListener('click', function (e) { e.stopPropagation(); toggle(); });
-    box.addEventListener('click', function (e) {
-      if (!e.target.closest('.cvid__b')) toggle();
+    ['pointerdown', 'touchstart', 'keydown', 'scroll'].forEach(function (t) {
+      addEventListener(t, retry, { passive: true });
     });
   })();
 
@@ -8398,6 +8646,93 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       $$('#faq details').forEach(function (o) { if (o !== d) o.open = false; });
     });
   });
+
+  /* ----------------------------------------------------------------------
+     1. SOUND, EVERYWHERE IT MEANS SOMETHING
+     Seventeen tones were defined and about half were never played. These are
+     the moments that had no sound at all: arriving at a section, swiping the
+     deck, a card coming forward, the form succeeding or failing, the intro
+     finishing, the film starting. All of it stays silent until a visitor
+     turns sound on.
+     ---------------------------------------------------------------------- */
+  (function () {
+    var sfx = window.SMKsfx; if (!sfx) return;
+
+    /* a soft note as each section arrives, at most one every second and a half */
+    var lastSec = 0;
+    if ('IntersectionObserver' in window) {
+      var so = new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          if (Date.now() - lastSec < 1500) return;
+          lastSec = Date.now();
+          sfx.section();
+        });
+      }, { threshold: .55 });
+      $$('.sec').forEach(function (x) { so.observe(x); });
+    }
+
+    /* the deck: a tick as each card passes under the thumb */
+    var rail = $('.deck__rail');
+    if (rail) {
+      var wasMid = -1, st;
+      rail.addEventListener('scroll', function () {
+        clearTimeout(st);
+        st = setTimeout(function () {
+          var now = $$('.deck__c').findIndex(function (c) {
+            return c.classList.contains('mid');
+          });
+          if (now !== -1 && now !== wasMid) { wasMid = now; sfx.swipe(); }
+        }, 70);
+      }, { passive: true });
+    }
+
+    /* hovering a card that can be opened */
+    var lastHov = 0;
+    if (matchMedia('(hover:hover)').matches) {
+      document.addEventListener('pointerenter', function (e) {
+        if (!e.target.closest) return;
+        if (!e.target.closest('.deck__c,.revrack__c,.comb__h')) return;
+        if (Date.now() - lastHov < 220) return;
+        lastHov = Date.now(); sfx.hover();
+      }, true);
+    }
+
+    /* the form answering */
+    $$('form').forEach(function (f) {
+      f.addEventListener('submit', function () { sfx.click(); });
+    });
+    new MutationObserver(function (ms) {
+      ms.forEach(function (m) {
+        var t = m.target;
+        if (!t.classList || t.style.display === 'none') return;
+        if (t.classList.contains('msg--ok')) sfx.ok();
+        else if (t.classList.contains('msg--bad')) sfx.err();
+      });
+    }).observe(document.body, { attributes: true, subtree: true,
+      attributeFilter: ['style', 'class'] });
+
+    /* the intro handing over to the page */
+    var pre = $('#pre');
+    if (pre && !pre.classList.contains('gone')) {
+      new MutationObserver(function (m, o) {
+        if (pre.classList.contains('lift')) { sfx.open(); o.disconnect(); }
+      }).observe(pre, { attributes: true, attributeFilter: ['class'] });
+    }
+
+    /* the campus map is ambient motion now, not a film that starts, so it no
+       longer announces itself with a note */
+
+    /* a dialog opening or closing */
+    new MutationObserver(function (ms) {
+      ms.forEach(function (m) {
+        var t = m.target;
+        if (!t.classList || !t.classList.contains('auth2')) return;
+        if (t.classList.contains('open')) sfx.open();
+      });
+    }).observe(document.body, { attributes: true, subtree: true,
+      attributeFilter: ['class'] });
+  })();
 
   /* ---------- 15. headings assemble, sections drop ---------- */
   (function () {
