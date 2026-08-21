@@ -31,11 +31,12 @@ window.SMK_CONFIG = {
   /* ==========================================================================
      2. CONTACT  —  shown across the site, used by the WhatsApp buttons
      ========================================================================== */
-  wa:           '923433713772',      // international format, digits only
-  phoneDisplay: '0343 3713772',      // how it reads on the page
+  wa:           '923028056789',      // international format, digits only
+  phoneDisplay: '0302 8056789',      // how it reads on the page
   email:        'physicswithsmk@gmail.com',
 
   instagram: 'https://instagram.com/sir_mehboob_khan',
+  facebook:  'https://www.facebook.com/share/1LschdCvjH/',
   youtube:   'https://youtube.com/@mehboobkhan7260',
   threads:   'https://threads.net/@sir_mehboob_khan',
 
