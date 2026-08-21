@@ -5119,25 +5119,28 @@ html.theming .revrack__c,html.theming .comb__h{transition-property:all!important
         <form data-form novalidate>
           <div class="bento" style="gap:0 12px">
             <div class="rf c6">
-              <input id="rn" name="name" required autocomplete="name" placeholder=" ">
+              <input id="rn" name="name" data-check="name" required autocomplete="name"
+                     maxlength="80" placeholder=" ">
               <label for="rn">Student name <span class="rq">*</span></label>
               <div class="er">Please enter the student's name.</div>
             </div>
             <div class="rf c6">
-              <input id="rp" name="phone" type="tel" required autocomplete="tel" placeholder=" ">
+              <input id="rp" name="phone" type="tel" data-check="phone" required autocomplete="tel"
+                     inputmode="tel" maxlength="20" placeholder=" ">
               <label for="rp">WhatsApp number <span class="rq">*</span></label>
               <div class="er">Please enter a contact number.</div>
             </div>
           </div>
           <div class="rf">
-            <input id="re" name="email" type="email" required autocomplete="email" placeholder=" ">
+            <input id="re" name="email" type="email" data-check="email" required autocomplete="email"
+                   inputmode="email" maxlength="120" placeholder=" ">
             <label for="re">Email <span class="rq">*</span></label>
             <div class="er">Please enter a valid email.</div>
           </div>
           <div class="bento" style="gap:0 12px">
             <div class="fld c6">
               <label for="rl">Level <span class="rq">*</span></label>
-              <select id="rl" name="level" required>
+              <select id="rl" name="level" data-check="required" required>
                 <option value="">Select a level&hellip;</option>
                 <option>O Level / IGCSE</option><option>AS Level</option><option>A2 Level</option>
               </select>
@@ -5154,7 +5157,7 @@ html.theming .revrack__c,html.theming .comb__h{transition-property:all!important
           </div>
           <div class="fld" id="campusFld" hidden>
             <label for="rcamp">Which campus <span class="rq">*</span></label>
-            <select id="rcamp" name="campus">
+            <select id="rcamp" name="campus" data-check="required">
               <option value="">Choose a campus&hellip;</option>
               <optgroup label="SWK Solution">
                 <option>SWK Solution &mdash; North</option>
@@ -5186,8 +5189,16 @@ html.theming .revrack__c,html.theming .comb__h{transition-property:all!important
             Send my details
           </button>
           <div class="msg msg--ok" style="display:none;margin-top:12px"></div>
-          <div class="msg msg--bad" style="display:none;margin-top:12px"></div>
+          <div class="msg msg--bad" style="display:none;margin-top:12px;color:var(--bad);font-size:.84rem"></div>
         </form>
+        <!-- the submit handler looks for this panel by class; without it a
+             successful send hid the form and showed nothing at all -->
+        <div class="okp">
+          <div class="tick">&#10003;</div>
+          <h3 style="margin:0 0 8px;font-size:1.15rem">Details received</h3>
+          <p class="muted" style="font-size:.88rem;margin:0">
+            We&rsquo;ll reply on WhatsApp, usually the same day, to arrange your trial lesson.</p>
+        </div>
       </div>
 
       <div>
@@ -6122,44 +6133,65 @@ const SYN = {
   $$('form[data-form]').forEach(f => {
     f.addEventListener('submit', async e => {
       e.preventDefault();
-      let ok = true;
-      $$('.fld', f).forEach(fl => {
-        const i = $('input,select,textarea', fl);
-        if (!i || !i.required) return;
-        const bad = !i.value.trim() ||
-          (i.type === 'email' && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(i.value));
-        fl.classList.toggle('bad', bad);
-        if (bad) ok = false;
-      });
-      if ($('.hp input', f) && $('.hp input', f).value) return;
-      if (!ok) { sfx.err(); const b = $('.fld.bad input,.fld.bad select', f); b && b.focus(); return; }
+      if (f.dataset.busy) return;                                   /* no double send */
+      if ($('.hp input', f) && $('.hp input', f).value) return;     /* honeypot */
+
+      /* One validator for the whole site. The old loop here only walked .fld,
+         and the name, number and email sit in .rf — so they were never checked
+         and an empty form went straight to the database. */
+      const ok = window.SMKcheckForm ? window.SMKcheckForm(f) : true;
+      if (!ok) { sfx.err(); return; }
 
       const btn = $('button[type=submit]', f);
       const label = btn ? btn.textContent : '';
+      f.dataset.busy = '1';
       f.classList.add('sending');
-      if (btn) btn.textContent = 'Sending…';
+      if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
 
+      const val = sel => {
+        const el = f.querySelector(sel);
+        return el && !el.closest('[hidden]') ? String(el.value || '').trim() : '';
+      };
       const payload = {
-        name: (f.querySelector('[name=name]') || {}).value || '',
-        email: (f.querySelector('[name=email]') || {}).value || '',
-        phone: (f.querySelector('[name=phone]') || {}).value || '',
-        level: (f.querySelector('[name=level]') || {}).value || '',
-        session: (f.querySelector('[name=session]') || {}).value || '',
-        mode: (f.querySelector('[name=mode]') || {}).value || '',
-        message: (f.querySelector('[name=message]') || {}).value || '',
+        name: val('[name=name]'),
+        email: val('[name=email]').toLowerCase(),
+        phone: val('[name=phone]'),
+        level: val('[name=level]'),
+        session: val('[name=session]'),
+        mode: val('[name=mode]'),
+        message: (val('[name=campus]') ? 'Campus: ' + val('[name=campus]') + '\n' : '')
+                 + val('[name=message]'),
         source: location.pathname
       };
       const r = await send(payload);
+      delete f.dataset.busy;
+      if (btn) btn.disabled = false;
       f.classList.remove('sending');
       if (btn) btn.textContent = label;
 
+      /* A failed send used to hide the form and show nothing, so it looked
+         like it had worked. The form now stays put and says what happened. */
+      if (!r.ok) {
+        const bad = $('.msg--bad', f);
+        if (bad) {
+          bad.style.display = 'block';
+          bad.innerHTML = 'That could not be sent. Please message us on WhatsApp instead — ' +
+            '<a href="https://wa.me/' + ((window.SMK_CONFIG || {}).wa || '923028056789') +
+            '" target="_blank" rel="noopener" style="color:var(--gold-300)">' +
+            ((window.SMK_CONFIG || {}).phoneDisplay || '0302 8056789') + '</a>.';
+          bad.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' });
+        }
+        sfx.err();
+        return;
+      }
+
+      const bad = $('.msg--bad', f);
+      if (bad) bad.style.display = 'none';
+      f.reset();
+      $$('.fld, .rf', f).forEach(fl => fl.classList.remove('bad'));
       f.style.display = 'none';
       const p = f.nextElementSibling;
       if (p && p.classList.contains('okp')) {
-        if (!r.ok) {
-          const n = $('[data-fallback]', p);
-          if (n) n.style.display = 'block';
-        }
         p.classList.add('show');
         p.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' });
       }
@@ -6167,7 +6199,7 @@ const SYN = {
     });
     $$('input,select,textarea', f).forEach(i =>
       i.addEventListener('input', () => {
-        const fl = i.closest('.fld'); fl && fl.classList.remove('bad');
+        const fl = i.closest('.fld, .rf'); fl && fl.classList.remove('bad');
       }));
   });
 
@@ -7145,36 +7177,81 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
 /* form validation — index.html doesn't load portal.js, so it carries its own */
 (function () {
   var V = {
-    name: function (v) { return v.trim().length >= 2 || 'Please enter a name of at least 2 characters.'; },
-    email: function (v) { return /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v.trim()) || 'That email address does not look right.'; },
+    name: function (v) {
+      v = v.trim();
+      if (!v) return 'Please enter the student\u2019s name.';
+      if (v.length < 2) return 'Please enter a name of at least 2 characters.';
+      if (!/[A-Za-z\u0600-\u06FF]/.test(v)) return 'A name needs letters, not only numbers.';
+      return true;
+    },
+    email: function (v) {
+      v = v.trim();
+      if (!v) return 'Please enter an email address.';
+      return /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v) || 'That email address does not look right.';
+    },
     phone: function (v) {
-      var d = v.replace(/\D/g, '');
+      var t = v.trim();
+      if (!t) return 'Please enter a contact number.';
+      if (/[^\d\s()+\-]/.test(t)) return 'A phone number can only hold digits.';
+      var d = t.replace(/\D/g, '');
       if (d.length < 10) return 'A phone number needs at least 10 digits.';
       if (d.length > 15) return 'That is too many digits for a phone number.';
+      /* a local Pakistani mobile is 03xx xxxxxxx — 11 digits */
+      if (/^0/.test(d) && d.length !== 11) return 'A number starting 0 should be 11 digits, like 0302 8056789.';
       return true;
     },
     required: function (v) { return (v && v.trim() !== '') || 'Please choose an option.'; }
   };
+  /* the register form uses .rf for its floating-label fields and .fld for its
+     dropdowns, so both have to be walked or half the form goes unchecked */
+  var FLD = '.fld, .rf';
   function err(fld, msg) {
     fld.classList.toggle('bad', !!msg);
     var e = fld.querySelector('.er');
     if (!e) { e = document.createElement('div'); e.className = 'er'; fld.appendChild(e); }
     e.textContent = msg || '';
   }
+  /* a field inside a hidden block (the campus list when the class is online)
+     is not part of the form yet, so it must not block the send */
+  function live(el) {
+    return !el.disabled && !el.closest('[hidden]') && el.offsetParent !== null;
+  }
   window.SMKcheckForm = function (form) {
-    var ok = true;
-    Array.prototype.forEach.call(form.querySelectorAll('.fld'), function (fld) {
+    var ok = true, first = null;
+    Array.prototype.forEach.call(form.querySelectorAll(FLD), function (fld) {
       var i = fld.querySelector('input,select,textarea');
       if (!i || !i.dataset.check) return;
+      if (!live(i)) { err(fld, ''); return; }
       var r = V[i.dataset.check] ? V[i.dataset.check](i.value) : true;
-      if (r !== true) { err(fld, r); ok = false; } else err(fld, '');
+      if (r !== true) { err(fld, r); ok = false; if (!first) first = i; }
+      else err(fld, '');
     });
+    if (first) {
+      try { first.focus({ preventScroll: true }); } catch (e) { first.focus(); }
+      first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
     return ok;
   };
   document.addEventListener('blur', function (e) {
     var i = e.target;
     if (!i.dataset || !i.dataset.check) return;
-    var fld = i.closest('.fld'); if (!fld) return;
+    var fld = i.closest(FLD); if (!fld || !live(i)) return;
+    if (!i.value.trim() && !i.dataset.touched) return;   /* don't scold an untouched field */
+    var r = V[i.dataset.check] ? V[i.dataset.check](i.value) : true;
+    err(fld, r === true ? '' : r);
+  }, true);
+  /* once a field has been typed in, it is fair to check it on the way out */
+  document.addEventListener('input', function (e) {
+    var i = e.target;
+    if (!i.dataset || !i.dataset.check) return;
+    i.dataset.touched = '1';
+    var fld = i.closest(FLD); if (fld) err(fld, '');
+  }, true);
+  document.addEventListener('change', function (e) {
+    var i = e.target;
+    if (!i.dataset || !i.dataset.check || i.tagName !== 'SELECT') return;
+    i.dataset.touched = '1';
+    var fld = i.closest(FLD); if (!fld || !live(i)) return;
     var r = V[i.dataset.check] ? V[i.dataset.check](i.value) : true;
     err(fld, r === true ? '' : r);
   }, true);
@@ -8979,7 +9056,10 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       var on = /campus/i.test(mode.value);
       fld.hidden = !on;
       if (sel) sel.required = on;
-      if (!on && sel) sel.value = '';
+      if (!on && sel) { sel.value = ''; delete sel.dataset.touched; }
+      /* clear any error left showing when the field is put away, or the form
+         can be blocked by a complaint the student cannot even see */
+      if (!on) { fld.classList.remove('bad'); var e = fld.querySelector('.er'); if (e) e.textContent = ''; }
     }
     mode.addEventListener('change', sync);
     sync();
@@ -9217,7 +9297,17 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     e.preventDefault();
     var id = $('#aSid').value.trim(), pin = $('#aPin').value.trim();
     var m = $('#pInErr'), btn = this.querySelector('button[type=submit]'), label = btn.textContent;
-    if (!id || !pin) { m.style.display = 'block'; m.textContent = 'Enter your ID and password.'; return; }
+    $('#aSid').closest('.fld').classList.toggle('bad', !id);
+    $('#aPin').closest('.fld').classList.toggle('bad', !pin);
+    if (!id || !pin) {
+      m.style.display = 'block';
+      m.textContent = !id && !pin ? 'Enter your student ID and password.'
+                    : !id ? 'Enter your student ID.' : 'Enter your password.';
+      (!id ? $('#aSid') : $('#aPin')).focus();
+      return;
+    }
+    if (btn.disabled) return;                               /* no double submit */
+    $('#aSid').value = id;
     btn.disabled = true; btn.textContent = 'Signing in…';
 
     var C = window.SMK_CONFIG || {};
