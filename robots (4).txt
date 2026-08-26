@@ -1,0 +1,20 @@
+# physicswithsmk.com — Sir Mehboob Khan, Cambridge Physics tuition
+# Karachi + live online. O Level 5054 · IGCSE 0625 · AS/A2 9702
+
+User-agent: *
+Allow: /
+
+# The student portal is gated and personalised — nothing there belongs in a
+# search index, and crawling it only wastes crawl budget on the real page.
+Disallow: /lecture.html
+Disallow: /config.js
+
+# The past-paper and topic-book PDFs are Cambridge material. Bare PDFs rank
+# badly, dilute the site's topical signal across 1,400+ thin URLs, and invite
+# copyright complaints. Keep them reachable for students, out of the index.
+Disallow: /*.pdf$
+Disallow: /F-M%20*/
+Disallow: /M-J%20*/
+Disallow: /O-N%20*/
+
+Sitemap: https://physicswithsmk.com/sitemap.xml
