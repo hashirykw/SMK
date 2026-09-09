@@ -51,8 +51,18 @@ window.SMK_CONFIG = {
 
   /* The course introduction on the front page. A YouTube link works and is the
      better choice for anything long — GitHub refuses files over 100 MB and
-     does not stream well. Leave blank to use introduction.mp4 in the repo. */
-  INTRO_VIDEO: '',
+     does not stream well.
+
+     Do NOT leave this blank. Blank falls back to FILES_BASE, which is GitHub
+     raw, and raw serves every binary as application/octet-stream with
+     x-content-type-options: nosniff. PDFs survive that; <video> does not, so
+     the player loads and then sits there dead. A relative filename is served
+     by your own host with a real video/mp4 type and range support, which is
+     what lets it start playing before the file has finished downloading.
+
+     So: put introduction.mp4 beside index.html on the host, not only in the
+     repo, and leave the line below as it is. */
+  INTRO_VIDEO: 'introduction.mp4',
 
   /* The syllabus PDF offered in the syllabus dialog, per level. Leave a level
      blank and the download politely says it is not ready yet. */
