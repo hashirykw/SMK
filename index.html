@@ -2456,13 +2456,14 @@ body.pv-lock{overflow:hidden}
   .hdr__in{gap:8px;padding-inline:14px}
 }
 @media (max-width:430px){
-  /* Below this the full name cannot sit beside the mark and the menu. It used
-     to be 340px, which left a band where the name truncated to
-     "SIR MEHBOOB K..." — a half name reads worse than the short mark. */
-  .logo b i{display:none}
-  .logo b::after{content:"SMK"}
-  .logo b{font-size:0}
-  .logo b::after{font-size:.82rem;font-family:var(--display);letter-spacing:.06em}
+  /* Below this the full name cannot sit beside the mark and the burger, so
+     the mark carries the brand on its own. His name is either written in
+     full or not written at all — never abbreviated, never cut. It stays in
+     the markup for screen readers and search engines via the image alt.
+     This replaced a rule that printed "SMK" here, and before that a 340px
+     threshold that let the name truncate mid-word. */
+  .logo b{display:none}
+  .logo img{height:32px;max-width:40px}
 }
 
 /* ==========================================================================
@@ -3721,14 +3722,21 @@ body{overflow-x:clip;max-width:100%}
 /* ---- country dial code, inside the number field ---------------------------
    The select sits after the label in the DOM on purpose: the floating label is
    driven by `input:focus + label`, and anything between the two breaks it. */
-.rf--tel input{padding-left:104px}
-.rf--tel label{left:105px}
-.rf--tel .dial{position:absolute;left:7px;top:7px;bottom:7px;width:90px;
-  padding:0 4px 0 8px;border:0;border-right:1px solid var(--line-soft);
-  border-radius:11px 0 0 11px;background:transparent;color:var(--text);
-  font:inherit;font-size:.84rem;cursor:pointer;
-  -webkit-appearance:none;appearance:none;width:90px}
+.rf--tel input{padding-left:100px}
+/* The label is pinned in its lifted position for this field. A floating
+   label cannot share the field with a permanent prefix control: at rest it
+   sits where the dial code is and the two collide. Pinned, it stays on the
+   top line and the select occupies only the value line beneath it. */
+.rf--tel label{left:17px;top:7px;font-size:.62rem;letter-spacing:.09em;
+  text-transform:uppercase;font-family:var(--mono);color:var(--gold-600)}
+.rf--tel .dial{position:absolute;left:9px;top:20px;bottom:6px;
+  width:84px;max-width:84px;box-sizing:border-box;
+  padding:0 4px 0 6px;border:0;border-right:1px solid var(--line-soft);
+  border-radius:0;background:transparent;background-image:none;color:var(--text);
+  font-family:inherit;font-size:.86rem;line-height:1;cursor:pointer;
+  -webkit-appearance:none;-moz-appearance:none;appearance:none}
 .rf--tel .dial:focus{outline:0;color:var(--gold-300)}
+.rf--tel .dial option{background:var(--bg);color:var(--text)}
 /* the .fld version stacks its label above, so the two sit in a plain row */
 .telrow{display:flex;gap:8px;align-items:stretch}
 .telrow input{flex:1 1 auto;min-width:0;order:2}
@@ -4559,7 +4567,7 @@ html.theming .revrack__c,html.theming .comb__h{transition-property:all!important
 <header class="hdr">
   <div class="hdr__in">
     <a class="logo" href="index.html">
-      <img src="mark.png" alt="SMK" fetchpriority="high" decoding="async">
+      <img src="mark.png" alt="Sir Mehboob Khan" fetchpriority="high" decoding="async">
       <b>SIR <i>MEHBOOB</i> KHAN</b>
     </a>
     <nav class="nav">
