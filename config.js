@@ -74,11 +74,17 @@ window.SMK_CONFIG = {
   INTRO_VIDEO: 'https://github.com/user-attachments/assets/b4ed69c8-dd37-4ebe-baac-e4693b5ede53',
 
   /* The syllabus PDF offered in the syllabus dialog, per level. Leave a level
-     blank and the download politely says it is not ready yet. */
+     blank and the download politely says it is not ready yet.
+
+     These are absolute on purpose. This file is meant to be identical in both
+     repos, and the admin host does not carry the syllabus PDFs — a bare
+     filename would resolve against whatever host the page is on and 404
+     there. Absolute means one file is correct in both places. AS and A2 share
+     one PDF because the A Level syllabus document covers both. */
   SYLLABUS_PDF: {
-    O:  'SMK-O-Level-Physics-Syllabus.pdf',
-    AS: 'SMK-A-Level-Physics-Syllabus.pdf',
-    A2: 'SMK-A-Level-Physics-Syllabus.pdf'
+    O:  'https://physicswithsmk.com/SMK-O-Level-Physics-Syllabus.pdf',
+    AS: 'https://physicswithsmk.com/SMK-A-Level-Physics-Syllabus.pdf',
+    A2: 'https://physicswithsmk.com/SMK-A-Level-Physics-Syllabus.pdf'
   },
 
 
