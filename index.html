@@ -2558,15 +2558,11 @@ body.pv-lock{overflow:hidden}
   #results .bento{gap:8px}
 }
 
-/* ---- hero background image: theme-specific photo behind the hero on
-   desktop/PC, using the same data-theme switch the rest of the site
-   already uses — mobile keeps the existing galaxy graphic untouched ---- */
-@media (min-width:861px){
-  #hero .galaxy img{display:none}
-  #hero .galaxy{background-image:url('darkthemehero.png');
-    background-size:cover;background-position:center}
-  [data-theme="light"] #hero .galaxy{background-image:url('lightthemehero.png')}
-}
+/* ---- The old .galaxy hero backdrop was replaced by the .hban banner
+   (hero-light.jpg / hero-dark.jpg). No element in this page carries
+   class="galaxy" any more, so the rules that used to sit here only
+   pointed at darkthemehero.png and lightthemehero.png, neither of which
+   is in the repo. Removed rather than left dangling. ---- */
 
 /* ==========================================================================
    IMAGE SPACE
