@@ -56,13 +56,22 @@ window.SMK_CONFIG = {
      Do NOT leave this blank. Blank falls back to FILES_BASE, which is GitHub
      raw, and raw serves every binary as application/octet-stream with
      x-content-type-options: nosniff. PDFs survive that; <video> does not, so
-     the player loads and then sits there dead. A relative filename is served
-     by your own host with a real video/mp4 type and range support, which is
-     what lets it start playing before the file has finished downloading.
+     the player loads and then sits there dead.
 
-     So: put introduction.mp4 beside index.html on the host, not only in the
-     repo, and leave the line below as it is. */
-  INTRO_VIDEO: 'introduction.mp4',
+     The URL below is the video attached to issue #1 in this repo. GitHub
+     redirects it to a signed S3 link with response-content-type=video/mp4,
+     which is what the <video> element needs. It works, with one string
+     attached: DO NOT DELETE ISSUE #1 OR ITS COMMENT. The file is hosted
+     because that comment exists. Closing the issue is fine; deleting it
+     kills the video.
+
+     Better, when you can: get introduction.mp4 uploaded to the repo root
+     with Add file -> Upload files (NOT "Create new file" — that writes a
+     text file and is what produced a 2-byte introduction.mp4 three times),
+     make sure it also ships to the host beside index.html, then change the
+     line below back to just 'introduction.mp4'. Your own host sends a real
+     video/mp4 with range support and needs no issue kept alive. */
+  INTRO_VIDEO: 'https://github.com/user-attachments/assets/b4ed69c8-dd37-4ebe-baac-e4693b5ede53',
 
   /* The syllabus PDF offered in the syllabus dialog, per level. Leave a level
      blank and the download politely says it is not ready yet. */
