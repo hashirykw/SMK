@@ -75,7 +75,11 @@ window.SMK_CONFIG = {
 
   /* The syllabus PDF offered in the syllabus dialog, per level. Leave a level
      blank and the download politely says it is not ready yet. */
-  SYLLABUS_PDF: { O: '', AS: '', A2: '' },
+  SYLLABUS_PDF: {
+    O:  'SMK-O-Level-Physics-Syllabus.pdf',
+    AS: 'SMK-A-Level-Physics-Syllabus.pdf',
+    A2: 'SMK-A-Level-Physics-Syllabus.pdf'
+  },
 
 
   /* ==========================================================================
