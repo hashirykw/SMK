@@ -770,8 +770,8 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
 .comb__h[data-cell="ql"]{left:0;top:0}
 .comb__h[data-cell="c1"]{left:33.333%;top:0}
 .comb__h[data-cell="qr"]{left:66.667%;top:0}
-.comb__h[data-cell="c3"]{left:16.667%;top:30%}
-.comb__h[data-cell="c2"]{left:50%;top:30%}
+.comb__h[data-cell="c2"]{left:16.667%;top:30%}
+.comb__h[data-cell="c3"]{left:50%;top:30%}
 .comb__h[data-cell="qb"]{left:33.333%;top:60%}
 
 @media (hover:hover) and (pointer:fine){
@@ -1140,7 +1140,7 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
   .c7,.c8{grid-column:span 12}
   .ftr__g{grid-template-columns:1fr 1fr}
 }
-@media (max-width:900px){
+@media (max-width:1080px){
   .nav,.hdr__cta{display:none}
   .burger{display:flex}
   .mob{display:block}
@@ -2437,6 +2437,11 @@ body.pv-lock{overflow:hidden}
 .logo b{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   letter-spacing:.02em}
 .burger{flex:0 0 46px}
+/* Only ONE auto margin may exist in the header row. The account button and the
+   burger both had margin-left:auto, so the free space was split between them
+   and the account icon floated in the middle with a gap on each side. */
+.acct + .burger,.burger{margin-left:10px}
+.acct{margin-left:auto}
 
 @media (max-width:860px){
   .hdr__in{min-height:62px;gap:10px;padding-inline:16px}
@@ -2450,8 +2455,10 @@ body.pv-lock{overflow:hidden}
   .logo img{height:26px;max-width:32px}
   .hdr__in{gap:8px;padding-inline:14px}
 }
-@media (max-width:340px){
-  /* at this width the full name cannot sit beside the mark and the menu */
+@media (max-width:430px){
+  /* Below this the full name cannot sit beside the mark and the menu. It used
+     to be 340px, which left a band where the name truncated to
+     "SIR MEHBOOB K..." — a half name reads worse than the short mark. */
   .logo b i{display:none}
   .logo b::after{content:"SMK"}
   .logo b{font-size:0}
@@ -3002,7 +3009,7 @@ body.pv-lock{overflow:hidden}
   background:var(--bad);border:2px solid var(--bg);display:none}
 .acct.warn .acct__dot{display:block}
 .acct.ok .acct__dot{display:block;background:var(--ok)}
-@media (max-width:860px){.acct{width:40px;height:40px;flex:0 0 40px;margin-left:auto;
+@media (max-width:860px){.acct{width:40px;height:40px;flex:0 0 40px;margin-left:auto;order:1;
     order:0;margin-right:2px}
   .acct svg{width:22px;height:22px}}
 
@@ -3304,10 +3311,11 @@ body.pv-lock{overflow:hidden}
   .deck.in .deck__c.on .deck__glass{opacity:.25}
   /* headroom for thirteen topics plus the button, even when a long title
      wraps onto a second line — a cap that fits exactly is a cap that clips */
-  .deck.in .deck__c.on .deck__more{max-height:720px;opacity:1}
+  .deck.in .deck__c.on .deck__more{max-height:1200px;opacity:1}
   .deck.in .deck__c.on .deck__in{min-height:0}
   /* the others fall back and dim so the chosen one is the only thing in focus */
-  .deck.in.picked .deck__c:not(.on){opacity:.42;filter:saturate(.7)}
+  .deck.in.picked .deck__c:not(.on){opacity:.42;filter:saturate(.7);
+    box-shadow:0 10px 24px rgba(8,18,38,.08)}
 }
 
 /* ---- phones: one card at a time, swiped ---- */
@@ -3350,7 +3358,7 @@ body.pv-lock{overflow:hidden}
   [data-theme="dark"] .deck.in .deck__c.on,
   [data-theme="focus"] .deck.in .deck__c.on{
     box-shadow:0 24px 60px rgba(0,0,0,.55)}
-  .deck__c.on .deck__more{max-height:560px;opacity:1}
+  .deck__c.on .deck__more{max-height:1000px;opacity:1}
   .deck__c.on .deck__glass{opacity:.28}
   /* the unchosen ones step back so the open card is the only thing reading */
   .deck.in.picked .deck__c:not(.on){
@@ -3709,6 +3717,26 @@ body{overflow-x:clip;max-width:100%}
   top:7px;font-size:.62rem;letter-spacing:.09em;text-transform:uppercase;
   font-family:var(--mono);color:var(--gold-600)}
 .rf select{padding-top:22px}
+
+/* ---- country dial code, inside the number field ---------------------------
+   The select sits after the label in the DOM on purpose: the floating label is
+   driven by `input:focus + label`, and anything between the two breaks it. */
+.rf--tel input{padding-left:104px}
+.rf--tel label{left:105px}
+.rf--tel .dial{position:absolute;left:7px;top:7px;bottom:7px;width:90px;
+  padding:0 4px 0 8px;border:0;border-right:1px solid var(--line-soft);
+  border-radius:11px 0 0 11px;background:transparent;color:var(--text);
+  font:inherit;font-size:.84rem;cursor:pointer;
+  -webkit-appearance:none;appearance:none;width:90px}
+.rf--tel .dial:focus{outline:0;color:var(--gold-300)}
+/* the .fld version stacks its label above, so the two sit in a plain row */
+.telrow{display:flex;gap:8px;align-items:stretch}
+.telrow input{flex:1 1 auto;min-width:0;order:2}
+.telrow .dial{flex:0 0 96px;order:1;text-align:left}
+.fld .telrow .dial{padding:11px 8px;border-radius:11px;
+  border:1px solid color-mix(in srgb,#fff 26%,var(--line-soft));
+  background:color-mix(in srgb,var(--bg) 55%,transparent);
+  color:var(--text);font:inherit;font-size:.86rem;cursor:pointer}
 .rf .rq{color:var(--gold-500)}
 .rf .er{display:none;font-size:.74rem;color:var(--bad);margin:5px 0 0 3px}
 .rf.bad input,.rf.bad select,.rf.bad textarea{border-color:var(--bad)}
@@ -4674,7 +4702,7 @@ html.theming .revrack__c,html.theming .comb__h{transition-property:all!important
 <!-- ================= AFFILIATIONS ================= -->
 <section class="sec" id="affiliations">
   <div class="wrap">
-    <div class="eyebrow">Where he teaches</div>
+    <div class="eyebrow">Where to find us</div>
     <h2 data-rv>Seven campuses across Karachi</h2>
     <p class="lede" data-rv style="--d:1;margin-bottom:26px">Morning college programmes, evening academy batches, and live online worldwide.</p>
 
@@ -5235,10 +5263,11 @@ html.theming .revrack__c,html.theming .comb__h{transition-property:all!important
               <label for="rn">Student name <span class="rq">*</span></label>
               <div class="er">Please enter the student's name.</div>
             </div>
-            <div class="rf c6">
+            <div class="rf rf--tel c6">
               <input id="rp" name="phone" type="tel" data-check="phone" required autocomplete="tel"
                      inputmode="tel" maxlength="20" placeholder=" ">
               <label for="rp">WhatsApp number <span class="rq">*</span></label>
+              <select class="dial" id="rDial" name="dial" aria-label="Country dialling code"></select>
               <div class="er">Please enter a contact number.</div>
             </div>
           </div>
@@ -5616,14 +5645,11 @@ window.SMKsave = SMKsave;
 <script>
 /* ===== DATA — everything you edit lives here ===== */
 const REVIEWS = [
-  /* PLACEHOLDERS — swap the text for real quotes and drop a photo filename into `pic`.
-     Leave `pic` empty and the initial is used instead. Set REVIEWS = [] to hide the section. */
-  {name:'Ayesha R.', role:'O Level student', level:'Whales College', pic:'',
-   text:'Replace with a real quote. Two or three sentences works best — something specific beats something glowing.'},
-  {name:'Mrs. Farooq', role:'Parent', level:'AS Level', pic:'',
-   text:'A parent review lands hardest when it mentions something concrete: a grade jump, a topic that finally clicked, how communication worked.'},
-  {name:'Hassan M.', role:'A2 Level student', level:'SWK Gulshan', pic:'',
-   text:'Ask leavers for a line about Paper 5 or exam technique specifically. Generic praise reads as invented even when it is not.'}
+  /* Real quotes only. Add them as
+       {name:'', role:'', level:'', pic:'', text:''}
+     and the section reveals itself. While this array is empty the whole
+     section stays hidden — which is the right default, because invented
+     testimonials would undercut the certificate wall three sections up. */
 ];
 
 const CHANNEL = 'https://youtube.com/@mehboobkhan7260';
@@ -6395,7 +6421,7 @@ const SYN = {
       const payload = {
         name: val('[name=name]'),
         email: val('[name=email]').toLowerCase(),
-        phone: val('[name=phone]'),
+        phone: window.SMKphone ? window.SMKphone(f) : val('[name=phone]'),
         level: val('[name=level]'),
         session: val('[name=session]'),
         mode: val('[name=mode]'),
@@ -6910,7 +6936,10 @@ window.NAG_CONFIG.stopAfter   = 20;
     // if this one is still sitting there untouched, bring in the other side
     if (i === 0) {
       timers.push(setTimeout(function () {
-        if (shown[0]) show(1);
+        /* Swap, never stack. This used to leave the first one up and open the
+           second beside it; on a narrow window the two cards overlapped each
+           other and whatever was behind them. */
+        if (shown[0]) { hide(shown[0]); shown[0] = null; show(1); }
       }, C.secondAfter * 60000));
     }
   }
@@ -7362,7 +7391,11 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
         <div class="fld"><label for="qName">Full name <span class="rq">*</span></label>
           <input id="qName" data-check="name" autocomplete="name"></div>
         <div class="fld"><label for="qPhone">Phone / WhatsApp <span class="rq">*</span></label>
-          <input id="qPhone" type="tel" data-check="phone" placeholder="03XX XXXXXXX" autocomplete="tel"></div>
+          <div class="telrow">
+            <input id="qPhone" type="tel" data-check="phone" inputmode="tel" autocomplete="tel">
+            <select class="dial" id="qDial" aria-label="Country dialling code"></select>
+          </div>
+          <div class="er"></div></div>
         <div class="fld"><label for="qEmail">Email <span class="rq">*</span></label>
           <input id="qEmail" type="email" data-check="email" autocomplete="email"></div>
         <div class="fld"><label for="qLevel">Syllabus <span class="rq">*</span></label>
@@ -7414,6 +7447,103 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
   </div>
 </div>
 <script>
+/* ---------------------------------------------------------------------------
+   COUNTRY DIAL CODES
+   Pakistan first, then the places students actually write in from, then the
+   rest alphabetically. `min` and `max` are national digits with the trunk 0
+   already stripped, which is what gets validated.
+   --------------------------------------------------------------------------- */
+(function () {
+  var D = [
+    ['PK','\uD83C\uDDF5\uD83C\uDDF0','Pakistan','92',10,10],
+    ['AE','\uD83C\uDDE6\uD83C\uDDEA','UAE','971',8,9],
+    ['SA','\uD83C\uDDF8\uD83C\uDDE6','Saudi Arabia','966',8,9],
+    ['QA','\uD83C\uDDF6\uD83C\uDDE6','Qatar','974',7,8],
+    ['OM','\uD83C\uDDF4\uD83C\uDDF2','Oman','968',8,8],
+    ['KW','\uD83C\uDDF0\uD83C\uDDFC','Kuwait','965',8,8],
+    ['BH','\uD83C\uDDE7\uD83C\uDDED','Bahrain','973',8,8],
+    ['GB','\uD83C\uDDEC\uD83C\uDDE7','UK','44',9,10],
+    ['US','\uD83C\uDDFA\uD83C\uDDF8','USA','1',10,10],
+    ['CA','\uD83C\uDDE8\uD83C\uDDE6','Canada','1',10,10],
+    ['AU','\uD83C\uDDE6\uD83C\uDDFA','Australia','61',9,9],
+    ['MY','\uD83C\uDDF2\uD83C\uDDFE','Malaysia','60',9,10],
+    ['SG','\uD83C\uDDF8\uD83C\uDDEC','Singapore','65',8,8],
+    ['IN','\uD83C\uDDEE\uD83C\uDDF3','India','91',10,10],
+    ['BD','\uD83C\uDDE7\uD83C\uDDE9','Bangladesh','880',10,10],
+    ['LK','\uD83C\uDDF1\uD83C\uDDF0','Sri Lanka','94',9,9],
+    ['AF','\uD83C\uDDE6\uD83C\uDDEB','Afghanistan','93',9,9],
+    ['CN','\uD83C\uDDE8\uD83C\uDDF3','China','86',11,11],
+    ['DE','\uD83C\uDDE9\uD83C\uDDEA','Germany','49',10,11],
+    ['EG','\uD83C\uDDEA\uD83C\uDDEC','Egypt','20',9,10],
+    ['ES','\uD83C\uDDEA\uD83C\uDDF8','Spain','34',9,9],
+    ['FR','\uD83C\uDDEB\uD83C\uDDF7','France','33',9,9],
+    ['ID','\uD83C\uDDEE\uD83C\uDDE9','Indonesia','62',9,12],
+    ['IE','\uD83C\uDDEE\uD83C\uDDEA','Ireland','353',9,9],
+    ['IT','\uD83C\uDDEE\uD83C\uDDF9','Italy','39',9,10],
+    ['JO','\uD83C\uDDEF\uD83C\uDDF4','Jordan','962',9,9],
+    ['JP','\uD83C\uDDEF\uD83C\uDDF5','Japan','81',10,10],
+    ['KE','\uD83C\uDDF0\uD83C\uDDEA','Kenya','254',9,9],
+    ['NG','\uD83C\uDDF3\uD83C\uDDEC','Nigeria','234',10,10],
+    ['NL','\uD83C\uDDF3\uD83C\uDDF1','Netherlands','31',9,9],
+    ['NZ','\uD83C\uDDF3\uD83C\uDDFF','New Zealand','64',8,10],
+    ['PH','\uD83C\uDDF5\uD83C\uDDED','Philippines','63',10,10],
+    ['TH','\uD83C\uDDF9\uD83C\uDDED','Thailand','66',9,9],
+    ['TR','\uD83C\uDDF9\uD83C\uDDF7','Turkey','90',10,10],
+    ['ZA','\uD83C\uDDFF\uD83C\uDDE6','South Africa','27',9,9],
+    ['XX','\uD83C\uDF10','Other','',6,14]
+  ];
+
+  var BY = {};
+  D.forEach(function (r) {
+    BY[r[0]] = { iso: r[0], flag: r[1], name: r[2], dial: r[3], min: r[4], max: r[5] };
+  });
+
+  /* which country a given phone input is set to */
+  window.SMKdialOf = function (el) {
+    if (!el) return BY.PK;
+    var form = el.form || (el.closest && el.closest('form'));
+    var sel = form && form.querySelector('.dial');
+    return (sel && BY[sel.value]) || BY.PK;
+  };
+
+  /* the number as it should be dialled and stored: +<country><national> */
+  window.SMKphone = function (form) {
+    var input = form && form.querySelector('input[type=tel]');
+    if (!input) return '';
+    var c = window.SMKdialOf(input);
+    var d = String(input.value || '').replace(/\D/g, '').replace(/^0+/, '');
+    if (!d) return '';
+    return c.dial ? '+' + c.dial + d : '+' + d;
+  };
+
+  function fill(sel) {
+    if (!sel) return;
+    sel.innerHTML = D.map(function (r) {
+      var label = r[1] + ' ' + (r[3] ? '+' + r[3] : r[2]);
+      return '<option value="' + r[0] + '">' + label + '</option>';
+    }).join('');
+    sel.value = 'PK';
+    function hint() {
+      var c = BY[sel.value] || BY.PK;
+      var input = sel.form && sel.form.querySelector('input[type=tel]');
+      if (!input) return;
+      input.setAttribute('maxlength', String(c.max + 6));
+      input.setAttribute('placeholder', input.closest('.rf') ? ' ' : c.example || '');
+      /* clear a stale error: a number rejected as the wrong length for the old
+         country may well be right for the one just chosen */
+      var fld = input.closest('.fld, .rf');
+      if (fld) { fld.classList.remove('bad'); var e = fld.querySelector('.er'); if (e) e.textContent = ''; }
+    }
+    sel.addEventListener('change', hint);
+    hint();
+  }
+
+  function boot() { document.querySelectorAll('.dial').forEach(fill); }
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+
 /* form validation — index.html doesn't load portal.js, so it carries its own */
 (function () {
   var V = {
@@ -7429,15 +7559,26 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       if (!v) return 'Please enter an email address.';
       return /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v) || 'That email address does not look right.';
     },
-    phone: function (v) {
-      var t = v.trim();
+    /* The old rule here was Pakistan-only: any number starting 0 had to be
+       exactly 11 digits. That is right for 03xx xxxxxxx and wrong everywhere
+       else — a Dubai number (050 123 4567) is ten digits and was rejected, so
+       overseas students literally could not submit the form. The country is
+       now picked from the dial-code select beside the field and the length is
+       checked against that country. */
+    phone: function (v, el) {
+      var t = String(v || '').trim();
       if (!t) return 'Please enter a contact number.';
       if (/[^\d\s()+\-]/.test(t)) return 'A phone number can only hold digits.';
-      var d = t.replace(/\D/g, '');
-      if (d.length < 10) return 'A phone number needs at least 10 digits.';
-      if (d.length > 15) return 'That is too many digits for a phone number.';
-      /* a local Pakistani mobile is 03xx xxxxxxx — 11 digits */
-      if (/^0/.test(d) && d.length !== 11) return 'A number starting 0 should be 11 digits, like 0302 8056789.';
+      var d = t.replace(/\D/g, '').replace(/^0+/, '');   /* trunk 0 is not dialled */
+      if (!d) return 'Please enter a contact number.';
+      var c = window.SMKdialOf ? window.SMKdialOf(el) : null;
+      var lo = c ? c.min : 6, hi = c ? c.max : 14;
+      if (d.length < lo) return c
+        ? 'A ' + c.name + ' number needs ' + (lo === hi ? lo + ' digits' : lo + '\u2013' + hi + ' digits') + '.'
+        : 'That number looks too short.';
+      if (d.length > hi) return c
+        ? 'That is too many digits for a ' + c.name + ' number.'
+        : 'That is too many digits for a phone number.';
       return true;
     },
     required: function (v) { return (v && v.trim() !== '') || 'Please choose an option.'; }
@@ -7462,7 +7603,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       var i = fld.querySelector('input,select,textarea');
       if (!i || !i.dataset.check) return;
       if (!live(i)) { err(fld, ''); return; }
-      var r = V[i.dataset.check] ? V[i.dataset.check](i.value) : true;
+      var r = V[i.dataset.check] ? V[i.dataset.check](i.value, i) : true;
       if (r !== true) { err(fld, r); ok = false; if (!first) first = i; }
       else err(fld, '');
     });
@@ -8766,6 +8907,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       }, 150);
     }
     show(0);
+    window.SMKcombShow = show;      /* the auto-rotation drives the same path */
 
     pressGroup('#comb', '.comb__h:not(.comb__h--q)', function (el) {
       show(ORDER.indexOf(el.dataset.cell));
@@ -8779,7 +8921,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
      every pick, so validation, the payload and reset() all still read it.
      ---------------------------------------------------------------------- */
   (function () {
-    var natives = $$('.fld select');
+    var natives = $$('.fld select:not(.dial)');
     if (!natives.length) return;
 
     /* bronze through to light gold — the list walks the ramp the way the
@@ -8985,10 +9127,10 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
         p: 'Built up over years of teaching, one per topic, with mark schemes.' },
       { n: '55', k: 'Exam sessions archived', chip: 'Archive', t: '2002 to 2024',
         p: 'Every session from 2002 to 2024, papers and mark schemes.' },
-      { n: '7', k: 'Karachi campuses', chip: 'Where he teaches',
+      { n: '7', k: 'Karachi campuses', chip: 'Where to find us',
         t: 'Seven places to sit the class',
         p: 'Four college programmes and three SWK Solution branches.' },
-      { n: null, k: 'Certificate wall', chip: 'Proof', t: 'Deliberately empty',
+      { n: null, k: 'Certificate wall', chip: 'Proof', t: 'Deliberately empty', w: 'Empty',
         p: 'Real student certificates go here, names blurred where families prefer. This space ships empty on purpose \u2014 invented results would undercut the one section whose whole job is proof.' }
     ];
 
@@ -9035,7 +9177,9 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       var word = v.n === null;
       mid.classList.toggle('is-word', word);
       kEl.textContent = v.k;
-      if (word) { nEl.textContent = v.t; return; }
+      /* the panel already prints v.t — printing it here too showed the same
+         phrase twice on screen, which read as a rendering fault */
+      if (word) { nEl.textContent = v.w || v.t; return; }
       var target = parseFloat(v.n);
       if (RMq.matches || seen[v.n + v.k]) { nEl.textContent = v.n; return; }
       seen[v.n + v.k] = 1;
@@ -9443,17 +9587,13 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       autoCycle(cells, function (i) {
         cells.forEach(function (c, j) {
           c.setAttribute('aria-pressed', j === i ? 'true' : 'false');
-          if (j === i) c.click === undefined || 0;
         });
-        /* the panel below follows whichever step is lit */
-        var p = cells[i].dataset.cell;
-        var panel = $('.comb__p[data-for="' + p + '"]') || $('.comb__p');
-        if (panel && cells[i].querySelector('.comb__t')) {
-          var k = $('.comb__k', cells[i]), t = $('.comb__t', cells[i]);
-          var pk = $('.comb__p .chip, .comb__pk'), pt = $('.comb__p h3, .comb__pt');
-          if (pk && k) pk.textContent = k.textContent;
-          if (pt && t) pt.textContent = t.textContent;
-        }
+        /* Hand off to the comb's own show(), which writes the chip, the title
+           AND the paragraph from one array. This used to copy the chip and
+           title straight out of the hexagon and never touched the paragraph,
+           so on auto-rotate the description stayed frozen on step one while
+           the title above it moved on. */
+        if (window.SMKcombShow) window.SMKcombShow(i);
       }, 5200, comb);
     }
 
@@ -9619,7 +9759,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     btn.disabled = true; btn.textContent = 'Sending…';
     var row = {
       name: $('#qName').value.trim(),
-      phone: $('#qPhone').value.trim(),
+      phone: window.SMKphone ? window.SMKphone(this) : $('#qPhone').value.trim(),
       email: $('#qEmail').value.trim().toLowerCase(),
       level: $('#qLevel').value,
       mode: $('#qMode').value,
