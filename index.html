@@ -830,7 +830,10 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
    same grid cell, so the stack is exactly as tall as its longest quote and
    nothing jumps as they cycle. Swipe or use the arrows.
    ========================================================================== */
-.rst{max-width:600px;margin-top:18px}
+/* the rack was capped at 600px back when the section held three quotes; with
+   seven slats plus one open card that cap left the open card 108px wide and
+   the quote unreadable, so the shell is wider now and narrows on small screens */
+.rst{max-width:1060px;margin-top:18px}
 .rst__h{display:flex;align-items:center;justify-content:space-between;
   gap:16px;margin-bottom:16px}
 .rst__nav{display:flex;gap:8px}
@@ -3528,7 +3531,7 @@ body{overflow-x:clip;max-width:100%}
    one lifts on its own. Pressing a card takes the cycle over.
    ========================================================================== */
 .revrack{display:flex;align-items:stretch;gap:8px;margin-top:18px;
-  min-height:320px;perspective:1400px}
+  min-height:500px;perspective:1400px}
 .revrack__c{position:relative;flex:0 0 74px;border-radius:16px;overflow:hidden;
   cursor:pointer;text-align:left;padding:0;
   border:1px solid var(--line-soft);
@@ -3554,11 +3557,14 @@ body{overflow-x:clip;max-width:100%}
 /* what appears once it has lifted */
 .revrack__body{position:absolute;inset:0;padding:24px 24px 20px;
   display:flex;flex-direction:column;justify-content:center;gap:14px;
+  overflow-y:auto;overscroll-behavior:contain;
   opacity:0;transform:translateY(8px);pointer-events:none;
   transition:opacity .4s var(--ease) .18s,transform .5s var(--ease) .18s}
 .revrack__c.on .revrack__body{opacity:1;transform:none;pointer-events:auto}
-.revrack__q{font-size:clamp(.95rem,1.5vw,1.12rem);line-height:1.6;
-  max-width:46ch;color:var(--text)}
+/* these are whole messages, not one-liners, so the quote runs at reading size
+   rather than pull-quote size and keeps the student's own paragraph breaks */
+.revrack__q{font-size:clamp(.88rem,1.05vw,1rem);line-height:1.65;
+  max-width:64ch;white-space:pre-line;color:var(--text)}
 .revrack__who{display:flex;align-items:center;gap:12px}
 .revrack__av{width:44px;height:44px;flex:none;border-radius:50%;display:grid;
   place-items:center;font-family:var(--display);font-size:1.1rem;
@@ -3570,6 +3576,15 @@ body{overflow-x:clip;max-width:100%}
   border:1px solid var(--line);border-radius:99px;padding:4px 10px}
 .revrack__stars{color:var(--gold-400);font-size:.8rem;letter-spacing:.16em}
 
+/* between about 860 and 1080px the rack still shows every slat but the open
+   card is squeezed, so the slats give back 20px each and the quote drops a
+   step — measured, because at 900px the two longest quotes were being cut */
+@media (min-width:861px) and (max-width:1080px){
+  .revrack__c{flex:0 0 54px}
+  .revrack__body{padding:20px 20px 18px}
+  .revrack__q{font-size:.92rem;line-height:1.6}
+}
+
 @media (max-width:860px){
   /* a 74px slat cannot be read or reliably tapped, so the phone shows one
      card at a time with the same automatic advance */
@@ -3580,7 +3595,7 @@ body{overflow-x:clip;max-width:100%}
   .revrack__spine{display:none}
   .revrack__body{position:relative;inset:auto;opacity:1;transform:none;
     padding:20px 18px;pointer-events:auto;transition:none}
-  .revrack__q{font-size:.92rem}
+  .revrack__q{font-size:.9rem;max-width:none}
 }
 @media (prefers-reduced-motion:reduce){
   .revrack__c,.revrack__body{transition:none}
@@ -5654,11 +5669,64 @@ window.SMKsave = SMKsave;
 <script>
 /* ===== DATA — everything you edit lives here ===== */
 const REVIEWS = [
-  /* Real quotes only. Add them as
+  /* Real quotes, sent by the students themselves and kept in their own words —
+     the Urdu-English mix included, because flattening it into formal English
+     would make them read as written by one hand, which is exactly the tell a
+     parent picks up on. Add more as
        {name:'', role:'', level:'', pic:'', text:''}
-     and the section reveals itself. While this array is empty the whole
-     section stays hidden — which is the right default, because invented
-     testimonials would undercut the certificate wall three sections up. */
+     `role` carries the level, `level` carries the grade; the two print side by
+     side on the tag under the name. `pic` is optional — leave it out and the
+     initial circle is used, which is the right default while these students
+     are minors and no family has been asked about a photo.
+     Use \n between paragraphs; the card renders the breaks. */
+  {
+    name: 'Ayesha Aftab', role: 'AS Level', level: 'Grade A',
+    text: "Honestly, I still can't believe I got an A in Physics! When I saw my result, the first person I thought of was Sir Mehboob Khan.\n" +
+          "Sir, your way of teaching made Physics so much easier for me. Aap ne har difficult concept ko patiently explain kiya aur hamesha motivate kiya ke I can do better.\n" +
+          "This A is not just my achievement — a big part of it belongs to you, Sir. Thank you for believing in me and making me believe in myself.\n" +
+          "Thank you, Sir Mehboob Khan!"
+  },
+  {
+    name: 'Hashir', role: 'O Level', level: 'Grade A*',
+    text: "Honestly, seeing that A* in my O-Level Physics result was such a good feeling. And the first person I wanted to thank was Sir Mehboob Khan.\n" +
+          "Physics wasn't always easy for me, but Sir made even the difficult topics feel much simpler. Unka way of explaining concepts, solving questions and constantly motivating us really helped me improve.\n" +
+          "Looking back, I genuinely feel that I couldn't have achieved this A* without his guidance and support.\n" +
+          "Thank you so much, Sir. This A* means a lot, and a big part of it is because of you."
+  },
+  {
+    name: 'Farrukh Jameel', role: 'O Level', level: 'Grade A*',
+    text: "When I saw my O-Level Physics A* result, I honestly had to look at it twice. All the hard work finally paid off.\n" +
+          "A big reason behind this achievement is Sir Mehboob Khan. Sir has a way of teaching Physics that makes even the most confusing topics seem manageable. Unki explanations aur practice karwane ka tareeqa really made a difference for me.\n" +
+          "Thank you, Sir, for all the patience, support and motivation throughout my O-Levels. I'm genuinely grateful to have had you as my Physics teacher."
+  },
+  {
+    name: 'Mahad Khatri', role: 'O Level', level: 'Grade A*',
+    text: "Seeing that A* in Physics on my O-Level result was honestly such a great feeling. After all the hard work and preparation, it was amazing to finally see it pay off.\n" +
+          "A lot of the credit goes to Sir Mehboob Khan. He made Physics much easier for me and was always there whenever I struggled with a topic or question.\n" +
+          "I'm really thankful for all his guidance, patience and support throughout my O-Levels. Thank you, Sir, for helping me achieve this A*."
+  },
+  {
+    name: 'Aimen Shadab', role: 'A2 Level', level: 'Grade A*',
+    text: "Seeing an A* in Physics on my A2 result was honestly such an amazing feeling. After all the hard work, late-night studying and countless questions, it was really satisfying to finally see it pay off.\n" +
+          "A huge part of this achievement goes to Sir Mehboob Khan. His guidance and the way he explained even the toughest concepts gave me the confidence to keep pushing.\n" +
+          "Thank you, Sir, for all your support and for making this A2 journey so much easier."
+  },
+  {
+    name: 'Noor Junaid', role: 'O Level to A2', level: 'A* · A · A*',
+    text: "Seeing my results over the years — A* in O-Level Physics, A in AS-Level Physics, and A* in A2 Physics — honestly makes me really proud of how far I've come.\n" +
+          "A huge part of this journey goes to Sir Mehboob Khan. From O-Levels all the way through A2, his teaching and constant support helped me stay confident and keep improving.\n" +
+          "I'm genuinely grateful for all the effort, patience and guidance Sir put into helping me achieve these grades.\n" +
+          "Thank you, Sir, for being a part of my entire Physics journey."
+  },
+  {
+    /* level not given yet — add role:'O Level' / 'AS Level' / 'A2 Level' and it
+       prints beside the grade on her tag, the way the others do */
+    name: 'Fatima Kareen', role: '', level: 'Grade A*',
+    text: "When I saw A* in Physics on my result, I honestly couldn't believe it at first. I still remember all those times I would get stuck on a question and think, “Yeh mujhse nahi hoga.” But somehow, Sir Mehboob always managed to make me understand it.\n" +
+          "Sir, I still remember how you would explain the same concept again and again until it finally clicked. And whenever I felt like I wasn't improving, you were always there telling me to keep going and trust the process.\n" +
+          "I genuinely feel that this A* isn't just because of the hours I put in — your guidance and the confidence you gave me made a huge difference.\n" +
+          "Thank you, Sir, for believing in me even when I doubted myself. I'll always be grateful for that."
+  }
 ];
 
 const CHANNEL = 'https://youtube.com/@mehboobkhan7260';
