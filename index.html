@@ -830,7 +830,10 @@ html{scrollbar-width:thin;scrollbar-color:var(--gold-600) var(--navy-900)}
    same grid cell, so the stack is exactly as tall as its longest quote and
    nothing jumps as they cycle. Swipe or use the arrows.
    ========================================================================== */
-.rst{max-width:600px;margin-top:18px}
+/* the rack was capped at 600px back when the section held three quotes; with
+   seven slats plus one open card that cap left the open card 108px wide and
+   the quote unreadable, so the shell is wider now and narrows on small screens */
+.rst{max-width:1060px;margin-top:18px}
 .rst__h{display:flex;align-items:center;justify-content:space-between;
   gap:16px;margin-bottom:16px}
 .rst__nav{display:flex;gap:8px}
@@ -3528,7 +3531,7 @@ body{overflow-x:clip;max-width:100%}
    one lifts on its own. Pressing a card takes the cycle over.
    ========================================================================== */
 .revrack{display:flex;align-items:stretch;gap:8px;margin-top:18px;
-  min-height:320px;perspective:1400px}
+  min-height:500px;perspective:1400px}
 .revrack__c{position:relative;flex:0 0 74px;border-radius:16px;overflow:hidden;
   cursor:pointer;text-align:left;padding:0;
   border:1px solid var(--line-soft);
@@ -3554,11 +3557,14 @@ body{overflow-x:clip;max-width:100%}
 /* what appears once it has lifted */
 .revrack__body{position:absolute;inset:0;padding:24px 24px 20px;
   display:flex;flex-direction:column;justify-content:center;gap:14px;
+  overflow-y:auto;overscroll-behavior:contain;
   opacity:0;transform:translateY(8px);pointer-events:none;
   transition:opacity .4s var(--ease) .18s,transform .5s var(--ease) .18s}
 .revrack__c.on .revrack__body{opacity:1;transform:none;pointer-events:auto}
-.revrack__q{font-size:clamp(.95rem,1.5vw,1.12rem);line-height:1.6;
-  max-width:46ch;color:var(--text)}
+/* these are whole messages, not one-liners, so the quote runs at reading size
+   rather than pull-quote size and keeps the student's own paragraph breaks */
+.revrack__q{font-size:clamp(.88rem,1.05vw,1rem);line-height:1.65;
+  max-width:64ch;white-space:pre-line;color:var(--text)}
 .revrack__who{display:flex;align-items:center;gap:12px}
 .revrack__av{width:44px;height:44px;flex:none;border-radius:50%;display:grid;
   place-items:center;font-family:var(--display);font-size:1.1rem;
@@ -3570,6 +3576,15 @@ body{overflow-x:clip;max-width:100%}
   border:1px solid var(--line);border-radius:99px;padding:4px 10px}
 .revrack__stars{color:var(--gold-400);font-size:.8rem;letter-spacing:.16em}
 
+/* between about 860 and 1080px the rack still shows every slat but the open
+   card is squeezed, so the slats give back 20px each and the quote drops a
+   step — measured, because at 900px the two longest quotes were being cut */
+@media (min-width:861px) and (max-width:1080px){
+  .revrack__c{flex:0 0 54px}
+  .revrack__body{padding:20px 20px 18px}
+  .revrack__q{font-size:.92rem;line-height:1.6}
+}
+
 @media (max-width:860px){
   /* a 74px slat cannot be read or reliably tapped, so the phone shows one
      card at a time with the same automatic advance */
@@ -3580,7 +3595,7 @@ body{overflow-x:clip;max-width:100%}
   .revrack__spine{display:none}
   .revrack__body{position:relative;inset:auto;opacity:1;transform:none;
     padding:20px 18px;pointer-events:auto;transition:none}
-  .revrack__q{font-size:.92rem}
+  .revrack__q{font-size:.9rem;max-width:none}
 }
 @media (prefers-reduced-motion:reduce){
   .revrack__c,.revrack__body{transition:none}
@@ -5654,11 +5669,64 @@ window.SMKsave = SMKsave;
 <script>
 /* ===== DATA — everything you edit lives here ===== */
 const REVIEWS = [
-  /* Real quotes only. Add them as
+  /* Real quotes, sent by the students themselves and kept in their own words —
+     the Urdu-English mix included, because flattening it into formal English
+     would make them read as written by one hand, which is exactly the tell a
+     parent picks up on. Add more as
        {name:'', role:'', level:'', pic:'', text:''}
-     and the section reveals itself. While this array is empty the whole
-     section stays hidden — which is the right default, because invented
-     testimonials would undercut the certificate wall three sections up. */
+     `role` carries the level, `level` carries the grade; the two print side by
+     side on the tag under the name. `pic` is optional — leave it out and the
+     initial circle is used, which is the right default while these students
+     are minors and no family has been asked about a photo.
+     Use \n between paragraphs; the card renders the breaks. */
+  {
+    name: 'Ayesha Aftab', role: 'AS Level', level: 'Grade A',
+    text: "Honestly, I still can't believe I got an A in Physics! When I saw my result, the first person I thought of was Sir Mehboob Khan.\n" +
+          "Sir, your way of teaching made Physics so much easier for me. Aap ne har difficult concept ko patiently explain kiya aur hamesha motivate kiya ke I can do better.\n" +
+          "This A is not just my achievement — a big part of it belongs to you, Sir. Thank you for believing in me and making me believe in myself.\n" +
+          "Thank you, Sir Mehboob Khan!"
+  },
+  {
+    name: 'Hashir', role: 'O Level', level: 'Grade A*',
+    text: "Honestly, seeing that A* in my O-Level Physics result was such a good feeling. And the first person I wanted to thank was Sir Mehboob Khan.\n" +
+          "Physics wasn't always easy for me, but Sir made even the difficult topics feel much simpler. Unka way of explaining concepts, solving questions and constantly motivating us really helped me improve.\n" +
+          "Looking back, I genuinely feel that I couldn't have achieved this A* without his guidance and support.\n" +
+          "Thank you so much, Sir. This A* means a lot, and a big part of it is because of you."
+  },
+  {
+    name: 'Farrukh Jameel', role: 'O Level', level: 'Grade A*',
+    text: "When I saw my O-Level Physics A* result, I honestly had to look at it twice. All the hard work finally paid off.\n" +
+          "A big reason behind this achievement is Sir Mehboob Khan. Sir has a way of teaching Physics that makes even the most confusing topics seem manageable. Unki explanations aur practice karwane ka tareeqa really made a difference for me.\n" +
+          "Thank you, Sir, for all the patience, support and motivation throughout my O-Levels. I'm genuinely grateful to have had you as my Physics teacher."
+  },
+  {
+    name: 'Mahad Khatri', role: 'O Level', level: 'Grade A*',
+    text: "Seeing that A* in Physics on my O-Level result was honestly such a great feeling. After all the hard work and preparation, it was amazing to finally see it pay off.\n" +
+          "A lot of the credit goes to Sir Mehboob Khan. He made Physics much easier for me and was always there whenever I struggled with a topic or question.\n" +
+          "I'm really thankful for all his guidance, patience and support throughout my O-Levels. Thank you, Sir, for helping me achieve this A*."
+  },
+  {
+    name: 'Aimen Shadab', role: 'A2 Level', level: 'Grade A*',
+    text: "Seeing an A* in Physics on my A2 result was honestly such an amazing feeling. After all the hard work, late-night studying and countless questions, it was really satisfying to finally see it pay off.\n" +
+          "A huge part of this achievement goes to Sir Mehboob Khan. His guidance and the way he explained even the toughest concepts gave me the confidence to keep pushing.\n" +
+          "Thank you, Sir, for all your support and for making this A2 journey so much easier."
+  },
+  {
+    name: 'Noor Junaid', role: 'O Level to A2', level: 'A* · A · A*',
+    text: "Seeing my results over the years — A* in O-Level Physics, A in AS-Level Physics, and A* in A2 Physics — honestly makes me really proud of how far I've come.\n" +
+          "A huge part of this journey goes to Sir Mehboob Khan. From O-Levels all the way through A2, his teaching and constant support helped me stay confident and keep improving.\n" +
+          "I'm genuinely grateful for all the effort, patience and guidance Sir put into helping me achieve these grades.\n" +
+          "Thank you, Sir, for being a part of my entire Physics journey."
+  },
+  {
+    /* level not given yet — add role:'O Level' / 'AS Level' / 'A2 Level' and it
+       prints beside the grade on her tag, the way the others do */
+    name: 'Fatima Kareen', role: '', level: 'Grade A*',
+    text: "When I saw A* in Physics on my result, I honestly couldn't believe it at first. I still remember all those times I would get stuck on a question and think, “Yeh mujhse nahi hoga.” But somehow, Sir Mehboob always managed to make me understand it.\n" +
+          "Sir, I still remember how you would explain the same concept again and again until it finally clicked. And whenever I felt like I wasn't improving, you were always there telling me to keep going and trust the process.\n" +
+          "I genuinely feel that this A* isn't just because of the hours I put in — your guidance and the confidence you gave me made a huge difference.\n" +
+          "Thank you, Sir, for believing in me even when I doubted myself. I'll always be grateful for that."
+  }
 ];
 
 const CHANNEL = 'https://youtube.com/@mehboobkhan7260';
@@ -6462,6 +6530,7 @@ const SYN = {
 
       const bad = $('.msg--bad', f);
       if (bad) bad.style.display = 'none';
+      try { localStorage.setItem('smk_registered', '1'); } catch (e) { }
       f.reset();
       $$('.fld, .rf', f).forEach(fl => fl.classList.remove('bad'));
       f.style.display = 'none';
@@ -10437,5 +10506,170 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
  ]
 }
 </script>
+
+<!-- ==========================================================================
+     REGISTER POPUP
+     Shows once per visit to anyone who is NOT signed in, a few seconds after
+     the intro lifts. Never shown to a signed-in student, never shown again
+     after the form has been sent, and "Not now" quiets it for a few days.
+     Tune it from config.js:  SMK_CONFIG.regPopup = { delay: 3, snoozeDays: 2, enabled: true }
+     Hallmark · pre-emit critique: P4 H5 E5 S4 R5 V4
+     ========================================================================== -->
+<style>
+.rpop{position:fixed;inset:0;z-index:900;display:none;place-items:center;
+  padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom))}
+.rpop.open{display:grid}
+.rpop__bg{position:absolute;inset:0;background:rgba(3,7,16,.78);backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity .35s var(--ease)}
+.rpop.on .rpop__bg{opacity:1}
+.rpop__card{position:relative;width:min(440px,100%);max-height:calc(100svh - 32px);overflow-y:auto;
+  background:var(--navy-800);color:var(--text);border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:clamp(24px,5vw,34px);box-shadow:0 30px 80px rgba(0,0,0,.45);
+  opacity:0;transform:translateY(14px) scale(.98);
+  transition:opacity .35s var(--ease),transform .45s var(--spring)}
+.rpop.on .rpop__card{opacity:1;transform:none}
+[data-theme="light"] .rpop__card,[data-theme="focus"] .rpop__card{background:var(--bg);
+  box-shadow:0 30px 80px rgba(20,30,50,.22)}
+.rpop__mark{display:block;height:46px;width:auto;margin:0 0 18px}
+.rpop__card h2{font-family:var(--display);font-style:normal;font-weight:500;
+  font-size:clamp(1.65rem,5.5vw,2.05rem);line-height:1.12;margin:0 0 12px;
+  overflow-wrap:anywhere;min-width:0;padding-right:36px}
+.rpop__card p{font-family:var(--sans);color:var(--muted);font-size:1rem;line-height:1.6;margin:0 0 24px;max-width:36ch}
+.rpop__acts{display:grid;gap:10px}
+.rpop__acts .btn{width:100%;white-space:nowrap}
+.rpop__later{justify-self:center;margin-top:4px;padding:10px 14px;min-height:44px;background:none;border:0;
+  font:600 .9rem/1 var(--sans);color:var(--muted);cursor:pointer;border-radius:10px}
+.rpop__later:hover{color:var(--text);background:var(--panel-2)}
+.rpop__x{position:absolute;top:14px;right:14px;width:44px;height:44px;display:grid;place-items:center;
+  background:none;border:0;border-radius:50%;color:var(--muted);font-size:26px;line-height:1;cursor:pointer}
+.rpop__x:hover{background:var(--panel-2);color:var(--text)}
+.rpop .btn:focus-visible,.rpop__later:focus-visible,.rpop__x:focus-visible{
+  outline:2px solid var(--gold-300);outline-offset:3px}
+html.rpop-lock,html.rpop-lock body{overflow:hidden}
+@media (prefers-reduced-motion:reduce){.rpop__bg,.rpop__card{transition:none}.rpop__card{transform:none}}
+</style>
+
+<script>
+(function () {
+  var CFG = Object.assign({ enabled: true, delay: 3, snoozeDays: 2 },
+                          (window.SMK_CONFIG || {}).regPopup || {});
+  if (!CFG.enabled) return;
+
+  function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function set(k, v) { try { localStorage.setItem(k, v); } catch (e) { } }
+
+  /* signed in = the same test the rest of the site uses */
+  function signedIn() {
+    try { var p = JSON.parse(get('smk_premium')); if (p && p.sid) return true; } catch (e) { }
+    return !!get('smk_premium_id');
+  }
+  function quiet() {
+    if (signedIn()) return true;
+    if (get('smk_registered') === '1') return true;                 // already sent the form
+    var until = +get('smk_reg_snooze') || 0;
+    if (Date.now() < until) return true;                            // said "Not now" recently
+    try { if (sessionStorage.getItem('smk_reg_seen') === '1') return true; } catch (e) { }
+    return false;
+  }
+  if (quiet()) return;
+
+  var form = document.getElementById('register');
+  var el, lastFocus;
+
+  /* never interrupt: not over another dialog, and not if they're already at the form */
+  function busy() {
+    if (document.querySelector('#auth2.open, #sylv.open, .modal.open, .portalv.open')) return true;
+    if (document.body.classList.contains('lock')) return true;
+    if (/^#(register|portal)$/.test(location.hash)) return true;
+    if (form) { var r = form.getBoundingClientRect(); if (r.top < innerHeight && r.bottom > 0) return true; }
+    return false;
+  }
+
+  function build() {
+    el = document.createElement('div');
+    el.className = 'rpop';
+    el.innerHTML =
+      '<div class="rpop__bg" data-rpop-close></div>' +
+      '<div class="rpop__card" role="dialog" aria-modal="true" aria-labelledby="rpopT" aria-describedby="rpopD">' +
+        '<button class="rpop__x" type="button" aria-label="Close" data-rpop-close>&times;</button>' +
+        '<img class="rpop__mark" src="mark.png" alt="" onerror="this.remove()">' +
+        '<h2 id="rpopT">Register now</h2>' +
+        '<p id="rpopD">Fill in the short registration form and the team replies on WhatsApp, ' +
+          'usually the same day. A trial lesson comes first, and you decide after.</p>' +
+        '<div class="rpop__acts">' +
+          '<button class="btn btn--gold" type="button" data-rpop-go>Fill in the form</button>' +
+          '<button class="btn btn--line" type="button" data-open-auth="prem" data-rpop-login>I have a student ID, log in</button>' +
+          '<button class="rpop__later" type="button" data-rpop-later>Not now</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(el);
+
+    el.addEventListener('click', function (e) {
+      if (e.target.closest('[data-rpop-go]')) { close(false); goToForm(); return; }
+      if (e.target.closest('[data-rpop-login]')) { close(false); return; }   // the site's own handler opens login
+      if (e.target.closest('[data-rpop-later]') || e.target.closest('[data-rpop-close]')) close(true);
+    });
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { e.preventDefault(); close(true); return; }
+      if (e.key !== 'Tab') return;                                   // keep focus inside
+      var f = el.querySelectorAll('button');
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+  }
+
+  function open() {
+    if (quiet()) return;
+    if (busy()) { setTimeout(open, 4000); return; }                 // try again shortly
+    try { sessionStorage.setItem('smk_reg_seen', '1'); } catch (e) { }
+    if (!el) build();
+    lastFocus = document.activeElement;
+    el.classList.add('open');
+    document.documentElement.classList.add('rpop-lock');
+    requestAnimationFrame(function () {
+      el.classList.add('on');
+      el.querySelector('[data-rpop-go]').focus({ preventScroll: true });
+    });
+  }
+
+  function close(snooze) {
+    if (!el) return;
+    if (snooze) set('smk_reg_snooze', String(Date.now() + CFG.snoozeDays * 864e5));
+    el.classList.remove('on');
+    document.documentElement.classList.remove('rpop-lock');
+    setTimeout(function () { el.classList.remove('open'); }, 320);
+    if (snooze && lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+  }
+
+  function goToForm() {
+    if (!form) { location.hash = '#register'; return; }
+    var rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    form.scrollIntoView({ behavior: rm ? 'auto' : 'smooth', block: 'start' });
+    setTimeout(function () {
+      var n = document.getElementById('rn');
+      if (n) n.focus({ preventScroll: true });
+    }, rm ? 50 : 750);
+  }
+
+  /* if they sign in in another tab, take it away */
+  addEventListener('storage', function (e) {
+    if (e.key === 'smk_premium' && signedIn() && el) close(false);
+  });
+
+  /* start the clock once the intro has lifted */
+  var armed = false;
+  function arm() { if (armed) return; armed = true; setTimeout(open, CFG.delay * 1000); }
+  if (document.body.classList.contains('ready')) arm();
+  else {
+    var mo = new MutationObserver(function () {
+      if (document.body.classList.contains('ready')) { mo.disconnect(); arm(); }
+    });
+    mo.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    setTimeout(function () { mo.disconnect(); arm(); }, 8000);       // fallback if there is no intro
+  }
+})();
+</script>
+
 </body>
 </html>
