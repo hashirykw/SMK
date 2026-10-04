@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Lecture — Sir Mehboob Khan</title>
 <meta name="robots" content="noindex,nofollow">
-<meta name="referrer" content="no-referrer">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="icon" href="favicon.ico" sizes="any">
 <meta name="theme-color" content="#F4EBE0" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#050B18" media="(prefers-color-scheme: dark)">
@@ -2160,7 +2160,15 @@ body{overflow-x:hidden}
             wire();
           },
           onStateChange: onState,
-          onError: function () { fail('This video will not play', 'It may be private or removed. Unlisted is the setting that works.'); }
+          onError: function (e) {
+            var c = e && e.data;
+            var why = (c === 101 || c === 150) ? 'Embedding is turned off for this video in YouTube Studio.'
+                    : (c === 100) ? 'The video is private or was removed. Unlisted is the setting that works.'
+                    : (c === 153) ? 'The browser did not send the site address to YouTube. Try Chrome or Safari, not an in-app browser.'
+                    : (c === 5) ? 'This browser cannot play the video. Try updating it, or open the link in Chrome or Safari.'
+                    : 'It may be private or removed. Unlisted is the setting that works.';
+            fail('This video will not play (code ' + c + ')', why);
+          }
         }
       });
     }
