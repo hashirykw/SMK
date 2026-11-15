@@ -5639,12 +5639,37 @@ html.theming .revrack__c,html.theming .comb__h{transition-property:all!important
 <!-- Supabase details and contact live in config.js, next to this file -->
 <script src="config.js"></script>
 <script>
+/* Every call to Supabase goes through this. If the server is slow, the call
+   gives up after `ms` instead of hanging for a minute, and a 5xx answer is
+   marked {busy:true} so the page can say "server busy" instead of blaming the
+   student's password. */
+window.smkFetch = function (url, opts, ms) {
+  opts = opts || {};
+  var ctl = window.AbortController ? new AbortController() : null;
+  var t = ctl ? setTimeout(function () { ctl.abort(); }, ms || 15000) : null;
+  if (ctl) opts.signal = ctl.signal;
+  return fetch(url, opts).finally(function () { if (t) clearTimeout(t); });
+};
+window.smkBusy = function (res) { return !res || res.status >= 500 || res.status === 429; };
+/* the registration form: one quiet retry after 2s if the server is busy, so a
+   single hiccup does not lose a lead */
+window.smkPost = function (url, opts, ms) {
+  return smkFetch(url, Object.assign({}, opts), ms).then(function (res) {
+    if (!smkBusy(res)) return res;
+    throw new Error('busy');
+  }).catch(function () {
+    return new Promise(function (ok) { setTimeout(ok, 2000); })
+      .then(function () { return smkFetch(url, Object.assign({}, opts), ms); });
+  });
+};
+</script>
+<script>
 
 async function SMKsave(row) {
   var C = window.SMK_CONFIG || {};
   if (!C.SUPABASE_URL || !C.SUPABASE_ANON_KEY) return { ok: false, reason: 'unconfigured' };
   try {
-    var res = await fetch(C.SUPABASE_URL + '/rest/v1/' + (C.TABLE || 'registrations'), {
+    var res = await smkPost(C.SUPABASE_URL + '/rest/v1/' + (C.TABLE || 'registrations'), {
       method: 'POST',
       headers: {
         apikey: C.SUPABASE_ANON_KEY,
@@ -5653,7 +5678,7 @@ async function SMKsave(row) {
         Prefer: 'return=minimal'
       },
       body: JSON.stringify(row)
-    });
+    }, 15000);
     return res.ok ? { ok: true } : { ok: false, reason: 'http ' + res.status };
   } catch (e) { return { ok: false, reason: 'network' }; }
 }
@@ -6452,7 +6477,7 @@ const SYN = {
       return { ok: false, reason: 'unconfigured' };
     }
     try {
-      const res = await fetch(`${C.SUPABASE_URL}/rest/v1/${C.TABLE || 'registrations'}`, {
+      const res = await smkPost(`${C.SUPABASE_URL}/rest/v1/${C.TABLE || 'registrations'}`, {
         method: 'POST',
         headers: {
           'apikey': C.SUPABASE_ANON_KEY,
@@ -6461,7 +6486,7 @@ const SYN = {
           'Prefer': 'return=minimal'
         },
         body: JSON.stringify(payload)
-      });
+      }, 15000);
       return res.ok ? { ok: true } : { ok: false, reason: 'http ' + res.status };
     } catch (e) {
       return { ok: false, reason: 'network' };
@@ -7714,12 +7739,12 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       var C = window.SMK_CONFIG || {};
       if (!C.SUPABASE_URL || C.SUPABASE_URL.indexOf('http') !== 0) return { ok: false };
       try {
-        var r = await fetch(C.SUPABASE_URL + '/rest/v1/' + (C.TABLE || 'registrations'), {
+        var r = await smkPost(C.SUPABASE_URL + '/rest/v1/' + (C.TABLE || 'registrations'), {
           method: 'POST',
           headers: { apikey: C.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY,
                      'Content-Type': 'application/json', Prefer: 'return=minimal' },
           body: JSON.stringify(row)
-        });
+        }, 15000);
         return { ok: r.ok };
       } catch (e) { return { ok: false }; }
     };
@@ -9764,12 +9789,17 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     btn.disabled = true; btn.textContent = 'Signing in…';
 
     var C = window.SMK_CONFIG || {};
-    fetch(C.SUPABASE_URL + '/rest/v1/rpc/student_login', {
+    smkFetch(C.SUPABASE_URL + '/rest/v1/rpc/student_login', {
       method: 'POST',
       headers: { apikey: C.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY,
                  'Content-Type': 'application/json' },
       body: JSON.stringify({ p_id: id, p_pw: pin, p_device: deviceKey() })
-    }).then(function (r) { return r.json(); }).then(function (r) {
+    }, 15000).then(function (res) {
+      if (smkBusy(res)) throw new Error('busy');
+      return res.json();
+    }).then(function (r) {
+      /* a PostgREST error (r.code) is the server, not the student */
+      if (r && r.code && !('ok' in r)) throw new Error('busy');
       if (!r || !r.ok) {
         m.style.display = 'block';
         var phone = (window.SMK_CONFIG || {}).phoneDisplay || '0302 8056789';
@@ -9798,7 +9828,10 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
       m.style.display = 'none'; closeAuth(); apply();
       var el = $('#portal'); if (el) el.scrollIntoView({ behavior: 'smooth' });
     }).catch(function () {
-      m.style.display = 'block'; m.textContent = 'Could not reach the server. Check your connection.';
+      m.style.display = 'block';
+      m.textContent = navigator.onLine === false
+        ? 'You are offline. Check your connection and try again.'
+        : 'The server is busy right now. Your ID and password are fine, wait a minute and try again.';
     }).finally(function () { btn.disabled = false; btn.textContent = label; });
   });
 
@@ -9890,7 +9923,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     var C = window.SMK_CONFIG || {};
     if (!C.SUPABASE_URL) return;
     try {
-      var r = await fetch(C.SUPABASE_URL +
+      var r = await smkFetch(C.SUPABASE_URL +
         '/rest/v1/topics?select=lvl,n,name,planned&order=lvl,n', {
         headers: { apikey: C.SUPABASE_ANON_KEY,
                    Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY }
@@ -9933,7 +9966,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     var C = window.SMK_CONFIG || {};
     if (!C.SUPABASE_URL) return;
     try {
-      var r = await fetch(C.SUPABASE_URL +
+      var r = await smkFetch(C.SUPABASE_URL +
         '/rest/v1/lecture_index?select=*&order=lvl,topic,n', {
         headers: { apikey: C.SUPABASE_ANON_KEY,
                    Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY }
@@ -9961,7 +9994,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     if (!C.SUPABASE_URL) return;
     try {
       var h = { apikey: C.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY };
-      var r = await fetch(C.SUPABASE_URL + '/rest/v1/preview_lectures?order=lvl,topic,n', { headers: h });
+      var r = await smkFetch(C.SUPABASE_URL + '/rest/v1/preview_lectures?order=lvl,topic,n', { headers: h });
       if (!r.ok) {
         console.error('[SMK] preview_lectures could not be read (' + r.status + '). ' +
           'If this is a 404 the view is missing - re-run backend.sql in Supabase.');
@@ -10233,12 +10266,22 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     location.reload();
   }
 
-  fetch(C.SUPABASE_URL + '/rest/v1/rpc/verify_student', {
+  /* Checked at most once every 5 minutes per tab. Every page load used to
+     call it, and when the server hiccuped those calls piled up and jammed
+     its connection pool for everyone. */
+  var VKEY = 'smk_verified_at';
+  try {
+    var last = +sessionStorage.getItem(VKEY) || 0;
+    if (Date.now() - last < 5 * 60000) return;
+  } catch (e) { }
+
+  smkFetch(C.SUPABASE_URL + '/rest/v1/rpc/verify_student', {
     method: 'POST',
     headers: { apikey: C.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY,
                'Content-Type': 'application/json' },
     body: JSON.stringify({ p_id: sid, p_device: localStorage.getItem('smk_device_key') })
-  }).then(function (r) { return r.json(); }).then(function (r) {
+  }, 8000).then(function (r) { return r.json(); }).then(function (r) {
+    if (r && r.ok === true) { try { sessionStorage.setItem(VKEY, String(Date.now())); } catch (e) { } }
     /* Only an explicit no from the database ends a session. A network blip, a
        CORS problem or a server hiccup must not sign a paying student out on
        reload — they stay in until the database actually says otherwise. */

@@ -1718,6 +1718,20 @@ body{overflow-x:hidden}
 </div>
 
 <script src="config.js"></script>
+<script>
+/* Every call to Supabase goes through this. If the server is slow, the call
+   gives up after `ms` instead of hanging for a minute, and a 5xx answer is
+   marked {busy:true} so the page can say "server busy" instead of blaming the
+   student's password. */
+window.smkFetch = function (url, opts, ms) {
+  opts = opts || {};
+  var ctl = window.AbortController ? new AbortController() : null;
+  var t = ctl ? setTimeout(function () { ctl.abort(); }, ms || 15000) : null;
+  if (ctl) opts.signal = ctl.signal;
+  return fetch(url, opts).finally(function () { if (t) clearTimeout(t); });
+};
+window.smkBusy = function (res) { return !res || res.status >= 500 || res.status === 429; };
+</script>
 
 <script>
 
@@ -1857,11 +1871,11 @@ body{overflow-x:hidden}
   /* the free list, readable by anyone, used when get_lecture cannot answer */
   async function previewFallback() {
     try {
-      var r = await fetch(C.SUPABASE_URL + '/rest/v1/preview_lectures?id=eq.' +
+      var r = await smkFetch(C.SUPABASE_URL + '/rest/v1/preview_lectures?id=eq.' +
         encodeURIComponent(LEC) + '&select=*', {
         headers: { apikey: C.SUPABASE_ANON_KEY,
                    Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY }
-      });
+      }, 10000);
       if (!r.ok) return null;
       var rows = await r.json();
       if (!rows || !rows.length) return null;
@@ -1877,16 +1891,24 @@ body{overflow-x:hidden}
     if (!LEC) { fail('No lecture chosen', 'Open a lecture from the main page.'); return; }
     var s = student(), res;
     try {
-      res = await fetch(C.SUPABASE_URL + '/rest/v1/rpc/get_lecture', {
+      res = await smkFetch(C.SUPABASE_URL + '/rest/v1/rpc/get_lecture', {
         method: 'POST',
         headers: { apikey: C.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY,
                    'Content-Type': 'application/json' },
         body: JSON.stringify({ p_lecture: LEC, p_id: s ? s.sid : null, p_device: device() })
-      });
+      }, 15000);
+      if (smkBusy(res)) throw new Error('busy');
       DATA = await res.json();
     } catch (e) {
-      fail('Could not reach the server', 'Check your connection and try again.');
-      return;
+      /* a free lecture can still play from the preview list */
+      var fb0 = await previewFallback();
+      if (fb0) { DATA = fb0; }
+      else {
+        fail('The server is busy', navigator.onLine === false
+          ? 'You are offline. Check your connection and try again.'
+          : 'Nothing is wrong with your account. Wait a minute, then reload this page.');
+        return;
+      }
     }
 
     /* A missing function comes back as a PostgREST error, not as our own
@@ -1923,7 +1945,7 @@ body{overflow-x:hidden}
           'just added it, check the id in the admin panel matches.'],
         locked: ['This lecture is locked', 'Sign in with your student ID on the main page to open every lecture in your level.'],
         no_student: ['Signed out', 'Sign in again on the main page.'],
-        paused: ['Account paused', 'Message 0343 3713772 to have it reopened.'],
+        paused: ['Account paused', 'Message ' + ((window.SMK_CONFIG || {}).phoneDisplay || '0302 8056789') + ' to have it reopened.'],
         wrong_level: ['Not your level', 'You are enrolled in a different syllabus.'],
         device_removed: ['This device was signed out', 'Sign in again on the main page.']
       }[(DATA && DATA.reason) || ''] || ['Cannot open this lecture', 'Go back and try again.'];
@@ -2404,24 +2426,31 @@ body{overflow-x:hidden}
     setTimeout(function () { if (!window.closed) backToList(); }, 160);
   });
 
-  /* keep checking they are still allowed to be here */
+  /* keep checking they are still allowed to be here — every 5 minutes, only
+     while the tab is on screen, one call at a time, and never left hanging.
+     It used to fire every minute in every open tab; when the server hiccuped
+     those calls stacked up and jammed it for everyone. */
+  var vBusy = false;
   setInterval(async function () {
     var s = student(); if (!s || !DATA || DATA.free) return;
+    if (document.hidden || vBusy) return;
+    vBusy = true;
     try {
-      var r = await fetch(C.SUPABASE_URL + '/rest/v1/rpc/verify_student', {
+      var r = await smkFetch(C.SUPABASE_URL + '/rest/v1/rpc/verify_student', {
         method: 'POST',
         headers: { apikey: C.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY,
                    'Content-Type': 'application/json' },
         body: JSON.stringify({ p_id: s.sid, p_device: device() })
-      });
+      }, 8000);
+      if (smkBusy(r)) return;
       var d = await r.json();
       if (d && d.ok === true) return;
       if (!d || ['no_student', 'paused', 'device_removed'].indexOf(d.reason) === -1) return;
       ['smk_premium', 'smk_premium_id', 'smk_course'].forEach(function (k) { localStorage.removeItem(k); });
       if (ready) YT.pauseVideo();
       fail('Signed out', 'This account is no longer active on this device.');
-    } catch (e) { }
-  }, 60000);
+    } catch (e) { } finally { vBusy = false; }
+  }, 5 * 60000);
 
   load();
 })();
