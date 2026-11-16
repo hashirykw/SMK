@@ -2163,31 +2163,61 @@ window.smkBusy = function (res) { return !res || res.status >= 500 || res.status
     if (!id) { fail('Video link not understood', 'It should be a YouTube link or an 11-character video id.'); return; }
     $('#ph').style.display = 'none';
     $('#bigPlay').classList.remove('hide');
+
+    /* YouTube's error 5 is its generic "the HTML5 player hiccuped" code, and a
+       fresh player usually plays fine. So on 5 we rebuild the player quietly
+       (second try on the normal youtube.com host) and resume where the student
+       was, and only show an error after three failures. */
+    var attempt = 0, resumeAt = 0, wiredOnce = false;
+
     function go() {
+      if (!document.getElementById('ytbox')) {
+        var box = document.createElement('div'); box.id = 'ytbox';
+        $('#stage').insertBefore(box, $('#stage').firstChild);
+      }
       YT = new window.YT.Player('ytbox', {
         width: '100%', height: '100%',
         videoId: id,
-        host: 'https://www.youtube-nocookie.com',
+        host: attempt >= 1 ? 'https://www.youtube.com' : 'https://www.youtube-nocookie.com',
         playerVars: {
           controls: 0, modestbranding: 1, rel: 0, showinfo: 0, iv_load_policy: 3,
-          fs: 0, disablekb: 1, playsinline: 1, origin: location.origin
+          fs: 0, disablekb: 1, playsinline: 1, origin: location.origin,
+          start: Math.floor(resumeAt) || 0
         },
         events: {
           onReady: function () {
             ready = true; $('#ctl').style.display = '';
+            $('#ph').style.display = 'none';
             $('#stage').classList.add('idle');
             /* belt and braces: whatever the API sets, the iframe fills the stage */
             var f = $('#ytbox') || $('.stage iframe');
             if (f) { f.setAttribute('width', '100%'); f.setAttribute('height', '100%'); }
-            wire();
+            if (!wiredOnce) { wiredOnce = true; wire(); }
+            else {
+              dur = YT.getDuration() || 0; paint();
+              if (resumeAt > 0) { try { YT.playVideo(); } catch (e) { } }
+            }
           },
           onStateChange: onState,
           onError: function (e) {
             var c = e && e.data;
+            if (c === 5 && attempt < 2) {
+              attempt++;
+              try { resumeAt = Math.max(resumeAt, YT.getCurrentTime() || 0); } catch (x) { }
+              try { YT.destroy(); } catch (x) { }
+              ready = false;
+              $('#ph').style.display = 'grid';
+              $('#ph').innerHTML = '<div><div style="font-size:30px">&#9203;</div>' +
+                '<b style="font-family:var(--display);font-size:1.1rem;display:block;margin-top:10px">' +
+                'Reconnecting the video\u2026</b></div>';
+              setTimeout(go, 1200);
+              return;
+            }
             var why = (c === 101 || c === 150) ? 'Embedding is turned off for this video in YouTube Studio.'
                     : (c === 100) ? 'The video is private or was removed. Unlisted is the setting that works.'
                     : (c === 153) ? 'The browser did not send the site address to YouTube. Try Chrome or Safari, not an in-app browser.'
-                    : (c === 5) ? 'This browser cannot play the video. Try updating it, or open the link in Chrome or Safari.'
+                    : (c === 5) ? 'Your browser could not play this video. Reload the page once. If it still fails, update Chrome or Edge, turn off ad-blocker or video extensions for this site, or try another browser.' +
+                                  '<br><button class="btn btn--line btn--sm" style="margin-top:14px" onclick="location.reload()">Reload the lecture</button>'
                     : 'It may be private or removed. Unlisted is the setting that works.';
             fail('This video will not play (code ' + c + ')', why);
           }
