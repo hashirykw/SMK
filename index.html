@@ -5668,6 +5668,21 @@ window.smkPost = function (url, opts, ms) {
 async function SMKsave(row) {
   var C = window.SMK_CONFIG || {};
   if (!C.SUPABASE_URL || !C.SUPABASE_ANON_KEY) return { ok: false, reason: 'unconfigured' };
+  /* Free access (admin panel switch): the free-signup function saves the request exactly as before and,
+     while the switch is on, also emails the student their ID and password. Its answer carries
+     mode: "emailed" (login sent, `to` is the masked address) | "exists" (already has an account) |
+     "query" (normal: Sir replies on WhatsApp). If the function can't be reached, the request is
+     saved straight into the table like before, so nothing is ever lost. */
+  try {
+    var fr = await smkFetch(C.SUPABASE_URL + '/functions/v1/free-signup', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(row)
+    }, 25000);
+    if (fr.status !== 404 && !smkBusy(fr)) {
+      var fd = await fr.json();
+      if (fd && fd.ok) return fd;
+      if (fd && (fd.reason === 'too_many' || fd.reason === 'details')) return { ok: false, reason: fd.reason };
+    }
+  } catch (e) { /* unreachable: save it directly below */ }
   try {
     var res = await smkPost(C.SUPABASE_URL + '/rest/v1/' + (C.TABLE || 'registrations'), {
       method: 'POST',
@@ -5679,9 +5694,35 @@ async function SMKsave(row) {
       },
       body: JSON.stringify(row)
     }, 15000);
-    return res.ok ? { ok: true } : { ok: false, reason: 'http ' + res.status };
+    return res.ok ? { ok: true, mode: 'query' } : { ok: false, reason: 'http ' + res.status };
   } catch (e) { return { ok: false, reason: 'network' }; }
 }
+/* is Free access on right now? (only to word the forms; false if unsure) */
+window.SMKfreeOn = (function () {
+  var p = null;
+  return function () {
+    if (p) return p;
+    var C = window.SMK_CONFIG || {};
+    if (!C.SUPABASE_URL) return (p = Promise.resolve(false));
+    p = smkFetch(C.SUPABASE_URL + '/rest/v1/rpc/free_access_on', {
+      method: 'POST', headers: { apikey: C.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY,
+                                 'Content-Type': 'application/json' }, body: '{}'
+    }, 8000).then(function (r) { return r.ok ? r.json() : false; })
+      .then(function (v) { return v === true; }).catch(function () { return false; });
+    return p;
+  };
+})();
+/* the message after a form is sent, by what happened (returns null for the normal case) */
+window.SMKsentText = function (r) {
+  var phone = (window.SMK_CONFIG || {}).phoneDisplay || '0302 8056789';
+  var to = String((r && r.to) || 'your email').replace(/[<>&"]/g, '');
+  if (r && r.mode === 'emailed') return { h: 'Check your email',
+    p: 'Your student ID and password are on their way to <b>' + to + '</b>. Lectures are free right now: sign in with ' +
+       'them on this page to watch every lecture in your level. Can\'t see it in a few minutes? Check Spam or Promotions.' };
+  if (r && r.mode === 'exists') return { h: 'You already have an account',
+    p: 'This number or email already has a student account. Sign in with it, or message ' + phone + ' if you\'ve lost your password.' };
+  return null;
+};
 window.SMKsave = SMKsave;
 
 
@@ -6476,21 +6517,29 @@ const SYN = {
         C.SUPABASE_URL.indexOf('YOUR-') === 0 || C.SUPABASE_URL.indexOf('http') !== 0) {
       return { ok: false, reason: 'unconfigured' };
     }
-    try {
-      const res = await smkPost(`${C.SUPABASE_URL}/rest/v1/${C.TABLE || 'registrations'}`, {
-        method: 'POST',
-        headers: {
-          'apikey': C.SUPABASE_ANON_KEY,
-          'Authorization': 'Bearer ' + C.SUPABASE_ANON_KEY,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=minimal'
-        },
-        body: JSON.stringify(payload)
-      }, 15000);
-      return res.ok ? { ok: true } : { ok: false, reason: 'http ' + res.status };
-    } catch (e) {
-      return { ok: false, reason: 'network' };
-    }
+    /* one path for every form: SMKsave (free access + fallback to the table) */
+    return window.SMKsave(payload);
+  }
+
+  /* while Free access is on, a line above the send button says the login comes by email.
+     Asked only once a form is actually on screen, so idle visitors cost the database nothing. */
+  if (window.SMKfreeOn && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => {
+      if (!es.some(x => x.isIntersecting)) return;
+      io.disconnect();
+      window.SMKfreeOn().then(on => {
+        if (!on) return;
+        $$('form[data-form]').forEach(f => {
+          const b = $('button[type=submit]', f);
+          if (!b || f.querySelector('.free-note')) return;
+          const d = document.createElement('p'); d.className = 'free-note';
+          d.style.cssText = 'margin:0 0 12px;font-size:.86rem;font-weight:600;color:var(--gold-300)';
+          d.textContent = 'Lectures are free right now: your student ID and password come straight to your email.';
+          b.before(d);
+        });
+      });
+    }, { rootMargin: '200px' });
+    $$('form[data-form]').forEach(f => io.observe(f));
   }
 
   $$('form[data-form]').forEach(f => {
@@ -6556,6 +6605,11 @@ const SYN = {
       f.style.display = 'none';
       const p = f.nextElementSibling;
       if (p && p.classList.contains('okp')) {
+        /* free access: say the login is in their inbox (the panel keeps its normal text otherwise) */
+        const t = window.SMKsentText && window.SMKsentText(r), h3 = $('h3', p), pp = $('p', p);
+        if (!p.dataset.h && h3) { p.dataset.h = h3.innerHTML; p.dataset.p = pp ? pp.innerHTML : ''; }
+        if (h3) h3.innerHTML = t ? t.h : p.dataset.h;
+        if (pp) pp.innerHTML = t ? t.p : p.dataset.p;
         p.classList.add('show');
         p.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' });
       }
@@ -9808,6 +9862,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
           bad_password: 'That ID is right but the password is not.',
           paused: 'This account is paused. Message ' + phone + '.',
           expired: 'This month has ended. Message ' + phone + ' to renew and it opens again.',
+          free_ended: 'Free lecture access has ended. To keep watching, join Sir\'s classes: message ' + phone + '.',
           too_many_devices: 'Already signed in on 2 devices. Sign out on one first.',
           too_many_tries: 'Too many wrong passwords. Try again in ' +
             ((r && r.minutes) || 15) + ' minutes, or message ' + phone + '.'
@@ -9843,6 +9898,11 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     $('#authP').textContent = v === 'ask'
       ? 'Accounts are set up by hand, so the details go to Sir Mehboob directly.'
       : 'Use the student ID and password sent to you on WhatsApp.';
+    /* while Free access is on, the account comes straight to their email */
+    if (window.SMKfreeOn) window.SMKfreeOn().then(function (on) {
+      if (on && v === 'ask') $('#authP').textContent = 'Lectures are free right now: fill this in and your student ID and password come straight to your email.';
+      if (on && v !== 'ask') $('#authP').textContent = 'Use the student ID and password sent to your email or WhatsApp.';
+    });
   }
   document.addEventListener('click', function (e) {
     var b = e.target.closest('#authTabs button');
@@ -9879,7 +9939,9 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     if (r && r.ok) {
       this.reset();
       ok.style.display = 'block';
-      ok.textContent = 'Sent. We will message you on WhatsApp with your student ID and password.';
+      var t = window.SMKsentText && window.SMKsentText(r);
+      if (t) ok.innerHTML = '<b>' + t.h + '.</b> ' + t.p;
+      else ok.textContent = 'Sent. We will message you on WhatsApp with your student ID and password.';
       if (window.SMKsfx) window.SMKsfx.ok && window.SMKsfx.ok();
     } else {
       err.style.display = 'block';
@@ -10241,7 +10303,8 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     var msg = {
       no_student: 'Your account has been removed. Please contact Sir Mehboob Khan on 0302 8056789.',
       paused: 'Your account is paused. Contact 0302 8056789 to reactivate it.',
-      device_removed: 'You were signed out on this device. Sign in again to continue.'
+      device_removed: 'You were signed out on this device. Sign in again to continue.',
+      free_ended: 'Free lecture access has ended. To keep watching, join Sir Mehboob Khan\'s classes: WhatsApp 0302 8056789.'
     }[why] || 'You have been signed out. Please sign in again.';
     var d = document.createElement('div');
     d.className = 'note';
@@ -10285,7 +10348,7 @@ var SESSIONS=[{"session":"F-M","year":2024,"files":[{"n":"9702_m24_ms_12.pdf","u
     /* Only an explicit no from the database ends a session. A network blip, a
        CORS problem or a server hiccup must not sign a paying student out on
        reload — they stay in until the database actually says otherwise. */
-    var REVOKE = ['no_student', 'paused', 'device_removed'];
+    var REVOKE = ['no_student', 'paused', 'device_removed', 'free_ended'];
     if (r && r.ok === true) { /* fall through and refresh their lectures */ }
     else if (r && REVOKE.indexOf(r.reason) !== -1) { signOut(r.reason); return; }
     else return;

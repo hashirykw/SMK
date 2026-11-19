@@ -1947,7 +1947,8 @@ window.smkBusy = function (res) { return !res || res.status >= 500 || res.status
         no_student: ['Signed out', 'Sign in again on the main page.'],
         paused: ['Account paused', 'Message ' + ((window.SMK_CONFIG || {}).phoneDisplay || '0302 8056789') + ' to have it reopened.'],
         wrong_level: ['Not your level', 'You are enrolled in a different syllabus.'],
-        device_removed: ['This device was signed out', 'Sign in again on the main page.']
+        device_removed: ['This device was signed out', 'Sign in again on the main page.'],
+        free_ended: ['Free access has ended', 'To keep watching, join Sir Mehboob Khan\'s classes: WhatsApp ' + ((window.SMK_CONFIG || {}).phoneDisplay || '0302 8056789') + '.']
       }[(DATA && DATA.reason) || ''] || ['Cannot open this lecture', 'Go back and try again.'];
       fail(why[0], why[1]);
       return;
@@ -2475,7 +2476,7 @@ window.smkBusy = function (res) { return !res || res.status >= 500 || res.status
       if (smkBusy(r)) return;
       var d = await r.json();
       if (d && d.ok === true) return;
-      if (!d || ['no_student', 'paused', 'device_removed'].indexOf(d.reason) === -1) return;
+      if (!d || ['no_student', 'paused', 'device_removed', 'free_ended'].indexOf(d.reason) === -1) return;
       ['smk_premium', 'smk_premium_id', 'smk_course'].forEach(function (k) { localStorage.removeItem(k); });
       if (ready) YT.pauseVideo();
       fail('Signed out', 'This account is no longer active on this device.');
